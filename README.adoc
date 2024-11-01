@@ -1,0 +1,5 @@
+= Nokee Commons
+
+Nokee Commons is a curated collection of reusable APIs developed through my work with Nokee and across hundreds of Gradle plugins.
+This project focuses exclusively on standalone APIs — not plugins — designed to accelerate Gradle development.
+Each API is crafted to be adaptable across various projects, providing reliable, modular solutions for common development tasks.
