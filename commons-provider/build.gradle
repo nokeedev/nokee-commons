@@ -17,6 +17,7 @@ testing {
 			dependencies {
 				implementation 'dev.gradleplugins:gradle-test-kit:7.0.2'
 				implementation project(':commons-hamcrest')
+				implementation "com.spotify:hamcrest-optional:1.3.2"
 			}
 		}
 	}
