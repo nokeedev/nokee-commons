@@ -8,3 +8,12 @@ dependencyResolutionManagement {
 		mavenCentral()
 	}
 }
+
+gradle.allprojects {
+	pluginManager.withPlugin('java-base') {
+		java {
+			sourceCompatibility = JavaVersion.VERSION_1_8
+			targetCompatibility = JavaVersion.VERSION_1_8
+		}
+	}
+}
