@@ -1,9 +1,22 @@
 plugins {
 	id 'java-library'
+	id 'jvm-test-suite'
 }
 
 group = 'dev.nokee.commons'
 
 dependencies {
 	compileOnlyApi 'dev.gradleplugins:gradle-api:6.2.1'
+}
+
+testing {
+	suites {
+		test {
+			useJUnitJupiter()
+
+			dependencies {
+				implementation 'dev.gradleplugins:gradle-test-kit:7.0.2'
+			}
+		}
+	}
 }
