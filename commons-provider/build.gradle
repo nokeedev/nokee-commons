@@ -2,6 +2,8 @@ plugins {
 	id 'java-library'
 }
 
+group = 'dev.nokee.commons'
+
 dependencies {
 	compileOnlyApi 'dev.gradleplugins:gradle-api:6.2.1'
 }
