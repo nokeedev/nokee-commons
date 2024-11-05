@@ -1,5 +1,6 @@
 rootProject.name = 'nokee-commons'
 
+include 'commons-hamcrest'
 include 'commons-provider'
 
 dependencyResolutionManagement {

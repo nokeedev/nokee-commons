@@ -1,0 +1,10 @@
+plugins {
+	id 'java-library'
+}
+
+group = 'dev.nokee.commons'
+
+dependencies {
+	api 'org.hamcrest:hamcrest:2.2'
+	compileOnlyApi 'dev.gradleplugins:gradle-api:6.2.1'
+}
