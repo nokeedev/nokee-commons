@@ -1,3 +1,3 @@
 package dev.nokee.commons.names;
 
-public interface FullyQualifiedName extends IAppendTo, Name {}
+public interface FullyQualifiedName extends QualifiedName {}

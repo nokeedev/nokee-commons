@@ -5,5 +5,4 @@ package dev.nokee.commons.names;
  *
  * @see ElementName#qualifiedBy(Qualifier)
  */
-public interface QualifiedName extends Name {
-}
+public interface QualifiedName extends IAppendTo, Name {}
