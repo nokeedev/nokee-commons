@@ -2,6 +2,7 @@ rootProject.name = 'nokee-commons'
 
 include 'commons-hamcrest'
 include 'commons-provider'
+include 'commons-names'
 
 dependencyResolutionManagement {
 	repositoriesMode = RepositoriesMode.PREFER_SETTINGS
