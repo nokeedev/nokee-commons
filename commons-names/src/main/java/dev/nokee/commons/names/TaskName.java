@@ -6,7 +6,7 @@ import static dev.nokee.commons.names.StringUtils.capitalize;
 import static java.util.Objects.requireNonNull;
 
 // <verb><qualifyingName>[<object>]
-public final class TaskName implements ElementName {
+public final class TaskName extends NameSupport implements ElementName {
 	private final String verb;
 	private final String object;
 
@@ -25,7 +25,7 @@ public final class TaskName implements ElementName {
 
 	@Override
 	public FullyQualifiedName qualifiedBy(Qualifier qualifier) {
-		return new FullyQualifiedName() {
+		return new NameSupport.ForQualifiedName() {
 			@Override
 			public void appendTo(NameBuilder builder) {
 				// TODO: this should be the format <verb><qualifier><object>

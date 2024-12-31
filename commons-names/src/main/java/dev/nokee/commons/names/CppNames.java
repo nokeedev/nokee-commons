@@ -16,7 +16,7 @@ public final class CppNames {
 		return new ForComponent(component);
 	}
 
-	private static class IncomingConfigurationName implements ElementName {
+	private static class IncomingConfigurationName extends NameSupport implements ElementName {
 		private final String value;
 
 		private IncomingConfigurationName(String value) {
@@ -45,7 +45,7 @@ public final class CppNames {
 		}
 	}
 
-	public static class ForBinary implements Names {
+	public static class ForBinary extends NameSupport implements Names {
 		private final CppBinary binary;
 
 		private ForBinary(CppBinary binary) {
@@ -149,7 +149,7 @@ public final class CppNames {
 		}
 	}
 
-	public static final class ForComponent implements Names {
+	public static final class ForComponent extends NameSupport implements Names {
 		private final CppComponent component;
 
 		private ForComponent(CppComponent component) {

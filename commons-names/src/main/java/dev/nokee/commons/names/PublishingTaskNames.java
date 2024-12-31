@@ -14,7 +14,7 @@ public final class PublishingTaskNames {
 
 	interface PublishingTaskName extends Name {}
 
-	public static final class GenerateMetadataFileTaskName implements PublishingTaskName {
+	public static final class GenerateMetadataFileTaskName extends NameSupport implements PublishingTaskName {
 		private final String publicationName;
 
 		private GenerateMetadataFileTaskName(String publicationName) {
@@ -48,7 +48,7 @@ public final class PublishingTaskNames {
 		return INSTANCE.generateMetadataFileTaskName().forPublication(publication).toString();
 	}
 
-	public static final class GeneratePomFileTaskName implements PublishingTaskName {
+	public static final class GeneratePomFileTaskName extends NameSupport implements PublishingTaskName {
 		private final String publicationName;
 
 		private GeneratePomFileTaskName(String publicationName) {
@@ -78,7 +78,7 @@ public final class PublishingTaskNames {
 		return INSTANCE.generatePomFileTaskName().forPublication(publication).toString();
 	}
 
-	public static final class GenerateDescriptorFileTaskName implements PublishingTaskName {
+	public static final class GenerateDescriptorFileTaskName extends NameSupport implements PublishingTaskName {
 		private final String publicationName;
 
 		private GenerateDescriptorFileTaskName(String publicationName) {
@@ -120,38 +120,40 @@ public final class PublishingTaskNames {
 		ToRepositoryTaskName to(ArtifactRepository repository);
 	}
 
-	public interface PublishTaskName extends ToRepositoryBuilder, Name {}
+	public static final class PublishTaskName extends NameSupport implements ToRepositoryBuilder, Name {
+		@Override
+		public ToMavenLocalTaskName toMavenLocal() {
+			return new PublishToMavenLocalTaskName();
+		}
 
-	public PublishTaskName publishTaskName() {
-		return new PublishTaskName() {
-			@Override
-			public ToMavenLocalTaskName toMavenLocal() {
-				return new ToMavenLocalTaskName() {
-					@Override
-					public String toString() {
-						return "publishToMavenLocal";
-					}
-				};
-			}
+		@Override
+		public Spec<String> toAnyRepositories() {
+			return it -> it.startsWith("publishAllPublicationsTo");
+		}
 
-			@Override
-			public Spec<String> toAnyRepositories() {
-				return it -> it.startsWith("publishAllPublicationsTo");
-			}
+		@Override
+		public ToRepositoryTaskName to(ArtifactRepository repository) {
+			return new PublishAllPublicationsToRepositoryTaskName(repository.getName());
+		}
 
-			@Override
-			public ToRepositoryTaskName to(ArtifactRepository repository) {
-				return new PublishAllPublicationsToRepositoryTaskName(repository.getName());
-			}
-
-			@Override
-			public String toString() {
-				return "publish";
-			}
-		};
+		@Override
+		public String toString() {
+			return "publish";
+		}
 	}
 
-	private static final class PublishAllPublicationsToRepositoryTaskName implements ToRepositoryTaskName {
+	public static final class PublishToMavenLocalTaskName extends NameSupport implements ToMavenLocalTaskName {
+		@Override
+		public String toString() {
+			return "publishToMavenLocal";
+		}
+	}
+
+	public PublishTaskName publishTaskName() {
+		return new PublishTaskName();
+	}
+
+	private static final class PublishAllPublicationsToRepositoryTaskName extends NameSupport implements ToRepositoryTaskName {
 		private final String repositoryName;
 
 		private PublishAllPublicationsToRepositoryTaskName(String repositoryName) {
@@ -173,7 +175,7 @@ public final class PublishingTaskNames {
 		}
 	}
 
-	private static final class PublishPublicationToMavenLocalTaskName implements ToMavenLocalTaskName {
+	private static final class PublishPublicationToMavenLocalTaskName extends NameSupport implements ToMavenLocalTaskName {
 		private final String publicationName;
 
 		private PublishPublicationToMavenLocalTaskName(String publicationName) {
@@ -195,7 +197,7 @@ public final class PublishingTaskNames {
 		}
 	}
 
-	private static final class PublishPublicationToRepositoryTaskName implements ToRepositoryTaskName {
+	private static final class PublishPublicationToRepositoryTaskName extends NameSupport implements ToRepositoryTaskName {
 		private final String publicationName;
 		private final String repositoryName;
 

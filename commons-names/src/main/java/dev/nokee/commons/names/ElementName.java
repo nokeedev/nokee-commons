@@ -44,7 +44,7 @@ public interface ElementName extends Name {
 		return new ElementName() {
 			@Override
 			public FullyQualifiedName qualifiedBy(Qualifier qualifier) {
-				return new FullyQualifiedName() {
+				return new NameSupport.ForQualifiedName() {
 					@Override
 					public void appendTo(NameBuilder builder) {
 						builder.append(qualifier);
@@ -69,7 +69,7 @@ public interface ElementName extends Name {
 		return new ElementName() {
 			@Override
 			public FullyQualifiedName qualifiedBy(Qualifier qualifier) {
-				return new FullyQualifiedName() {
+				return new NameSupport.ForQualifiedName() {
 					@Override
 					public void appendTo(NameBuilder builder) {
 						builder.append(name);

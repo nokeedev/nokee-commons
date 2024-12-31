@@ -1,6 +1,6 @@
 package dev.nokee.commons.names;
 
-final class DefaultNames implements Names {
+final class DefaultNames extends NameSupport implements Names {
 	private final Qualifier qualifier;
 
 	public DefaultNames(Qualifier qualifier) {
