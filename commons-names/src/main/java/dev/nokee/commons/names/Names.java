@@ -4,7 +4,7 @@ package dev.nokee.commons.names;
  * Names are a special type of qualifying names that fits in the middle of additional names, ex: {@literal <componentName>.<binaryName>.<taskName>}, both componentName and binaryName would be node names.
  * Configuration, task, or software component names are generally leaf names.
  */
-public interface Names extends Qualifier, FullyQualifiedName {
+public interface Names extends QualifyingName {
 	static Names ofMain() {
 		return new DefaultNames(Qualifiers.as(ElementName.ofMain("main")));
 	}
