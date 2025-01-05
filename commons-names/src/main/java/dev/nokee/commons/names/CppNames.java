@@ -16,7 +16,6 @@ public final class CppNames {
 		return new ForComponent(component);
 	}
 
-	// TODO: implements ConfigurationName
 	private static class IncomingConfigurationName extends NameSupport implements ElementName {
 		private final String value;
 
