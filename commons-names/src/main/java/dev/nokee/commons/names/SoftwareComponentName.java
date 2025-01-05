@@ -21,7 +21,7 @@ public final class SoftwareComponentName extends NameSupport implements ElementN
 		return new ForQualifiedName() {
 			@Override
 			public String toString() {
-				return NameBuilder.lowerCamelCase().append(name).append(qualifier).toString();
+				return NameBuilder.toStringCase().append(name).append(qualifier).toString();
 			}
 		};
 	}

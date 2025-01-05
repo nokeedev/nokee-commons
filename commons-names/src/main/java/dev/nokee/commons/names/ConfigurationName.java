@@ -22,7 +22,7 @@ public final class ConfigurationName extends NameSupport implements ElementName 
 		return new ForQualifiedName() {
 			@Override
 			public String toString() {
-				return NameBuilder.lowerCamelCase().append(qualifier).append(name).toString();
+				return NameBuilder.toStringCase().append(qualifier).append(name).toString();
 			}
 		};
 	}

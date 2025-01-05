@@ -18,7 +18,7 @@ final class MainElementName extends NameSupport implements OtherName, IAppendTo 
 
 			@Override
 			public String toString() {
-				return NameBuilder.lowerCamelCase().append(qualifier).append(name).toString();
+				return NameBuilder.toStringCase().append(qualifier).append(name).toString();
 			}
 		};
 	}

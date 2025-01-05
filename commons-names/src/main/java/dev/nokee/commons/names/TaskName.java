@@ -29,7 +29,7 @@ public final class TaskName extends NameSupport implements ElementName {
 			@Override
 			public String toString() {
 				// TODO: this should be the format <verb><qualifier><object>
-				NameBuilder result = NameBuilder.lowerCamelCase().append(verb).append(qualifier);
+				NameBuilder result = NameBuilder.toStringCase().append(verb).append(qualifier);
 				getObject().ifPresent(result::append);
 				return result.toString();
 			}

@@ -29,7 +29,7 @@ public final class CppNames {
 			return new FullyQualifiedName() {
 				@Override
 				public String toString() {
-					return NameBuilder.lowerCamelCase().append(value).append(qualifier).toString();
+					return NameBuilder.toStringCase().append(value).append(qualifier).toString();
 				}
 			};
 		}

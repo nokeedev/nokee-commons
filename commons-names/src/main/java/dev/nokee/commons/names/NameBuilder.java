@@ -8,6 +8,33 @@ interface NameBuilder {
 	NameBuilder append(IAppendTo qualifier);
 	NameBuilder append(MainName name);
 
+	static NameBuilder accordion(NameBuilder builder) {
+		return new NameBuilder() {
+			@Override
+			public NameBuilder append(String s) {
+				builder.append(s);
+				return this;
+			}
+
+			@Override
+			public NameBuilder append(IAppendTo qualifier) {
+				qualifier.appendTo(this);
+				return this;
+			}
+
+			@Override
+			public NameBuilder append(MainName name) {
+				// ignore
+				return this;
+			}
+
+			@Override
+			public String toString() {
+				return builder.toString();
+			}
+		};
+	}
+
 	static NameBuilder lowerCamelCase() {
 		return new NameBuilder() {
 			StringBuilder result = new StringBuilder();
@@ -26,7 +53,7 @@ interface NameBuilder {
 
 			@Override
 			public NameBuilder append(MainName name) {
-				// ignore main names
+				result.append(capitalize(name.toString()));
 				return this;
 			}
 
@@ -35,5 +62,9 @@ interface NameBuilder {
 				return uncapitalize(result.toString());
 			}
 		};
+	}
+
+	static NameBuilder toStringCase() {
+		return accordion(lowerCamelCase());
 	}
 }
