@@ -14,6 +14,7 @@ public final class PublishingTaskNames {
 
 	interface PublishingTaskName extends Name {}
 
+	// TODO: Implements TaskName, QualifiedName
 	public static final class GenerateMetadataFileTaskName extends NameSupport implements PublishingTaskName {
 		private final String publicationName;
 
@@ -48,6 +49,7 @@ public final class PublishingTaskNames {
 		return INSTANCE.generateMetadataFileTaskName().forPublication(publication).toString();
 	}
 
+	// TODO: Implements TaskName, QualifiedName
 	public static final class GeneratePomFileTaskName extends NameSupport implements PublishingTaskName {
 		private final String publicationName;
 
@@ -78,6 +80,7 @@ public final class PublishingTaskNames {
 		return INSTANCE.generatePomFileTaskName().forPublication(publication).toString();
 	}
 
+	// TODO: Implements TaskName, QualifiedName
 	public static final class GenerateDescriptorFileTaskName extends NameSupport implements PublishingTaskName {
 		private final String publicationName;
 
@@ -108,8 +111,10 @@ public final class PublishingTaskNames {
 		return INSTANCE.generateDescriptorFileTaskName().forPublication(publication).toString();
 	}
 
+	// TODO: Implement TaskName
 	public interface ToMavenLocalTaskName extends Name {}
 
+	// TODO: Implement TaskName
 	public interface ToRepositoryTaskName extends Name {}
 
 	public interface ToRepositoryBuilder {
@@ -120,6 +125,7 @@ public final class PublishingTaskNames {
 		ToRepositoryTaskName to(ArtifactRepository repository);
 	}
 
+	// TODO: Implement TaskName
 	public static final class PublishTaskName extends NameSupport implements ToRepositoryBuilder, Name {
 		@Override
 		public ToMavenLocalTaskName toMavenLocal() {
@@ -142,6 +148,7 @@ public final class PublishingTaskNames {
 		}
 	}
 
+	// TODO: TaskName
 	public static final class PublishToMavenLocalTaskName extends NameSupport implements ToMavenLocalTaskName {
 		@Override
 		public String toString() {
@@ -153,6 +160,7 @@ public final class PublishingTaskNames {
 		return new PublishTaskName();
 	}
 
+	// TODO: implements TaskName and QualifiedName
 	private static final class PublishAllPublicationsToRepositoryTaskName extends NameSupport implements ToRepositoryTaskName {
 		private final String repositoryName;
 
@@ -175,6 +183,7 @@ public final class PublishingTaskNames {
 		}
 	}
 
+	// TODO: Implements TaskName and QualifiedName
 	private static final class PublishPublicationToMavenLocalTaskName extends NameSupport implements ToMavenLocalTaskName {
 		private final String publicationName;
 
@@ -197,6 +206,7 @@ public final class PublishingTaskNames {
 		}
 	}
 
+	// TODO: Implements TaskName and QualifiedName
 	private static final class PublishPublicationToRepositoryTaskName extends NameSupport implements ToRepositoryTaskName {
 		private final String publicationName;
 		private final String repositoryName;

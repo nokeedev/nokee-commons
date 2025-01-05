@@ -1,8 +1,5 @@
 package dev.nokee.commons.names;
 
-// Prefixing: <qualifyingName><name>
-// Suffixing: <name><qualifyingName>
-
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.component.AdhocComponentWithVariants;
@@ -16,20 +13,22 @@ import org.gradle.api.component.AdhocComponentWithVariants;
  * It's important to keep in mind that both name represent different things.
  * Some element names may participate in further qualification while other won't, aka {@link Task} name or {@link Configuration} name, or {@link AdhocComponentWithVariants} name.
  */
-public interface ElementName extends Name {
-	// TODO: Change to QualifiedName
-	FullyQualifiedName qualifiedBy(Qualifier qualifier);
+public interface ElementName extends Qualifiable, Name {
+// Prefixing: <qualifyingName><name>
+// Suffixing: <name><qualifyingName>
+//	static ElementName ofMain() {
+//		throw new UnsupportedOperationException();
+////		return new DefaultElementName(new MainName() {});
+//	}
+	// TODO: Base element name can produce a Qualifier FullyQualifiedName
+	//   but not the TaskName, ConfigurationName, or SoftwareComponentName
 
-	static Names ofMain() {
-		return new DefaultNames(Qualifiers.ofMain(Qualifiers.of("main")));
+	static OtherName ofMain(String name) {
+		return new MainElementName(name);
 	}
 
-	static Names ofMain(String name) {
-		return new DefaultNames(Qualifiers.ofMain(Qualifiers.of(name)));
-	}
-
-	static Names of(String name) {
-		return new DefaultNames(Qualifiers.of(name));
+	static OtherName of(String name) {
+		return new OtherElementName(name);
 	}
 
 	static TaskName taskName(String verb) {
@@ -40,53 +39,11 @@ public interface ElementName extends Name {
 		return TaskName.of(verb, object);
 	}
 
-	static ElementName configurationName(String name) {
-		return new ElementName() {
-			@Override
-			public FullyQualifiedName qualifiedBy(Qualifier qualifier) {
-				return new NameSupport.ForQualifiedName() {
-					@Override
-					public void appendTo(NameBuilder builder) {
-						builder.append(qualifier);
-						builder.append(name);
-					}
-
-					@Override
-					public String toString() {
-						return NamingScheme.lowerCamelCase().format(this);
-					}
-				};
-			}
-
-			@Override
-			public String toString() {
-				return name;
-			}
-		};
+	static ConfigurationName configurationName(String name) {
+		return ConfigurationName.of(name);
 	}
 
-	static ElementName componentName(String name) {
-		return new ElementName() {
-			@Override
-			public FullyQualifiedName qualifiedBy(Qualifier qualifier) {
-				return new NameSupport.ForQualifiedName() {
-					@Override
-					public void appendTo(NameBuilder builder) {
-						builder.append(name);
-						builder.append(qualifier);
-					}
-
-					@Override
-					public String toString() {
-						return NamingScheme.lowerCamelCase().format(this);
-					}
-				};
-			}
-
-			@Override
-			public String toString() {
-				return name;
-			}
-		};
+	static SoftwareComponentName componentName(String name) {
+		return SoftwareComponentName.of(name);
 	}
 }

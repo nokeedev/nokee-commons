@@ -6,7 +6,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
 class DirNamingSchemeTests {
-	Names names = ElementName.ofMain().append("debug").append("cpp");
+	Names names = Names.ofMain().append("debug").append("cpp");
 
 	@Test
 	void testDirNamesScheme() {

@@ -5,7 +5,7 @@ import org.gradle.api.publish.Publication;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import static dev.nokee.commons.hamcrest.gradle.SpecMatchers.satisfiedBy;
+import static dev.nokee.commons.hamcrest.gradle.SpecMatcher.satisfiedBy;
 import static dev.nokee.commons.names.PublishingTaskNames.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;

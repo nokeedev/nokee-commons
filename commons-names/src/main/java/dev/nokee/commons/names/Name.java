@@ -1,5 +1,7 @@
 package dev.nokee.commons.names;
 
+import org.gradle.api.Named;
+
 /**
  * Strongly represent a name object.
  * A name object has a very simple contract where the {@code Object#toString()} returns the string representation of the name.
@@ -21,13 +23,10 @@ public interface Name extends Comparable<Name> {
 	static Name of(Object name) {
 		if (name instanceof Name) {
 			return (Name) name;
+		} else if (name instanceof Named) {
+			return new GradleNamedAdapter((Named) name);
 		} else {
-			return new Name() {
-				@Override
-				public String toString() {
-					return name.toString();
-				}
-			};
+			return new ObjectNameAdapter(name);
 		}
 	}
 }

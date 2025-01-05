@@ -18,28 +18,12 @@ final class DefaultNames extends NameSupport implements Names {
 	}
 
 	@Override
-	public FullyQualifiedName qualifiedBy(Qualifier qualifier) {
-		return new FullyQualifiedName() {
-			@Override
-			public void appendTo(NameBuilder builder) {
-				builder.append(DefaultNames.this.qualifier);
-				builder.append(qualifier);
-			}
-
-			@Override
-			public String toString() {
-				return NamingScheme.lowerCamelCase().format(this);
-			}
-		};
-	}
-
-	@Override
 	public String toString(NamingScheme scheme) {
 		return qualifier.toString(scheme);
 	}
 
 	@Override
 	public String toString() {
-		return toString(NamingScheme.lowerCamelCase());
+		return qualifier.toString();
 	}
 }

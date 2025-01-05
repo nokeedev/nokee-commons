@@ -3,6 +3,7 @@ package dev.nokee.commons.names;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasToString;
 
 public interface NameTester {
@@ -14,4 +15,9 @@ public interface NameTester {
 	}
 
 	String name();
+
+	@Test
+	default void testEquals() {
+		assertThat(subject(), equalTo(Name.of(name())));
+	}
 }

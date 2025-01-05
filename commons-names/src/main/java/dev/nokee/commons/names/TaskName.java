@@ -27,16 +27,11 @@ public final class TaskName extends NameSupport implements ElementName {
 	public FullyQualifiedName qualifiedBy(Qualifier qualifier) {
 		return new NameSupport.ForQualifiedName() {
 			@Override
-			public void appendTo(NameBuilder builder) {
-				// TODO: this should be the format <verb><qualifier><object>
-				builder.append(getVerb());
-				builder.append(qualifier);
-				getObject().ifPresent(builder::append);
-			}
-
-			@Override
 			public String toString() {
-				return NamingScheme.lowerCamelCase().format(this);
+				// TODO: this should be the format <verb><qualifier><object>
+				NameBuilder result = NameBuilder.lowerCamelCase().append(verb).append(qualifier);
+				getObject().ifPresent(result::append);
+				return result.toString();
 			}
 		};
 	}

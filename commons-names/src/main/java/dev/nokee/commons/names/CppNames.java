@@ -16,6 +16,7 @@ public final class CppNames {
 		return new ForComponent(component);
 	}
 
+	// TODO: implements ConfigurationName
 	private static class IncomingConfigurationName extends NameSupport implements ElementName {
 		private final String value;
 
@@ -27,14 +28,8 @@ public final class CppNames {
 		public FullyQualifiedName qualifiedBy(Qualifier qualifier) {
 			return new FullyQualifiedName() {
 				@Override
-				public void appendTo(NameBuilder builder) {
-					builder.append(value);
-					builder.append(qualifier);
-				}
-
-				@Override
 				public String toString() {
-					return NamingScheme.lowerCamelCase().format(this);
+					return NameBuilder.lowerCamelCase().append(value).append(qualifier).toString();
 				}
 			};
 		}
@@ -134,11 +129,6 @@ public final class CppNames {
 		}
 
 		@Override
-		public FullyQualifiedName qualifiedBy(Qualifier qualifier) {
-			throw new UnsupportedOperationException("not implemented yet");
-		}
-
-		@Override
 		public String toString(NamingScheme scheme) {
 			return qualifyingName(binary).toString(scheme);
 		}
@@ -185,11 +175,6 @@ public final class CppNames {
 		@Override
 		public void accept(Visitor visitor) {
 			qualifyingName(component).accept(visitor);
-		}
-
-		@Override
-		public FullyQualifiedName qualifiedBy(Qualifier qualifier) {
-			throw new UnsupportedOperationException("not implemented yet");
 		}
 
 		@Override

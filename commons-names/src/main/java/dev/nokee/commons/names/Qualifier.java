@@ -10,7 +10,11 @@ public interface Qualifier extends IAppendTo {
 	interface Visitor {
 		void visit(Qualifier qualifier);
 	}
-	void accept(Visitor visitor);
+	default void accept(Visitor visitor) {
+		throw new UnsupportedOperationException();
+	}
 
-	String toString(NamingScheme scheme);
+	default String toString(NamingScheme scheme) {
+		throw new UnsupportedOperationException();
+	}
 }

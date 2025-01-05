@@ -3,6 +3,36 @@ package dev.nokee.commons.names;
 import java.util.Arrays;
 
 final class Qualifiers {
+	public static Qualifier as(OtherName name) {
+		return new Qualifier() {
+			@Override
+			public void appendTo(NameBuilder builder) {
+				// TODO: Should just append the name and let the builder figure out
+				((IAppendTo) name).appendTo(builder);
+			}
+
+			@Override
+			public String toString() {
+				return name.toString();
+			}
+		};
+	}
+
+	public static Qualifier as(FullyQualifiedName name) {
+		return new Qualifier() {
+			@Override
+			public void appendTo(NameBuilder builder) {
+				// TODO: Should just append the name and let the builder figure out
+				((IAppendTo) name).appendTo(builder);
+			}
+
+			@Override
+			public String toString() {
+				return name.toString();
+			}
+		};
+	}
+
 	public static Qualifier of(Qualifier... qualifiers) {
 		return new CompositeQualifier(Arrays.asList(qualifiers));
 	}
