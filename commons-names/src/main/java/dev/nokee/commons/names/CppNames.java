@@ -1,9 +1,21 @@
 package dev.nokee.commons.names;
 
+import org.gradle.api.Named;
 import org.gradle.language.cpp.CppBinary;
 import org.gradle.language.cpp.CppComponent;
+import org.gradle.language.cpp.CppSharedLibrary;
+import org.gradle.language.cpp.CppStaticLibrary;
+import org.gradle.nativeplatform.test.cpp.CppTestExecutable;
+
+import java.util.*;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static dev.nokee.commons.names.StringUtils.uncapitalize;
+import static org.gradle.nativeplatform.MachineArchitecture.X86;
+import static org.gradle.nativeplatform.MachineArchitecture.X86_64;
+import static org.gradle.nativeplatform.OperatingSystemFamily.*;
 
 public final class CppNames {
 	private static final CppNames INSTANCE = new CppNames();
@@ -136,6 +148,16 @@ public final class CppNames {
 		public String toString() {
 			return toString(NamingScheme.lowerCamelCase());
 		}
+
+//		@Override
+//		public Set<String> propSet() {
+//			throw new UnsupportedOperationException();
+//		}
+//
+//		@Override
+//		public Qualifier with(String propName, Object value) {
+//			throw new UnsupportedOperationException();
+//		}
 	}
 
 	public static final class ForComponent extends NameSupport implements Names {
@@ -185,24 +207,314 @@ public final class CppNames {
 		public String toString() {
 			return toString(NamingScheme.lowerCamelCase());
 		}
+
+//		@Override
+//		public Set<String> propSet() {
+//			throw new UnsupportedOperationException();
+//		}
+//
+//		@Override
+//		public Qualifier with(String propName, Object value) {
+//			throw new UnsupportedOperationException();
+//		}
 	}
 
-	public static Qualifier qualifyingName(CppComponent component) {
-		Qualifier result = Qualifiers.of(component.getName());
-		if (component.getName().equals("main")) {
-			result = Qualifiers.ofMain(result);
+//	private final class NativeQualifyingName implements QualifyingName {
+//		private final QualifyingName delegate;
+//
+//		private NativeQualifyingName(QualifyingName delegate, Qualifier qualifier) {
+//			this.delegate = delegate;
+//		}
+//
+//		QualifyingName useBinaryName() {
+//
+//		}
+//
+//		@Override
+//		public void appendTo(NameBuilder builder) {
+//
+//		}
+//
+//		@Override
+//		public Set<String> propSet() {
+//			return Collections.emptySet();
+//		}
+//
+//		@Override
+//		public Qualifier with(String propName, Object value) {
+//			throw new UnsupportedOperationException();
+//		}
+//	}
+
+	private static class NameSegmentIterator {
+		private String name;
+
+		private NameSegmentIterator(Named obj) {
+			this.name = obj.getName();
 		}
-		return result;
+
+		public Optional<String> consumeNext(String... words) {
+			for (String word : words) {
+				if (name.startsWith(word)) {
+					name = uncapitalize(name.substring(word.length()));
+					return Optional.of(word);
+				}
+			}
+			return Optional.empty();
+		}
 	}
 
-	public static Qualifier qualifyingName(CppBinary binary) {
-		String result = binary.getName();
-		if (result.startsWith("main")) {
-			result = uncapitalize(result.substring("main".length()));
-		} else if (result.endsWith("Executable")) {
-			result = result.substring(0, result.length() - "Executable".length());
+	private static final class BuildTypeQualifier implements Qualifier, IParameterizedObject<BuildTypeQualifier> {
+		private final Qualifier value;
+
+		private BuildTypeQualifier(Qualifier value) {
+			this.value = value;
 		}
-		return Qualifiers.of(result);
+
+		@Override
+		public void appendTo(NameBuilder builder) {
+			value.appendTo(builder);
+		}
+
+		@Override
+		public Set<String> propSet() {
+			return Collections.singleton("buildTypeName");
+		}
+
+		@Override
+		public BuildTypeQualifier with(String propName, Object value) {
+			if (propName.equals("buildTypeName")) {
+				return new BuildTypeQualifier(Qualifiers.of((String) value));
+			} else {
+				return this;
+			}
+		}
+
+		@Override
+		public String toString() {
+			return value.toString();
+		}
+	}
+
+	private static final class OperatingSystemFamilyQualifier implements Qualifier, IParameterizedObject<OperatingSystemFamilyQualifier> {
+		private final Qualifier value;
+
+		private OperatingSystemFamilyQualifier(Qualifier value) {
+			this.value = value;
+		}
+
+		@Override
+		public void appendTo(NameBuilder builder) {
+			value.appendTo(builder);
+		}
+
+		@Override
+		public Set<String> propSet() {
+			return Collections.singleton("operatingSystemFamilyName");
+		}
+
+		@Override
+		public OperatingSystemFamilyQualifier with(String propName, Object value) {
+			if (propName.equals("operatingSystemFamilyName")) {
+				return new OperatingSystemFamilyQualifier(Qualifiers.of((String) value));
+			} else {
+				return this;
+			}
+		}
+
+		@Override
+		public String toString() {
+			return value.toString();
+		}
+	}
+
+	private static final class LinkageQualifier implements Qualifier, IParameterizedObject<LinkageQualifier> {
+		private final Qualifier value;
+
+		private LinkageQualifier(Qualifier value) {
+			this.value = value;
+		}
+
+		@Override
+		public void appendTo(NameBuilder builder) {
+			value.appendTo(builder);
+		}
+
+		@Override
+		public Set<String> propSet() {
+			return Collections.singleton("linkageName");
+		}
+
+		@Override
+		public LinkageQualifier with(String propName, Object value) {
+			if (propName.equals("linkageName")) {
+				return new LinkageQualifier(Qualifiers.of((String) value));
+			} else {
+				return this;
+			}
+		}
+
+		@Override
+		public String toString() {
+			return value.toString();
+		}
+	}
+
+	private static final class MachineArchitectureQualifier implements Qualifier, IParameterizedObject<MachineArchitectureQualifier> {
+		private final Qualifier value;
+
+		private MachineArchitectureQualifier(Qualifier value) {
+			this.value = value;
+		}
+
+		@Override
+		public void appendTo(NameBuilder builder) {
+			value.appendTo(builder);
+		}
+
+		@Override
+		public Set<String> propSet() {
+			return Collections.singleton("architectureName");
+		}
+
+		@Override
+		public MachineArchitectureQualifier with(String propName, Object value) {
+			if (propName.equals("architectureName")) {
+				return new MachineArchitectureQualifier(Qualifiers.of((String) value));
+			} else {
+				return this;
+			}
+		}
+
+		@Override
+		public String toString() {
+			return value.toString();
+		}
+	}
+
+	private static final class FullyQualifiedBinaryName extends NameSupport implements QualifyingName, IParameterizedObject<FullyQualifiedBinaryName> {
+		private final List<Qualifier> binaryName = new ArrayList<>();
+		private final Qualifier qualifier;
+
+		private FullyQualifiedBinaryName(Qualifier qualifier, List<Qualifier> binaryName) {
+			this.qualifier = qualifier;
+			this.binaryName.addAll(binaryName);
+		}
+
+		@Override
+		public Set<String> propSet() {
+			return Stream.concat(((IParameterizedObject<?>) qualifier).propSet().stream(), binaryName.stream().flatMap(it -> ((IParameterizedObject<?>) it).propSet().stream())).collect(Collectors.toSet());
+		}
+
+		@Override
+		public FullyQualifiedBinaryName with(String propName, Object value) {
+			return new FullyQualifiedBinaryName(((IParameterizedObject<Qualifier>) qualifier).with(propName, value), binaryName.stream().map(it -> ((IParameterizedObject<Qualifier>) it).with(propName, value)).collect(Collectors.toList()));
+		}
+
+		@Override
+		public void appendTo(NameBuilder builder) {
+			builder.append(qualifier);
+			binaryName.forEach(builder::append);
+		}
+
+		@Override
+		public String toString() {
+			NameBuilder builder = NameBuilder.toStringCase().append(qualifier);
+			binaryName.forEach(builder::append);
+			return builder.toString();
+		}
+	}
+
+	private static final class BinaryName implements OtherName {
+		private final List<Qualifier> binaryName = new ArrayList<>();
+
+		public BinaryName(Collection<Qualifier> binaryName) {
+			this.binaryName.addAll(binaryName);
+		}
+
+		@Override
+		public QualifyingName qualifiedBy(Qualifier qualifier) {
+			return new FullyQualifiedBinaryName(qualifier, binaryName);
+		}
+
+		@Override
+		public String toString() {
+			NameBuilder builder = NameBuilder.toStringCase();
+			binaryName.forEach(builder::append);
+			return builder.toString();
+		}
+
+		@Override
+		public void appendTo(NameBuilder builder) {
+			binaryName.forEach(builder::append);
+		}
+	}
+
+	public static QualifyingName qualifyingName(Named componentOrBinary) {
+		final NameSegmentIterator iter = new NameSegmentIterator(componentOrBinary);
+		Names result = null;
+
+		result = iter.consumeNext("main", "test").map(it -> {
+			if (it.equals("main")) {
+				return Names.ofMain();
+			} else if (it.equals("test")) {
+				return Names.of("test");
+			}
+			return null;
+		}).orElseThrow(() -> new IllegalStateException("Could not find main or test"));
+
+		List<Qualifier> binaryName = new ArrayList<>();
+		or(iter.consumeNext("debug", "release").map(Qualifiers::of).map(BuildTypeQualifier::new), () -> {
+			if (componentOrBinary instanceof CppTestExecutable) {
+				final CppBinary binary = (CppBinary) componentOrBinary;
+				if (binary.isOptimized()) {
+					return Optional.of(new BuildTypeQualifier(Qualifiers.ofMain(Qualifiers.of("release"))));
+				} else {
+					return Optional.of(new BuildTypeQualifier(Qualifiers.ofMain(Qualifiers.of("debug"))));
+				}
+			}
+			return Optional.of(new BuildTypeQualifier(Qualifiers.of("")));
+		}).ifPresent(binaryName::add);
+
+		or(iter.consumeNext("shared", "static").map(Qualifiers::of).map(LinkageQualifier::new), () -> {
+			if (componentOrBinary instanceof CppSharedLibrary) {
+				return Optional.of(new LinkageQualifier(Qualifiers.ofMain(Qualifiers.of("shared"))));
+			} else if (componentOrBinary instanceof CppStaticLibrary) {
+				return Optional.of(new LinkageQualifier(Qualifiers.ofMain(Qualifiers.of("static"))));
+			}
+			return Optional.of(new LinkageQualifier(Qualifiers.of("")));
+		}).ifPresent(binaryName::add);
+
+		or(iter.consumeNext(LINUX, MACOS, WINDOWS).map(Qualifiers::of).map(OperatingSystemFamilyQualifier::new), () -> {
+			if (componentOrBinary instanceof CppBinary) {
+				final CppBinary binary = (CppBinary) componentOrBinary;
+				return Optional.of(new OperatingSystemFamilyQualifier(Qualifiers.ofMain(Qualifiers.of(binary.getTargetMachine().getOperatingSystemFamily().getName()))));
+			}
+			return Optional.of(new OperatingSystemFamilyQualifier(Qualifiers.of("")));
+		}).ifPresent(binaryName::add);
+
+		or(iter.consumeNext(X86, X86_64, "aarch64").map(Qualifiers::of).map(MachineArchitectureQualifier::new), () -> {
+			if (componentOrBinary instanceof CppBinary) {
+				final CppBinary binary = (CppBinary) componentOrBinary;
+				return Optional.of(new MachineArchitectureQualifier(Qualifiers.ofMain(Qualifiers.of(binary.getTargetMachine().getArchitecture().getName()))));
+			}
+			return Optional.of(new MachineArchitectureQualifier(Qualifiers.of("")));
+		}).ifPresent(binaryName::add);
+
+		if (binaryName.isEmpty()) {
+			return result;
+		}
+		return result.append(new BinaryName(binaryName));
+	}
+
+	private static <T> Optional<T> or(Optional<T> self, Supplier<? extends Optional<? extends T>> supplier) {
+		Objects.requireNonNull(supplier);
+		if (self.isPresent()) {
+			return self;
+		} else {
+			Optional<T> r = (Optional)supplier.get();
+			return (Optional)Objects.requireNonNull(r);
+		}
 	}
 
 	//region Name builders
@@ -310,15 +622,15 @@ public final class CppNames {
 		return INSTANCE.compileTaskName().forBinary(binary).toString();
 	}
 
-	public String compileTaskName(CppBinary binary, String language) {
+	public static String compileTaskName(CppBinary binary, String language) {
 		return INSTANCE.compileTaskName(language).forBinary(binary).toString();
 	}
 
-	public String linkTaskName(CppBinary binary) {
+	public static String linkTaskName(CppBinary binary) {
 		return INSTANCE.linkTaskName().forBinary(binary).toString();
 	}
 
-	public String cppCompileConfigurationName(CppBinary binary) {
+	public static String cppCompileConfigurationName(CppBinary binary) {
 		return INSTANCE.cppCompileConfigurationName().forBinary(binary).toString();
 	}
 	//endregion

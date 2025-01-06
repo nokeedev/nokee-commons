@@ -19,11 +19,38 @@ public final class ConfigurationName extends NameSupport implements ElementName 
 
 	@Override
 	public FullyQualifiedName qualifiedBy(Qualifier qualifier) {
-		return new ForQualifiedName() {
-			@Override
-			public String toString() {
-				return NameBuilder.toStringCase().append(qualifier).append(name).toString();
-			}
-		};
+		return new FullyQualified(qualifier);
+	}
+
+	private final class FullyQualified extends NameSupport implements FullyQualifiedName {
+		private final Prop<FullyQualifiedName> prop;
+		private final Qualifier qualifier;
+
+		public FullyQualified(Qualifier qualifier) {
+			this.qualifier = qualifier;
+			this.prop = new Prop.Builder<>(FullyQualifiedName.class)
+				.with("qualifier", this::withQualifier)
+				.with("elementName", this::withElementName)
+				.elseWith(qualifier, this::withQualifier)
+				.build();
+		}
+
+		public FullyQualified withQualifier(Qualifier qualifier) {
+			return new FullyQualified(qualifier);
+		}
+
+		public FullyQualifiedName withElementName(ElementName elementName) {
+			return elementName.qualifiedBy(qualifier);
+		}
+
+		@Override
+		public QualifiedName with(String propName, Object value) {
+			return prop.with(propName, value);
+		}
+
+		@Override
+		public String toString() {
+			return NameBuilder.toStringCase().append(qualifier).append(name.toString()).toString();
+		}
 	}
 }

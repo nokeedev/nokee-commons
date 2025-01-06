@@ -1,36 +1,84 @@
 package dev.nokee.commons.names;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Set;
 
 final class Qualifiers {
 	public static Qualifier as(OtherName name) {
-		return new Qualifier() {
-			@Override
-			public void appendTo(NameBuilder builder) {
-				// TODO: Should just append the name and let the builder figure out
-				((IAppendTo) name).appendTo(builder);
-			}
+		return new OtherNameQualifierAdapter(name);
+	}
 
-			@Override
-			public String toString() {
-				return name.toString();
-			}
-		};
+	private static final class OtherNameQualifierAdapter implements Qualifier, IParameterizedObject<Qualifier> {
+		private final OtherName name;
+
+		private OtherNameQualifierAdapter(OtherName name) {
+			this.name = name;
+		}
+
+		@Override
+		public Set<String> propSet() {
+			return Collections.emptySet();
+		}
+
+		@Override
+		public Qualifier with(String propName, Object value) {
+			return this;
+		}
+
+		@Override
+		public void appendTo(NameBuilder builder) {
+			// TODO: Should just append the name and let the builder figure out
+			((IAppendTo) name).appendTo(builder);
+		}
+
+		@Override
+		public String toString(NamingScheme scheme) {
+			return scheme.format(this);
+		}
+
+		@Override
+		public String toString() {
+			return name.toString();
+		}
 	}
 
 	public static Qualifier as(FullyQualifiedName name) {
-		return new Qualifier() {
-			@Override
-			public void appendTo(NameBuilder builder) {
-				// TODO: Should just append the name and let the builder figure out
-				((IAppendTo) name).appendTo(builder);
-			}
+		return new FullyQualifiedNameQualifierAdapter(name);
+	}
 
-			@Override
-			public String toString() {
-				return name.toString();
-			}
-		};
+	private static final class FullyQualifiedNameQualifierAdapter implements Qualifier, IParameterizedObject<Qualifier> {
+		private final FullyQualifiedName name;
+
+		private FullyQualifiedNameQualifierAdapter(FullyQualifiedName name) {
+			this.name = name;
+		}
+
+		@Override
+		public Set<String> propSet() {
+			return Collections.emptySet();
+		}
+
+		@Override
+		public Qualifier with(String propName, Object value) {
+			return this;
+		}
+
+		@Override
+		public void appendTo(NameBuilder builder) {
+			// TODO: Should just append the name and let the builder figure out
+			((IAppendTo) name).appendTo(builder);
+		}
+
+		@Override
+		public String toString(NamingScheme scheme) {
+			return scheme.format(this);
+		}
+
+		@Override
+		public String toString() {
+			return name.toString();
+		}
 	}
 
 	public static Qualifier of(Qualifier... qualifiers) {
@@ -45,11 +93,21 @@ final class Qualifiers {
 		return new MainQualifier(qualifier);
 	}
 
-	private static final class CompositeQualifier implements Qualifier {
+	private static final class CompositeQualifier implements Qualifier, IParameterizedObject<Qualifier> {
 		private final Iterable<Qualifier> qualifiers;
 
 		public CompositeQualifier(Iterable<Qualifier> qualifiers) {
 			this.qualifiers = qualifiers;
+		}
+
+		@Override
+		public Set<String> propSet() {
+			return Collections.emptySet();
+		}
+
+		@Override
+		public Qualifier with(String propName, Object value) {
+			return this;
 		}
 
 		@Override
@@ -73,11 +131,21 @@ final class Qualifiers {
 		}
 	}
 
-	private static final class DefaultQualifier implements Qualifier {
+	private static final class DefaultQualifier implements Qualifier, IParameterizedObject<Qualifier> {
 		private final String value;
 
 		public DefaultQualifier(String value) {
 			this.value = value;
+		}
+
+		@Override
+		public Set<String> propSet() {
+			return Collections.emptySet();
+		}
+
+		@Override
+		public Qualifier with(String propName, Object value) {
+			return this;
 		}
 
 		@Override
@@ -101,11 +169,21 @@ final class Qualifiers {
 		}
 	}
 
-	private static final class MainQualifier implements Qualifier, MainName {
+	private static final class MainQualifier implements Qualifier, MainName, IParameterizedObject<Qualifier> {
 		private final Qualifier qualifier;
 
 		public MainQualifier(Qualifier qualifier) {
 			this.qualifier = qualifier;
+		}
+
+		@Override
+		public Set<String> propSet() {
+			return Collections.emptySet();
+		}
+
+		@Override
+		public Qualifier with(String propName, Object value) {
+			return this;
 		}
 
 		@Override

@@ -6,15 +6,15 @@ package dev.nokee.commons.names;
  */
 public interface Names extends QualifyingName {
 	static Names ofMain() {
-		return new DefaultNames(Qualifiers.as(ElementName.ofMain("main")));
+		return new DefaultNames(ElementName.ofMain("main"));
 	}
 
 	static Names ofMain(String name) {
-		return new DefaultNames(Qualifiers.as(ElementName.ofMain(name)));
+		return new DefaultNames(ElementName.ofMain(name));
 	}
 
 	static Names of(String name) {
-		return new DefaultNames(Qualifiers.as(ElementName.of(name)));
+		return new DefaultNames(ElementName.of(name));
 	}
 
 	default Names append(String name) {
@@ -22,7 +22,7 @@ public interface Names extends QualifyingName {
 	}
 
 	default Names append(OtherName name) {
-		return new DefaultNames(Qualifiers.as(name.qualifiedBy(this)));
+		return new DefaultNames(name.qualifiedBy(this));
 	}
 
 	//region Returns String for conveniences

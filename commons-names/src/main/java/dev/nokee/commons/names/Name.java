@@ -29,4 +29,8 @@ public interface Name extends Comparable<Name> {
 			return new ObjectNameAdapter(name);
 		}
 	}
+
+	default String toString(NameBuilder builder) {
+		throw new UnsupportedOperationException();
+	}
 }

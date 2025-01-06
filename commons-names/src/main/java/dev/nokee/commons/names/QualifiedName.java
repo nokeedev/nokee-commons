@@ -5,4 +5,8 @@ package dev.nokee.commons.names;
  *
  * @see Qualifiable#qualifiedBy(Qualifier)
  */
-public interface QualifiedName extends Name {}
+public interface QualifiedName extends Name {
+	default QualifiedName with(String propName, Object value) {
+		throw new UnsupportedOperationException();
+	}
+}
