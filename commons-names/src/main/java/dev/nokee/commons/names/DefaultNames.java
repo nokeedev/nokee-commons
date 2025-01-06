@@ -16,11 +16,6 @@ final class DefaultNames extends NameSupport implements Names, IParameterizedObj
 	}
 
 	@Override
-	public void accept(Visitor visitor) {
-		qualifier.accept(visitor);
-	}
-
-	@Override
 	public String toString(NamingScheme scheme) {
 		return qualifier.toString(scheme);
 	}

@@ -116,11 +116,6 @@ final class Qualifiers {
 		}
 
 		@Override
-		public void accept(Visitor visitor) {
-			qualifiers.forEach(visitor::visit);
-		}
-
-		@Override
 		public String toString(NamingScheme scheme) {
 			return scheme.format(this);
 		}
@@ -154,11 +149,6 @@ final class Qualifiers {
 		}
 
 		@Override
-		public void accept(Visitor visitor) {
-			visitor.visit(this);
-		}
-
-		@Override
 		public String toString(NamingScheme scheme) {
 			return scheme.format(this);
 		}
@@ -189,11 +179,6 @@ final class Qualifiers {
 		@Override
 		public void appendTo(NameBuilder sb) {
 			sb.append((MainName) this);
-		}
-
-		@Override
-		public void accept(Visitor visitor) {
-			visitor.visit(qualifier);
 		}
 
 		@Override

@@ -135,11 +135,6 @@ public final class CppNames {
 		}
 
 		@Override
-		public void accept(Visitor visitor) {
-			qualifyingName(binary).accept(visitor);
-		}
-
-		@Override
 		public String toString(NamingScheme scheme) {
 			return qualifyingName(binary).toString(scheme);
 		}
@@ -191,11 +186,6 @@ public final class CppNames {
 		@Override
 		public void appendTo(NameBuilder sb) {
 			qualifyingName(component).appendTo(sb);
-		}
-
-		@Override
-		public void accept(Visitor visitor) {
-			qualifyingName(component).accept(visitor);
 		}
 
 		@Override
