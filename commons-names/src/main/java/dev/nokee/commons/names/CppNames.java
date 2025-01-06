@@ -476,6 +476,7 @@ public final class CppNames {
 		return result.append(new BinaryName(binaryName));
 	}
 
+	// Backport of Optional#or(Supplier)
 	private static <T> Optional<T> or(Optional<T> self, Supplier<? extends Optional<? extends T>> supplier) {
 		Objects.requireNonNull(supplier);
 		if (self.isPresent()) {
