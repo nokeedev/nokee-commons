@@ -24,7 +24,8 @@ final class DefaultNames extends NameSupport<DefaultNames> implements Names {
 
 	@Override
 	public String toString(NameBuilder builder) {
-		return builder.append(qualifier).toString();
+		qualifier.appendTo(builder);
+		return builder.toString();
 	}
 
 	@Override

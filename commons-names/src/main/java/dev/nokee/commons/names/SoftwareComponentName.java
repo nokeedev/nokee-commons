@@ -18,11 +18,10 @@ public final class SoftwareComponentName extends NameSupport<SoftwareComponentNa
 
 	@Override
 	public FullyQualifiedName qualifiedBy(Qualifier qualifier) {
-		return new DefaultFullyQualifiedName(qualifier, this, new Scheme() {
-			@Override
-			public String format(NameBuilder builder) {
-				return builder.append(name).append(qualifier).toString();
-			}
+		return new DefaultFullyQualifiedName(qualifier, this, builder -> {
+			builder.append(name);
+			qualifier.appendTo(builder);
+			return builder.toString();
 		});
 	}
 }

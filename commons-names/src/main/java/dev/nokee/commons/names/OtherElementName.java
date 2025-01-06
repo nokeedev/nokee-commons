@@ -9,11 +9,10 @@ final class OtherElementName extends NameSupport<OtherElementName> implements Ot
 
 	@Override
 	public QualifyingName qualifiedBy(Qualifier qualifier) {
-		return new DefaultQualifyingName(qualifier, this, new Scheme() {
-			@Override
-			public String format(NameBuilder builder) {
-				return builder.append(qualifier).append(name).toString();
-			}
+		return new DefaultQualifyingName(qualifier, this, builder -> {
+			qualifier.appendTo(builder);
+			builder.append(name);
+			return builder.toString();
 		});
 	}
 

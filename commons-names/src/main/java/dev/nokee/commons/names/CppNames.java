@@ -337,7 +337,7 @@ public final class CppNames {
 			return new DefaultQualifyingName(qualifier, this, new Scheme() {
 				@Override
 				public String format(NameBuilder builder) {
-					builder.append(qualifier);
+					qualifier.appendTo(builder);
 					binaryName.forEach(builder::append);
 					return builder.toString();
 				}

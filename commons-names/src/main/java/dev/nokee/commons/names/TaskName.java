@@ -48,7 +48,7 @@ public final class TaskName extends NameSupport<TaskName> implements ElementName
 			@Override
 			public String format(NameBuilder builder) {
 				getVerb().ifPresent(builder::append);
-				builder.append(qualifier);
+				qualifier.appendTo(builder);
 				getObject().ifPresent(builder::append);
 				return builder.toString();
 			}

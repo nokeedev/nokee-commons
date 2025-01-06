@@ -9,7 +9,6 @@ interface NameBuilder {
 		qualifier.appendTo(this);
 		return this;
 	}
-	NameBuilder append(IAppendTo qualifier);
 	NameBuilder append(MainName name);
 
 	static NameBuilder accordion(NameBuilder builder) {
@@ -17,12 +16,6 @@ interface NameBuilder {
 			@Override
 			public NameBuilder append(String s) {
 				builder.append(s);
-				return this;
-			}
-
-			@Override
-			public NameBuilder append(IAppendTo qualifier) {
-				qualifier.appendTo(this);
 				return this;
 			}
 
@@ -46,12 +39,6 @@ interface NameBuilder {
 			@Override
 			public NameBuilder append(String s) {
 				result.append(capitalize(s));
-				return this;
-			}
-
-			@Override
-			public NameBuilder append(IAppendTo qualifier) {
-				qualifier.appendTo(this);
 				return this;
 			}
 

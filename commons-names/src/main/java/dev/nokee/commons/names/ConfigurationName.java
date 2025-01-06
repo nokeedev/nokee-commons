@@ -17,7 +17,11 @@ public final class ConfigurationName extends NameSupport<ConfigurationName> impl
 
 	static ConfigurationName of(String name) {
 		return new ConfigurationName(name, qualifier -> {
-			return builder -> builder.append(qualifier).append(name).toString();
+			return builder -> {
+				qualifier.appendTo(builder);
+				builder.append(name);
+				return builder.toString();
+			};
 		});
 	}
 
@@ -40,7 +44,11 @@ public final class ConfigurationName extends NameSupport<ConfigurationName> impl
 
 		public ConfigurationName prefix(String name) {
 			return new ConfigurationName(name, qualifier -> {
-				return builder -> builder.append(name).append(qualifier).toString();
+				return builder -> {
+					builder.append(name);
+					qualifier.appendTo(builder);
+					return builder.toString();
+				};
 			});
 		}
 	}

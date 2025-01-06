@@ -12,7 +12,9 @@ final class MainElementName extends NameSupport<MainElementName> implements Othe
 		return new DefaultQualifyingName(qualifier, this, new Scheme() {
 			@Override
 			public String format(NameBuilder builder) {
-				return builder.append(qualifier).append(name).toString();
+				qualifier.appendTo(builder);
+				builder.append(name);
+				return builder.toString();
 			}
 		});
 	}

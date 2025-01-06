@@ -22,12 +22,6 @@ public interface NamingScheme {
 					}
 
 					@Override
-					public NameBuilder append(IAppendTo qualifier) {
-						qualifier.appendTo(this);
-						return this;
-					}
-
-					@Override
 					public NameBuilder append(MainName name) {
 						return append(name.toString());
 					}
@@ -38,7 +32,7 @@ public interface NamingScheme {
 					}
 				};
 				if (name instanceof IAppendTo) {
-					builder.append((IAppendTo) name);
+					((IAppendTo) name).appendTo(builder);
 				} else {
 					builder.append(name.toString());
 				}
