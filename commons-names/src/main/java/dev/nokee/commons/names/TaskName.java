@@ -45,7 +45,16 @@ public final class TaskName extends NameSupport<TaskName> implements ElementName
 
 	@Override
 	public FullyQualifiedName qualifiedBy(Qualifier qualifier) {
-		return new FullyQualified(qualifier, this);
+		// TODO: this should be the format <verb><qualifier><object>
+		return new DefaultFullyQualifiedName(qualifier, this, new Scheme() {
+			@Override
+			public String format(NameBuilder builder) {
+				getVerb().ifPresent(builder::append);
+				builder.append(qualifier);
+				getObject().ifPresent(builder::append);
+				return builder.toString();
+			}
+		});
 	}
 
 	public static TaskName of(String taskName) {
@@ -75,44 +84,6 @@ public final class TaskName extends NameSupport<TaskName> implements ElementName
 		getVerb().ifPresent(builder::append);
 		getObject().ifPresent(builder::append);
 		return builder.toString();
-	}
-
-	private static final class FullyQualified extends NameSupport<FullyQualifiedName> implements FullyQualifiedName {
-		private final Qualifier qualifier;
-		private final TaskName elementName;
-
-		public FullyQualified(Qualifier qualifier, TaskName elementName) {
-			this.qualifier = qualifier;
-			this.elementName = elementName;
-		}
-
-		@Override
-		Prop<FullyQualifiedName> init() {
-			return new Prop.Builder<>(FullyQualifiedName.class)
-				.with("qualifier", this::withQualifier)
-				.with("elementName", this::withElementName)
-				.elseWith(b -> b.elseWith(qualifier, this::withQualifier))
-				.elseWith(b -> b.elseWith(elementName, this::withElementName))
-				.build();
-		}
-
-		public FullyQualified withQualifier(Qualifier qualifier) {
-			return new FullyQualified(qualifier, elementName);
-		}
-
-		public FullyQualifiedName withElementName(ElementName elementName) {
-			return elementName.qualifiedBy(qualifier);
-		}
-
-		@Override
-		public String toString() {
-			// TODO: this should be the format <verb><qualifier><object>
-			final NameBuilder result = NameBuilder.toStringCase();
-			elementName.getVerb().ifPresent(result::append);
-			result.append(qualifier);
-			elementName.getObject().ifPresent(result::append);
-			return result.toString();
-		}
 	}
 
 	public static Builder builder() {

@@ -140,7 +140,7 @@ public final class CppNames {
 
 		@Override
 		public String toString() {
-			return toString(NamingScheme.lowerCamelCase());
+			return NameBuilder.toStringCase().append(qualifyingName(binary)).toString();
 		}
 	}
 
@@ -184,7 +184,7 @@ public final class CppNames {
 
 		@Override
 		public String toString() {
-			return toString(NamingScheme.lowerCamelCase());
+			return NameBuilder.toStringCase().append(qualifyingName(component)).toString();
 		}
 	}
 
@@ -344,7 +344,6 @@ public final class CppNames {
 		@Override
 		Prop<BinaryName> init() {
 			Prop.Builder<BinaryName> builder = new Prop.Builder<>(BinaryName.class);
-
 			builder.elseWith(b -> {
 				for (final Qualifier q : binaryName) {
 					b.elseWith(q, it -> {
@@ -362,8 +361,15 @@ public final class CppNames {
 		}
 
 		@Override
-		public FullyQualified qualifiedBy(Qualifier qualifier) {
-			return new FullyQualified(qualifier);
+		public QualifyingName qualifiedBy(Qualifier qualifier) {
+			return new DefaultQualifyingName(qualifier, this, new Scheme() {
+				@Override
+				public String format(NameBuilder builder) {
+					builder.append(qualifier);
+					binaryName.forEach(builder::append);
+					return builder.toString();
+				}
+			});
 		}
 
 		@Override
@@ -376,46 +382,6 @@ public final class CppNames {
 		@Override
 		public void appendTo(NameBuilder builder) {
 			binaryName.forEach(builder::append);
-		}
-
-		private final class FullyQualified extends NameSupport<FullyQualifiedName> implements QualifyingName {
-			private final Qualifier qualifier;
-
-			private FullyQualified(Qualifier qualifier) {
-				this.qualifier = qualifier;
-			}
-
-			@Override
-			Prop<FullyQualifiedName> init() {
-				Prop.Builder<FullyQualifiedName> builder = new Prop.Builder<>(FullyQualifiedName.class)
-					.with("qualifier", this::withQualifier)
-					.with("elementName", this::withElementName)
-					.elseWith(b -> b.elseWith(qualifier, this::withQualifier))
-					.elseWith(b -> b.elseWith(BinaryName.this, this::withElementName));
-
-				return builder.build();
-			}
-
-			public FullyQualified withQualifier(Qualifier qualifier) {
-				return new FullyQualified(qualifier);
-			}
-
-			public FullyQualifiedName withElementName(ElementName elementName) {
-				return elementName.qualifiedBy(qualifier);
-			}
-
-			@Override
-			public void appendTo(NameBuilder builder) {
-				builder.append(qualifier);
-				binaryName.forEach(builder::append);
-			}
-
-			@Override
-			public String toString() {
-				NameBuilder builder = NameBuilder.toStringCase().append(qualifier);
-				binaryName.forEach(builder::append);
-				return builder.toString();
-			}
 		}
 	}
 

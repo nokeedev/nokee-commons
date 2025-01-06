@@ -9,7 +9,12 @@ final class OtherElementName extends NameSupport<OtherElementName> implements Ot
 
 	@Override
 	public QualifyingName qualifiedBy(Qualifier qualifier) {
-		return new FullyQualified(qualifier);
+		return new DefaultQualifyingName(qualifier, this, new Scheme() {
+			@Override
+			public String format(NameBuilder builder) {
+				return builder.append(qualifier).append(name).toString();
+			}
+		});
 	}
 
 	@Override
@@ -20,46 +25,5 @@ final class OtherElementName extends NameSupport<OtherElementName> implements Ot
 	@Override
 	public void appendTo(NameBuilder builder) {
 		builder.append(name);
-	}
-
-	private final class FullyQualified extends NameSupport<FullyQualifiedName> implements QualifyingName {
-		private final Qualifier qualifier;
-
-		private FullyQualified(Qualifier qualifier) {
-			this.qualifier = qualifier;
-		}
-
-		@Override
-		Prop<FullyQualifiedName> init() {
-			return new Prop.Builder<>(FullyQualifiedName.class)
-				.with("qualifier", this::withQualifier)
-				.with("elementName", this::withElementName)
-				.elseWith(b -> b.elseWith(qualifier, this::withQualifier))
-				.build();
-		}
-
-		public FullyQualified withQualifier(Qualifier qualifier) {
-			return new FullyQualified(qualifier);
-		}
-
-		public FullyQualifiedName withElementName(ElementName elementName) {
-			return elementName.qualifiedBy(qualifier);
-		}
-
-		@Override
-		public void appendTo(NameBuilder builder) {
-			builder.append(qualifier);
-			builder.append(OtherElementName.this);
-		}
-
-		@Override
-		public String toString(NamingScheme scheme) {
-			return scheme.format(this);
-		}
-
-		@Override
-		public String toString() {
-			return NameBuilder.toStringCase().append(qualifier).append(name).toString();
-		}
 	}
 }
