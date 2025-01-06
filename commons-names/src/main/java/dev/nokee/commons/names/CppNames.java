@@ -10,7 +10,6 @@ import org.gradle.nativeplatform.test.cpp.CppTestExecutable;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static dev.nokee.commons.names.StringUtils.uncapitalize;
 import static org.gradle.nativeplatform.MachineArchitecture.X86;
@@ -28,7 +27,7 @@ public final class CppNames {
 		return new ForComponent(component);
 	}
 
-	private static class IncomingConfigurationName extends NameSupport implements ElementName {
+	private static class IncomingConfigurationName extends NameSupport<IncomingConfigurationName> implements ElementName {
 		private final String value;
 
 		private IncomingConfigurationName(String value) {
@@ -51,7 +50,7 @@ public final class CppNames {
 		}
 	}
 
-	public static class ForBinary extends NameSupport implements Names {
+	public static class ForBinary extends NameSupport<ForBinary> implements Names {
 		private final CppBinary binary;
 
 		private ForBinary(CppBinary binary) {
@@ -143,19 +142,9 @@ public final class CppNames {
 		public String toString() {
 			return toString(NamingScheme.lowerCamelCase());
 		}
-
-//		@Override
-//		public Set<String> propSet() {
-//			throw new UnsupportedOperationException();
-//		}
-//
-//		@Override
-//		public Qualifier with(String propName, Object value) {
-//			throw new UnsupportedOperationException();
-//		}
 	}
 
-	public static final class ForComponent extends NameSupport implements Names {
+	public static final class ForComponent extends NameSupport<ForComponent> implements Names {
 		private final CppComponent component;
 
 		private ForComponent(CppComponent component) {
@@ -197,44 +186,7 @@ public final class CppNames {
 		public String toString() {
 			return toString(NamingScheme.lowerCamelCase());
 		}
-
-//		@Override
-//		public Set<String> propSet() {
-//			throw new UnsupportedOperationException();
-//		}
-//
-//		@Override
-//		public Qualifier with(String propName, Object value) {
-//			throw new UnsupportedOperationException();
-//		}
 	}
-
-//	private final class NativeQualifyingName implements QualifyingName {
-//		private final QualifyingName delegate;
-//
-//		private NativeQualifyingName(QualifyingName delegate, Qualifier qualifier) {
-//			this.delegate = delegate;
-//		}
-//
-//		QualifyingName useBinaryName() {
-//
-//		}
-//
-//		@Override
-//		public void appendTo(NameBuilder builder) {
-//
-//		}
-//
-//		@Override
-//		public Set<String> propSet() {
-//			return Collections.emptySet();
-//		}
-//
-//		@Override
-//		public Qualifier with(String propName, Object value) {
-//			throw new UnsupportedOperationException();
-//		}
-//	}
 
 	private static class NameSegmentIterator {
 		private String name;
@@ -382,40 +334,7 @@ public final class CppNames {
 		}
 	}
 
-	private static final class FullyQualifiedBinaryName extends NameSupport implements QualifyingName, IParameterizedObject<FullyQualifiedBinaryName> {
-		private final List<Qualifier> binaryName = new ArrayList<>();
-		private final Qualifier qualifier;
-
-		private FullyQualifiedBinaryName(Qualifier qualifier, List<Qualifier> binaryName) {
-			this.qualifier = qualifier;
-			this.binaryName.addAll(binaryName);
-		}
-
-		@Override
-		public Set<String> propSet() {
-			return Stream.concat(((IParameterizedObject<?>) qualifier).propSet().stream(), binaryName.stream().flatMap(it -> ((IParameterizedObject<?>) it).propSet().stream())).collect(Collectors.toSet());
-		}
-
-		@Override
-		public FullyQualifiedBinaryName with(String propName, Object value) {
-			return new FullyQualifiedBinaryName(((IParameterizedObject<Qualifier>) qualifier).with(propName, value), binaryName.stream().map(it -> ((IParameterizedObject<Qualifier>) it).with(propName, value)).collect(Collectors.toList()));
-		}
-
-		@Override
-		public void appendTo(NameBuilder builder) {
-			builder.append(qualifier);
-			binaryName.forEach(builder::append);
-		}
-
-		@Override
-		public String toString() {
-			NameBuilder builder = NameBuilder.toStringCase().append(qualifier);
-			binaryName.forEach(builder::append);
-			return builder.toString();
-		}
-	}
-
-	private static final class BinaryName implements OtherName {
+	private static final class BinaryName extends NameSupport<BinaryName> implements OtherName {
 		private final List<Qualifier> binaryName = new ArrayList<>();
 
 		public BinaryName(Collection<Qualifier> binaryName) {
@@ -423,8 +342,28 @@ public final class CppNames {
 		}
 
 		@Override
-		public QualifyingName qualifiedBy(Qualifier qualifier) {
-			return new FullyQualifiedBinaryName(qualifier, binaryName);
+		Prop<BinaryName> init() {
+			Prop.Builder<BinaryName> builder = new Prop.Builder<>(BinaryName.class);
+
+			builder.elseWith(b -> {
+				for (final Qualifier q : binaryName) {
+					b.elseWith(q, it -> {
+						return new BinaryName(binaryName.stream().map(t -> {
+							if (t.equals(q)) {
+								return it;
+							}
+							return t;
+						}).collect(Collectors.toList()));
+					});
+				}
+			});
+
+			return builder.build();
+		}
+
+		@Override
+		public FullyQualified qualifiedBy(Qualifier qualifier) {
+			return new FullyQualified(qualifier);
 		}
 
 		@Override
@@ -437,6 +376,46 @@ public final class CppNames {
 		@Override
 		public void appendTo(NameBuilder builder) {
 			binaryName.forEach(builder::append);
+		}
+
+		private final class FullyQualified extends NameSupport<FullyQualifiedName> implements QualifyingName {
+			private final Qualifier qualifier;
+
+			private FullyQualified(Qualifier qualifier) {
+				this.qualifier = qualifier;
+			}
+
+			@Override
+			Prop<FullyQualifiedName> init() {
+				Prop.Builder<FullyQualifiedName> builder = new Prop.Builder<>(FullyQualifiedName.class)
+					.with("qualifier", this::withQualifier)
+					.with("elementName", this::withElementName)
+					.elseWith(b -> b.elseWith(qualifier, this::withQualifier))
+					.elseWith(b -> b.elseWith(BinaryName.this, this::withElementName));
+
+				return builder.build();
+			}
+
+			public FullyQualified withQualifier(Qualifier qualifier) {
+				return new FullyQualified(qualifier);
+			}
+
+			public FullyQualifiedName withElementName(ElementName elementName) {
+				return elementName.qualifiedBy(qualifier);
+			}
+
+			@Override
+			public void appendTo(NameBuilder builder) {
+				builder.append(qualifier);
+				binaryName.forEach(builder::append);
+			}
+
+			@Override
+			public String toString() {
+				NameBuilder builder = NameBuilder.toStringCase().append(qualifier);
+				binaryName.forEach(builder::append);
+				return builder.toString();
+			}
 		}
 	}
 

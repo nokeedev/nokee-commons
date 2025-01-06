@@ -1,6 +1,18 @@
 package dev.nokee.commons.names;
 
-abstract class NameSupport {
+import java.util.Set;
+
+abstract class NameSupport<SELF> implements IParameterizedObject<SELF> {
+	private final Prop<SELF> prop;
+
+	protected NameSupport() {
+		this.prop = init();
+	}
+
+	Prop<SELF> init() {
+		return Prop.empty();
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) return true;
@@ -17,5 +29,13 @@ abstract class NameSupport {
 	@Override
 	public abstract String toString();
 
-	static abstract class ForQualifiedName extends NameSupport implements FullyQualifiedName {}
+	@Override
+	public Set<String> propSet() {
+		return prop.names();
+	}
+
+	@Override
+	public SELF with(String propName, Object value) {
+		return prop.with(propName, value);
+	}
 }

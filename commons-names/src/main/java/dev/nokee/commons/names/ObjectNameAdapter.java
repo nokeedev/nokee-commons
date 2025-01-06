@@ -1,6 +1,6 @@
 package dev.nokee.commons.names;
 
-final class ObjectNameAdapter extends NameSupport implements Name {
+final class ObjectNameAdapter extends NameSupport<ObjectNameAdapter> implements Name {
 	private final Object obj;
 
 	public ObjectNameAdapter(Object obj) {

@@ -14,12 +14,18 @@ public final class PublishingTaskNames {
 
 	interface PublishingTaskName extends Name {}
 
-	public static final class GenerateMetadataFileTaskName extends NameSupport implements PublishingTaskName, QualifiedName {
-		private final Prop<GenerateMetadataFileTaskName> prop = new Prop.Builder<>(GenerateMetadataFileTaskName.class).with("publicationName", this::withPublicationName).build();
+	public static final class GenerateMetadataFileTaskName extends NameSupport<GenerateMetadataFileTaskName> implements PublishingTaskName, QualifiedName {
 		private final String publicationName;
 
 		private GenerateMetadataFileTaskName(String publicationName) {
 			this.publicationName = publicationName;
+		}
+
+		@Override
+		Prop<GenerateMetadataFileTaskName> init() {
+			return new Prop.Builder<>(GenerateMetadataFileTaskName.class)
+				.with("publicationName", this::withPublicationName)
+				.build();
 		}
 
 		public GenerateMetadataFileTaskName withPublicationName(String publicationName) {
@@ -28,11 +34,6 @@ public final class PublishingTaskNames {
 
 		public String getPublicationName() {
 			return publicationName;
-		}
-
-		@Override
-		public QualifiedName with(String propName, Object value) {
-			return prop.with(propName, value);
 		}
 
 		@Override
@@ -54,12 +55,18 @@ public final class PublishingTaskNames {
 		return INSTANCE.generateMetadataFileTaskName().forPublication(publication).toString();
 	}
 
-	public static final class GeneratePomFileTaskName extends NameSupport implements PublishingTaskName, QualifiedName {
-		private final Prop<GeneratePomFileTaskName> prop = new Prop.Builder<>(GeneratePomFileTaskName.class).with("publicationName", this::withPublicationName).build();
+	public static final class GeneratePomFileTaskName extends NameSupport<GeneratePomFileTaskName> implements PublishingTaskName, QualifiedName {
 		private final String publicationName;
 
 		private GeneratePomFileTaskName(String publicationName) {
 			this.publicationName = publicationName;
+		}
+
+		@Override
+		Prop<GeneratePomFileTaskName> init() {
+			return new Prop.Builder<>(GeneratePomFileTaskName.class)
+				.with("publicationName", this::withPublicationName)
+				.build();
 		}
 
 		public GeneratePomFileTaskName withPublicationName(String publicationName) {
@@ -68,11 +75,6 @@ public final class PublishingTaskNames {
 
 		public String getPublicationName() {
 			return publicationName;
-		}
-
-		@Override
-		public QualifiedName with(String propName, Object value) {
-			return prop.with(propName, value);
 		}
 
 		@Override
@@ -90,12 +92,18 @@ public final class PublishingTaskNames {
 		return INSTANCE.generatePomFileTaskName().forPublication(publication).toString();
 	}
 
-	public static final class GenerateDescriptorFileTaskName extends NameSupport implements PublishingTaskName, QualifiedName {
-		private final Prop<GenerateDescriptorFileTaskName> prop = new Prop.Builder<>(GenerateDescriptorFileTaskName.class).with("publicationName", this::withPublicationName).build();
+	public static final class GenerateDescriptorFileTaskName extends NameSupport<GenerateDescriptorFileTaskName> implements PublishingTaskName, QualifiedName {
 		private final String publicationName;
 
 		private GenerateDescriptorFileTaskName(String publicationName) {
 			this.publicationName = publicationName;
+		}
+
+		@Override
+		Prop<GenerateDescriptorFileTaskName> init() {
+			return new Prop.Builder<>(GenerateDescriptorFileTaskName.class)
+				.with("publicationName", this::withPublicationName)
+				.build();
 		}
 
 		public GenerateDescriptorFileTaskName withPublicationName(String publicationName) {
@@ -104,11 +112,6 @@ public final class PublishingTaskNames {
 
 		public String getPublicationName() {
 			return publicationName;
-		}
-
-		@Override
-		public QualifiedName with(String propName, Object value) {
-			return prop.with(propName, value);
 		}
 
 		@Override
@@ -138,7 +141,7 @@ public final class PublishingTaskNames {
 		ToRepositoryTaskName to(ArtifactRepository repository);
 	}
 
-	public static final class PublishTaskName extends NameSupport implements ToRepositoryBuilder, Name {
+	public static final class PublishTaskName extends NameSupport<PublishTaskName> implements ToRepositoryBuilder, Name {
 		@Override
 		public ToMavenLocalTaskName toMavenLocal() {
 			return new PublishToMavenLocalTaskName();
@@ -161,7 +164,7 @@ public final class PublishingTaskNames {
 	}
 
 	// TODO: TaskName
-	public static final class PublishToMavenLocalTaskName extends NameSupport implements ToMavenLocalTaskName {
+	public static final class PublishToMavenLocalTaskName extends NameSupport<PublishToMavenLocalTaskName> implements ToMavenLocalTaskName {
 		@Override
 		public String toString() {
 			return "publishToMavenLocal";
@@ -172,12 +175,18 @@ public final class PublishingTaskNames {
 		return new PublishTaskName();
 	}
 
-	private static final class PublishAllPublicationsToRepositoryTaskName extends NameSupport implements ToRepositoryTaskName, QualifiedName {
-		private final Prop<PublishAllPublicationsToRepositoryTaskName> prop = new Prop.Builder<>(PublishAllPublicationsToRepositoryTaskName.class).with("repositoryName", this::withRepositoryName).build();
+	private static final class PublishAllPublicationsToRepositoryTaskName extends NameSupport<PublishAllPublicationsToRepositoryTaskName> implements ToRepositoryTaskName, QualifiedName {
 		private final String repositoryName;
 
 		private PublishAllPublicationsToRepositoryTaskName(String repositoryName) {
 			this.repositoryName = repositoryName;
+		}
+
+		@Override
+		Prop<PublishAllPublicationsToRepositoryTaskName> init() {
+			return new Prop.Builder<>(PublishAllPublicationsToRepositoryTaskName.class)
+				.with("repositoryName", this::withRepositoryName)
+				.build();
 		}
 
 		public String getRepositoryName() {
@@ -189,23 +198,24 @@ public final class PublishingTaskNames {
 		}
 
 		@Override
-		public QualifiedName with(String propName, Object value) {
-			return prop.with(propName, value);
-		}
-
-		@Override
 		public String toString() {
 			// publishAllPublicationsTo<RepositoryName>Repository
 			return "publishAllPublicationsTo" + capitalize(repositoryName) + "Repository";
 		}
 	}
 
-	private static final class PublishPublicationToMavenLocalTaskName extends NameSupport implements ToMavenLocalTaskName, QualifiedName {
-		private final Prop<PublishPublicationToMavenLocalTaskName> prop = new Prop.Builder<>(PublishPublicationToMavenLocalTaskName.class).with("publicationName", this::withPublicationName).build();
+	private static final class PublishPublicationToMavenLocalTaskName extends NameSupport<PublishPublicationToMavenLocalTaskName> implements ToMavenLocalTaskName, QualifiedName {
 		private final String publicationName;
 
 		private PublishPublicationToMavenLocalTaskName(String publicationName) {
 			this.publicationName = publicationName;
+		}
+
+		@Override
+		Prop<PublishPublicationToMavenLocalTaskName> init() {
+			return new Prop.Builder<>(PublishPublicationToMavenLocalTaskName.class)
+				.with("publicationName", this::withPublicationName)
+				.build();
 		}
 
 		public String getPublicationName() {
@@ -217,25 +227,27 @@ public final class PublishingTaskNames {
 		}
 
 		@Override
-		public QualifiedName with(String propName, Object value) {
-			return prop.with(propName, value);
-		}
-
-		@Override
 		public String toString() {
 			// publish<PublicationName>PublicationToMavenLocal
 			return "publish" + capitalize(publicationName) + "PublicationToMavenLocal";
 		}
 	}
 
-	private static final class PublishPublicationToRepositoryTaskName extends NameSupport implements ToRepositoryTaskName, QualifiedName {
-		private final Prop<PublishPublicationToRepositoryTaskName> prop = new Prop.Builder<>(PublishPublicationToRepositoryTaskName.class).with("publicationName", this::withPublicationName).with("repositoryName", this::withRepositoryName).build();
+	private static final class PublishPublicationToRepositoryTaskName extends NameSupport<PublishPublicationToRepositoryTaskName> implements ToRepositoryTaskName, QualifiedName {
 		private final String publicationName;
 		private final String repositoryName;
 
 		private PublishPublicationToRepositoryTaskName(String publicationName, String repositoryName) {
 			this.publicationName = publicationName;
 			this.repositoryName = repositoryName;
+		}
+
+		@Override
+		Prop<PublishPublicationToRepositoryTaskName> init() {
+			return new Prop.Builder<>(PublishPublicationToRepositoryTaskName.class)
+				.with("publicationName", this::withPublicationName)
+				.with("repositoryName", this::withRepositoryName)
+				.build();
 		}
 
 		public String getPublicationName() {
@@ -252,11 +264,6 @@ public final class PublishingTaskNames {
 
 		public PublishPublicationToRepositoryTaskName withRepositoryName(String repositoryName) {
 			return new PublishPublicationToRepositoryTaskName(publicationName, repositoryName);
-		}
-
-		@Override
-		public QualifiedName with(String propName, Object value) {
-			return prop.with(propName, value);
 		}
 
 		@Override

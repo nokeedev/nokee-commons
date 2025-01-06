@@ -1,8 +1,6 @@
 package dev.nokee.commons.names;
 
-import java.util.Set;
-
-final class OtherElementName extends NameSupport implements OtherName, IAppendTo {
+final class OtherElementName extends NameSupport<OtherElementName> implements OtherName, IAppendTo {
 	private final String name;
 
 	public OtherElementName(String name) {
@@ -24,27 +22,20 @@ final class OtherElementName extends NameSupport implements OtherName, IAppendTo
 		builder.append(name);
 	}
 
-	private final class FullyQualified extends NameSupport implements QualifyingName, IParameterizedObject<FullyQualifiedName> {
+	private final class FullyQualified extends NameSupport<FullyQualifiedName> implements QualifyingName, IParameterizedObject<FullyQualifiedName> {
 		private final Qualifier qualifier;
-		private final Prop<FullyQualifiedName> prop;
 
 		private FullyQualified(Qualifier qualifier) {
 			this.qualifier = qualifier;
-			this.prop = new Prop.Builder<>(FullyQualifiedName.class)
+		}
+
+		@Override
+		Prop<FullyQualifiedName> init() {
+			return new Prop.Builder<>(FullyQualifiedName.class)
 				.with("qualifier", this::withQualifier)
 				.with("elementName", this::withElementName)
-				.elseWith(qualifier, this::withQualifier)
+				.elseWith(b -> b.elseWith(qualifier, this::withQualifier))
 				.build();
-		}
-
-		@Override
-		public Set<String> propSet() {
-			return prop.names();
-		}
-
-		@Override
-		public FullyQualifiedName with(String propName, Object value) {
-			return prop.with(propName, value);
 		}
 
 		public FullyQualified withQualifier(Qualifier qualifier) {

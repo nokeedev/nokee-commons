@@ -7,15 +7,22 @@ import java.util.Set;
 import static dev.nokee.commons.names.StringUtils.capitalize;
 import static java.util.Objects.requireNonNull;
 
-// <verb><qualifyingName>[<object>]
-public final class TaskName extends NameSupport implements ElementName, IParameterizedObject<TaskName> {
+// <verb><qualifyingName>[<Object>]
+public final class TaskName extends NameSupport<TaskName> implements ElementName {
 	private final String verb;
 	private final String object;
-	private final Prop<TaskName> prop = new Prop.Builder<>(TaskName.class).with("verb", this::withVerb).with("object", this::withObject).build();
 
 	private TaskName(String verb, String object) {
 		this.verb = verb;
 		this.object = object;
+	}
+
+	@Override
+	Prop<TaskName> init() {
+		return new Prop.Builder<>(TaskName.class)
+			.with("verb", this::withVerb)
+			.with("object", this::withObject)
+			.build();
 	}
 
 	public String getVerb() {
@@ -62,40 +69,29 @@ public final class TaskName extends NameSupport implements ElementName, IParamet
 
 	@Override
 	public String toString() {
-		if (object == null) {
-			return verb;
-		}
-		return verb + capitalize(object);
+		NameBuilder builder = NameBuilder.toStringCase();
+		getVerb().ifPresent(builder::append);
+		getObject().ifPresent(builder::append);
+		return builder.toString();
 	}
 
-	@Override
-	public Set<String> propSet() {
-		return prop.names();
-	}
-
-	@Override
-	public TaskName with(String propName, Object value) {
-		return prop.with(propName, value);
-	}
-
-	private static final class FullyQualified extends NameSupport implements FullyQualifiedName {
+	private static final class FullyQualified extends NameSupport<FullyQualifiedName> implements FullyQualifiedName {
 		private final Qualifier qualifier;
 		private final TaskName elementName;
-		private final Prop<FullyQualifiedName> prop;
 
 		public FullyQualified(Qualifier qualifier, TaskName elementName) {
 			this.qualifier = qualifier;
 			this.elementName = elementName;
-			this.prop = new Prop.Builder<>(FullyQualifiedName.class)
-				.with("qualifier", this::withQualifier)
-				.with("elementName", this::withElementName)
-				.elseWith(qualifier, this::withQualifier)
-				.elseWith(elementName, this::withElementName)
-				.build();
 		}
 
-		public FullyQualifiedName with(String propName, Object value) {
-			return prop.with(propName, value);
+		@Override
+		Prop<FullyQualifiedName> init() {
+			return new Prop.Builder<>(FullyQualifiedName.class)
+				.with("qualifier", this::withQualifier)
+				.with("elementName", this::withElementName)
+				.elseWith(b -> b.elseWith(qualifier, this::withQualifier))
+				.elseWith(b -> b.elseWith(elementName, this::withElementName))
+				.build();
 		}
 
 		public FullyQualified withQualifier(Qualifier qualifier) {
