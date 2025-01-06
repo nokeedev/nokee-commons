@@ -32,9 +32,50 @@ interface NameBuilder {
 		};
 	}
 
+	static NameBuilder dirNames() {
+		return new NameBuilder() {
+			private boolean ignoreMain = false; // by default ignores main segment
+			private final StringBuilder result = new StringBuilder();
+
+			@Override
+			public NameBuilder append(String s) {
+				if (!s.trim().isEmpty()) {
+					result.append("/").append(s);
+				}
+				return this;
+			}
+
+			@Override
+			public NameBuilder append(Qualifier qualifier) {
+				// ignores main sub segment
+				boolean currentIgnoreMain = ignoreMain;
+				ignoreMain = true;
+				try {
+					qualifier.appendTo(this);
+				} finally {
+					ignoreMain = currentIgnoreMain;
+				}
+				return this;
+			}
+
+			@Override
+			public NameBuilder append(MainName name) {
+				if (!ignoreMain) {
+					return append(name.toString());
+				}
+				return this;
+			}
+
+			@Override
+			public String toString() {
+				return result.substring(1);
+			}
+		};
+	}
+
 	static NameBuilder lowerCamelCase() {
 		return new NameBuilder() {
-			StringBuilder result = new StringBuilder();
+			private final StringBuilder result = new StringBuilder();
 
 			@Override
 			public NameBuilder append(String s) {

@@ -33,4 +33,9 @@ final class MainElementName extends NameSupport<MainElementName> implements Othe
 			}
 		});
 	}
+
+	@Override
+	public String toString(NameBuilder builder) {
+		return builder.append(name).toString();
+	}
 }

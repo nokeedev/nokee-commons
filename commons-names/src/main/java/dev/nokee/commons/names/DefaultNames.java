@@ -18,11 +18,6 @@ final class DefaultNames extends NameSupport<DefaultNames> implements Names {
 	}
 
 	@Override
-	public String toString(NamingScheme scheme) {
-		return qualifier.toString(scheme);
-	}
-
-	@Override
 	public String toString(NameBuilder builder) {
 		qualifier.appendTo(builder);
 		return builder.toString();

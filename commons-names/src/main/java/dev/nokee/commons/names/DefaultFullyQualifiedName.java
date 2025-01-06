@@ -31,4 +31,9 @@ public class DefaultFullyQualifiedName extends NameSupport<FullyQualifiedName> i
 	public String toString() {
 		return scheme.format(NameBuilder.toStringCase());
 	}
+
+	@Override
+	public String toString(NameBuilder builder) {
+		return scheme.format(builder);
+	}
 }

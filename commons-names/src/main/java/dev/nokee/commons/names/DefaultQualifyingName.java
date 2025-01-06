@@ -34,12 +34,12 @@ final class DefaultQualifyingName extends NameSupport<FullyQualifiedName> implem
 	}
 
 	@Override
-	public String toString(NamingScheme scheme) {
-		return scheme.format(this);
+	public String toString() {
+		return scheme.format(NameBuilder.toStringCase());
 	}
 
 	@Override
-	public String toString() {
-		return scheme.format(NameBuilder.toStringCase());
+	public String toString(NameBuilder builder) {
+		return scheme.format(builder);
 	}
 }

@@ -13,4 +13,9 @@ final class GradleNamedAdapter extends NameSupport<GradleNamedAdapter> implement
 	public String toString() {
 		return obj.getName();
 	}
+
+	@Override
+	public String toString(NameBuilder builder) {
+		return builder.append(obj.getName()).toString();
+	}
 }

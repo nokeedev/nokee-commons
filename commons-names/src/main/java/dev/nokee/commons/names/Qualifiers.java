@@ -41,11 +41,6 @@ final class Qualifiers {
 		}
 
 		@Override
-		public String toString(NamingScheme scheme) {
-			return scheme.format(this);
-		}
-
-		@Override
 		public String toString() {
 			NameBuilder builder = NameBuilder.toStringCase();
 			qualifiers.forEach(builder::append);
@@ -76,11 +71,6 @@ final class Qualifiers {
 		}
 
 		@Override
-		public String toString(NamingScheme scheme) {
-			return scheme.format(this);
-		}
-
-		@Override
 		public String toString() {
 			return NameBuilder.toStringCase().append(value).toString();
 		}
@@ -106,11 +96,6 @@ final class Qualifiers {
 		@Override
 		public void appendTo(NameBuilder builder) {
 			builder.append((MainName) this);
-		}
-
-		@Override
-		public String toString(NamingScheme scheme) {
-			return scheme.format(qualifier);
 		}
 
 		@Override

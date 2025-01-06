@@ -25,4 +25,9 @@ final class OtherElementName extends NameSupport<OtherElementName> implements Ot
 	public void appendTo(NameBuilder builder) {
 		builder.append(name);
 	}
+
+	@Override
+	public String toString(NameBuilder builder) {
+		return builder.append(name).toString();
+	}
 }

@@ -28,10 +28,12 @@ public final class CppNames {
 	}
 
 	public static class ForBinary extends NameSupport<ForBinary> implements Names {
+		private final Names delegate;
 		private final CppBinary binary;
 
 		private ForBinary(CppBinary binary) {
 			this.binary = binary;
+			this.delegate = new DefaultNames(qualifyingName(binary));
 		}
 
 		public String linkElementsConfigurationName() {
@@ -107,25 +109,27 @@ public final class CppNames {
 
 		@Override
 		public void appendTo(NameBuilder builder) {
-			qualifyingName(binary).appendTo(builder);
-		}
-
-		@Override
-		public String toString(NamingScheme scheme) {
-			return qualifyingName(binary).toString(scheme);
+			delegate.appendTo(builder);
 		}
 
 		@Override
 		public String toString() {
-			return NameBuilder.toStringCase().append(qualifyingName(binary)).toString();
+			return delegate.toString();
+		}
+
+		@Override
+		public String toString(NameBuilder builder) {
+			return delegate.toString(builder);
 		}
 	}
 
 	public static final class ForComponent extends NameSupport<ForComponent> implements Names {
+		private final Names delegate;
 		private final CppComponent component;
 
 		private ForComponent(CppComponent component) {
 			this.component = component;
+			this.delegate = new DefaultNames(qualifyingName(component));
 		}
 
 		public String cppApiElementsConfigurationName() {
@@ -151,17 +155,17 @@ public final class CppNames {
 
 		@Override
 		public void appendTo(NameBuilder builder) {
-			qualifyingName(component).appendTo(builder);
-		}
-
-		@Override
-		public String toString(NamingScheme scheme) {
-			return qualifyingName(component).toString(scheme);
+			delegate.appendTo(builder);
 		}
 
 		@Override
 		public String toString() {
-			return NameBuilder.toStringCase().append(qualifyingName(component)).toString();
+			return delegate.toString();
+		}
+
+		@Override
+		public String toString(NameBuilder builder) {
+			return delegate.toString(builder);
 		}
 	}
 
@@ -358,6 +362,13 @@ public final class CppNames {
 		public void appendTo(NameBuilder builder) {
 			// TODO: Not exactly... we should do that differently
 			binaryName.forEach(builder::append);
+		}
+
+		@Override
+		public String toString(NameBuilder builder) {
+			// TODO: Not exactly... we should do that differently
+			binaryName.forEach(builder::append);
+			return builder.toString();
 		}
 	}
 

@@ -7,7 +7,4 @@ package dev.nokee.commons.names;
  * @see QualifiedName
  */
 public interface Qualifier extends IAppendTo {
-	default String toString(NamingScheme scheme) {
-		throw new UnsupportedOperationException();
-	}
 }
