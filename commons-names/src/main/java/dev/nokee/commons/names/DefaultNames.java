@@ -1,6 +1,6 @@
 package dev.nokee.commons.names;
 
-final class DefaultNames extends NameSupport<DefaultNames> implements Names, IParameterizedObject<DefaultNames> {
+final class DefaultNames extends NameSupport<DefaultNames> implements Names {
 	private final QualifyingName qualifier;
 
 	public DefaultNames(QualifyingName qualifier) {

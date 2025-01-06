@@ -27,7 +27,7 @@ final class MainElementName extends NameSupport<MainElementName> implements Othe
 		});
 	}
 
-	private final class FullyQualified extends NameSupport<FullyQualifiedName> implements QualifyingName, IParameterizedObject<FullyQualifiedName> {
+	private final class FullyQualified extends NameSupport<FullyQualifiedName> implements QualifyingName {
 		private final Qualifier qualifier;
 
 		private FullyQualified(Qualifier qualifier) {

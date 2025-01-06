@@ -21,7 +21,7 @@ public final class SoftwareComponentName extends NameSupport<SoftwareComponentNa
 		return new FullyQualified(qualifier);
 	}
 
-	private final class FullyQualified extends NameSupport<FullyQualifiedName> implements FullyQualifiedName, IParameterizedObject<FullyQualifiedName> {
+	private final class FullyQualified extends NameSupport<FullyQualifiedName> implements FullyQualifiedName {
 		private final Qualifier qualifier;
 
 		private FullyQualified(Qualifier qualifier) {

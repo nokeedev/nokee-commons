@@ -22,7 +22,7 @@ final class OtherElementName extends NameSupport<OtherElementName> implements Ot
 		builder.append(name);
 	}
 
-	private final class FullyQualified extends NameSupport<FullyQualifiedName> implements QualifyingName, IParameterizedObject<FullyQualifiedName> {
+	private final class FullyQualified extends NameSupport<FullyQualifiedName> implements QualifyingName {
 		private final Qualifier qualifier;
 
 		private FullyQualified(Qualifier qualifier) {
