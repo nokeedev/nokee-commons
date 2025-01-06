@@ -48,6 +48,10 @@ public interface Names extends QualifyingName {
 		return ElementName.configurationName(name).qualifiedBy(this).toString();
 	}
 
+	default String configurationName(Function<? super ConfigurationName.Builder, ? extends ConfigurationName> action) {
+		return action.apply(ElementName.configurationName()).qualifiedBy(this).toString();
+	}
+
 	default String componentName(String name) {
 		return ElementName.componentName(name).qualifiedBy(this).toString();
 	}

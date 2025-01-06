@@ -27,29 +27,6 @@ public final class CppNames {
 		return new ForComponent(component);
 	}
 
-	private static class IncomingConfigurationName extends NameSupport<IncomingConfigurationName> implements ElementName {
-		private final String value;
-
-		private IncomingConfigurationName(String value) {
-			this.value = value;
-		}
-
-		@Override
-		public FullyQualifiedName qualifiedBy(Qualifier qualifier) {
-			return new FullyQualifiedName() {
-				@Override
-				public String toString() {
-					return NameBuilder.toStringCase().append(value).append(qualifier).toString();
-				}
-			};
-		}
-
-		@Override
-		public String toString() {
-			return value;
-		}
-	}
-
 	public static class ForBinary extends NameSupport<ForBinary> implements Names {
 		private final CppBinary binary;
 
@@ -490,15 +467,15 @@ public final class CppNames {
 	}
 
 	public ForBinaryBuilder nativeLinkConfigurationName() {
-		return binary -> new IncomingConfigurationName("nativeLink").qualifiedBy(qualifyingName(binary));
+		return binary -> ElementName.configurationName().prefix("nativeLink").qualifiedBy(qualifyingName(binary));
 	}
 
 	public ForBinaryBuilder nativeRuntimeConfigurationName() {
-		return binary -> new IncomingConfigurationName("nativeRuntime").qualifiedBy(qualifyingName(binary));
+		return binary -> ElementName.configurationName().prefix("nativeRuntime").qualifiedBy(qualifyingName(binary));
 	}
 
 	public ForBinaryBuilder cppCompileConfigurationName() {
-		return binary -> new IncomingConfigurationName("cppCompile").qualifiedBy(qualifyingName(binary));
+		return binary -> ElementName.configurationName().prefix("cppCompile").qualifiedBy(qualifyingName(binary));
 	}
 
 	public ForBinaryBuilder compileTaskName() {

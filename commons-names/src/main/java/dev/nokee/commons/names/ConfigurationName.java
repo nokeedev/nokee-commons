@@ -1,18 +1,24 @@
 package dev.nokee.commons.names;
 
+import java.util.function.Function;
+
 // TODO: We should make this an interface to allow "Configuration Name" implementation
 // TODO: Support a different naming scheme (default is <qualifyingName><Name> but create a builder to allow <name><QualifyingName>)
 //   This would avoid requirements to create custom implementation.
 //   Also add a builder method in Names
 public final class ConfigurationName extends NameSupport<ConfigurationName> implements ElementName {
 	private final String name;
+	private final Function<? super Qualifier, ? extends Scheme> factory;
 
-	private ConfigurationName(String name) {
+	private ConfigurationName(String name, Function<? super Qualifier, ? extends Scheme> factory) {
 		this.name = name;
+		this.factory = factory;
 	}
 
 	static ConfigurationName of(String name) {
-		return new ConfigurationName(name);
+		return new ConfigurationName(name, qualifier -> {
+			return builder -> builder.append(qualifier).append(name).toString();
+		});
 	}
 
 	@Override
@@ -22,11 +28,20 @@ public final class ConfigurationName extends NameSupport<ConfigurationName> impl
 
 	@Override
 	public FullyQualifiedName qualifiedBy(Qualifier qualifier) {
-		return new DefaultFullyQualifiedName(qualifier, this, new Scheme() {
-			@Override
-			public String format(NameBuilder builder) {
-				return builder.append(qualifier).append(name.toString()).toString();
-			}
-		});
+		return new DefaultFullyQualifiedName(qualifier, this, factory.apply(qualifier));
+	}
+
+	public static Builder builder() {
+		return new Builder();
+	}
+
+	public static final class Builder {
+		private Builder() {}
+
+		public ConfigurationName prefix(String name) {
+			return new ConfigurationName(name, qualifier -> {
+				return builder -> builder.append(name).append(qualifier).toString();
+			});
+		}
 	}
 }

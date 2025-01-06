@@ -47,6 +47,10 @@ public interface ElementName extends Qualifiable, Name {
 		return ConfigurationName.of(name);
 	}
 
+	static ConfigurationName.Builder configurationName() {
+		return ConfigurationName.builder();
+	}
+
 	static SoftwareComponentName componentName(String name) {
 		return SoftwareComponentName.of(name);
 	}
