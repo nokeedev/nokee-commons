@@ -9,7 +9,6 @@ import org.gradle.nativeplatform.test.cpp.CppTestExecutable;
 
 import java.util.*;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import static dev.nokee.commons.names.StringUtils.uncapitalize;
 import static org.gradle.nativeplatform.MachineArchitecture.X86;
@@ -316,24 +315,19 @@ public final class CppNames {
 	}
 
 	private static final class BinaryName extends NameSupport<BinaryName> implements OtherName {
-		private final List<Qualifier> binaryName = new ArrayList<>();
+		private final Qualifier binaryName;
 
 		public BinaryName(Collection<Qualifier> binaryName) {
-			this.binaryName.addAll(binaryName);
+			this(Qualifiers.of(binaryName));
+		}
+
+		public BinaryName(Qualifier binaryName) {
+			this.binaryName = binaryName;
 		}
 
 		@Override
 		void init(Prop.Builder<BinaryName> builder) {
-			for (final Qualifier q : binaryName) {
-				builder.elseWith(q, it -> {
-					return new BinaryName(binaryName.stream().map(t -> {
-						if (t.equals(q)) {
-							return it;
-						}
-						return t;
-					}).collect(Collectors.toList()));
-				});
-			}
+			builder.elseWith(binaryName, BinaryName::new);
 		}
 
 		@Override
@@ -342,7 +336,7 @@ public final class CppNames {
 				@Override
 				public String format(NameBuilder builder) {
 					qualifier.appendTo(builder);
-					binaryName.forEach(builder::append);
+					builder.append(binaryName);
 					return builder.toString();
 				}
 			});
@@ -351,23 +345,18 @@ public final class CppNames {
 		@Override
 		public String toString() {
 			NameBuilder builder = NameBuilder.toStringCase();
-
-			// TODO: Not exactly... we should do that differently
-			binaryName.forEach(builder::append);
-
+			builder.append(binaryName);
 			return builder.toString();
 		}
 
 		@Override
 		public void appendTo(NameBuilder builder) {
-			// TODO: Not exactly... we should do that differently
-			binaryName.forEach(builder::append);
+			builder.append(binaryName);
 		}
 
 		@Override
 		public String toString(NameBuilder builder) {
-			// TODO: Not exactly... we should do that differently
-			binaryName.forEach(builder::append);
+			builder.append(binaryName);
 			return builder.toString();
 		}
 	}

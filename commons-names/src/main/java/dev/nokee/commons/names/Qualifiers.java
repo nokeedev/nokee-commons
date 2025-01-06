@@ -1,12 +1,14 @@
 package dev.nokee.commons.names;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 final class Qualifiers {
 	public static Qualifier of(Qualifier... qualifiers) {
 		return new CompositeQualifier(Arrays.asList(qualifiers));
+	}
+	public static Qualifier of(Iterable<Qualifier> qualifiers) {
+		return new CompositeQualifier(qualifiers);
 	}
 
 	public static Qualifier of(String value) {
@@ -18,20 +20,34 @@ final class Qualifiers {
 	}
 
 	private static final class CompositeQualifier implements Qualifier, IParameterizedObject<Qualifier> {
-		private final Iterable<Qualifier> qualifiers;
+		private final List<Qualifier> qualifiers = new ArrayList<>();
+		private final Prop<Qualifier> prop;
 
 		public CompositeQualifier(Iterable<Qualifier> qualifiers) {
-			this.qualifiers = qualifiers;
+			qualifiers.forEach(this.qualifiers::add);
+
+			Prop.Builder<Qualifier> builder = new Prop.Builder<>(Qualifier.class);
+			for (final Qualifier q : qualifiers) {
+				builder.elseWith(q, it -> {
+					return new CompositeQualifier(this.qualifiers.stream().map(t -> {
+						if (t.equals(q)) {
+							return it;
+						}
+						return t;
+					}).collect(Collectors.toList()));
+				});
+			}
+			this.prop = builder.build();
 		}
 
 		@Override
 		public Set<String> propSet() {
-			return Collections.emptySet();
+			return prop.names();
 		}
 
 		@Override
 		public Qualifier with(String propName, Object value) {
-			return this;
+			return prop.with(propName, value);
 		}
 
 		@Override
