@@ -11,13 +11,12 @@ public class DefaultFullyQualifiedName extends NameSupport<FullyQualifiedName> i
 		this.scheme = scheme;
 	}
 
-	Prop<FullyQualifiedName> init() {
-		return new Prop.Builder<>(FullyQualifiedName.class)
-			.with("qualifier", this::withQualifier)
+	@Override
+	void init(Prop.Builder<FullyQualifiedName> builder) {
+		builder.with("qualifier", this::withQualifier)
 			.with("elementName", this::withElementName)
-			.elseWith(b -> b.elseWith(qualifier, this::withQualifier))
-			.elseWith(b -> b.elseWith(elementName, this::withElementName))
-			.build();
+			.elseWith(qualifier, this::withQualifier)
+			.elseWith(elementName, this::withElementName);
 	}
 
 	public DefaultFullyQualifiedName withQualifier(Qualifier qualifier) {

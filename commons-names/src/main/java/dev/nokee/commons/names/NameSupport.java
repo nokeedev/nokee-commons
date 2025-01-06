@@ -3,14 +3,12 @@ package dev.nokee.commons.names;
 import java.util.Set;
 
 abstract class NameSupport<SELF> implements IParameterizedObject<SELF> {
-	private final Prop<SELF> prop;
+	private Prop<SELF> prop;
 
-	protected NameSupport() {
-		this.prop = init();
-	}
+	protected NameSupport() {}
 
-	Prop<SELF> init() {
-		return Prop.empty();
+	void init(Prop.Builder<SELF> builder) {
+
 	}
 
 	@Override
@@ -29,13 +27,22 @@ abstract class NameSupport<SELF> implements IParameterizedObject<SELF> {
 	@Override
 	public abstract String toString();
 
+	private Prop<SELF> prop() {
+		if (prop == null) {
+			Prop.Builder<SELF> builder = new Prop.Builder<>(null);
+			init(builder);
+			prop = builder.build();
+		}
+		return prop;
+	}
+
 	@Override
 	public Set<String> propSet() {
-		return prop.names();
+		return prop().names();
 	}
 
 	@Override
 	public SELF with(String propName, Object value) {
-		return prop.with(propName, value);
+		return prop().with(propName, value);
 	}
 }

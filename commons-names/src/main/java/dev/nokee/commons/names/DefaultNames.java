@@ -8,10 +8,8 @@ final class DefaultNames extends NameSupport<DefaultNames> implements Names {
 	}
 
 	@Override
-	Prop<DefaultNames> init() {
-		return new Prop.Builder<>(DefaultNames.class)
-			.elseWith(b -> b.elseWith(qualifier, DefaultNames::new))
-			.build();
+	void init(Prop.Builder<DefaultNames> builder) {
+		builder.elseWith(qualifier, DefaultNames::new);
 	}
 
 	@Override

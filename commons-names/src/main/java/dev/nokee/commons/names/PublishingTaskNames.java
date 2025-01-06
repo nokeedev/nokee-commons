@@ -22,10 +22,8 @@ public final class PublishingTaskNames {
 		}
 
 		@Override
-		Prop<GenerateMetadataFileTaskName> init() {
-			return new Prop.Builder<>(GenerateMetadataFileTaskName.class)
-				.with("publicationName", this::withPublicationName)
-				.build();
+		void init(Prop.Builder<GenerateMetadataFileTaskName> builder) {
+			builder.with("publicationName", this::withPublicationName);
 		}
 
 		public GenerateMetadataFileTaskName withPublicationName(String publicationName) {
@@ -63,10 +61,8 @@ public final class PublishingTaskNames {
 		}
 
 		@Override
-		Prop<GeneratePomFileTaskName> init() {
-			return new Prop.Builder<>(GeneratePomFileTaskName.class)
-				.with("publicationName", this::withPublicationName)
-				.build();
+		void init(Prop.Builder<GeneratePomFileTaskName> builder) {
+			builder.with("publicationName", this::withPublicationName);
 		}
 
 		public GeneratePomFileTaskName withPublicationName(String publicationName) {
@@ -100,10 +96,8 @@ public final class PublishingTaskNames {
 		}
 
 		@Override
-		Prop<GenerateDescriptorFileTaskName> init() {
-			return new Prop.Builder<>(GenerateDescriptorFileTaskName.class)
-				.with("publicationName", this::withPublicationName)
-				.build();
+		void init(Prop.Builder<GenerateDescriptorFileTaskName> builder) {
+			builder.with("publicationName", this::withPublicationName);
 		}
 
 		public GenerateDescriptorFileTaskName withPublicationName(String publicationName) {
@@ -183,10 +177,8 @@ public final class PublishingTaskNames {
 		}
 
 		@Override
-		Prop<PublishAllPublicationsToRepositoryTaskName> init() {
-			return new Prop.Builder<>(PublishAllPublicationsToRepositoryTaskName.class)
-				.with("repositoryName", this::withRepositoryName)
-				.build();
+		void init(Prop.Builder<PublishAllPublicationsToRepositoryTaskName> builder) {
+			builder.with("repositoryName", this::withRepositoryName);
 		}
 
 		public String getRepositoryName() {
@@ -212,10 +204,8 @@ public final class PublishingTaskNames {
 		}
 
 		@Override
-		Prop<PublishPublicationToMavenLocalTaskName> init() {
-			return new Prop.Builder<>(PublishPublicationToMavenLocalTaskName.class)
-				.with("publicationName", this::withPublicationName)
-				.build();
+		void init(Prop.Builder<PublishPublicationToMavenLocalTaskName> builder) {
+			builder.with("publicationName", this::withPublicationName);
 		}
 
 		public String getPublicationName() {
@@ -243,11 +233,9 @@ public final class PublishingTaskNames {
 		}
 
 		@Override
-		Prop<PublishPublicationToRepositoryTaskName> init() {
-			return new Prop.Builder<>(PublishPublicationToRepositoryTaskName.class)
-				.with("publicationName", this::withPublicationName)
-				.with("repositoryName", this::withRepositoryName)
-				.build();
+		void init(Prop.Builder<PublishPublicationToRepositoryTaskName> builder) {
+			builder.with("publicationName", this::withPublicationName)
+				.with("repositoryName", this::withRepositoryName);
 		}
 
 		public String getPublicationName() {

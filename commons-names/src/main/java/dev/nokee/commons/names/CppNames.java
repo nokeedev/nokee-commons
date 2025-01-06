@@ -342,22 +342,17 @@ public final class CppNames {
 		}
 
 		@Override
-		Prop<BinaryName> init() {
-			Prop.Builder<BinaryName> builder = new Prop.Builder<>(BinaryName.class);
-			builder.elseWith(b -> {
-				for (final Qualifier q : binaryName) {
-					b.elseWith(q, it -> {
-						return new BinaryName(binaryName.stream().map(t -> {
-							if (t.equals(q)) {
-								return it;
-							}
-							return t;
-						}).collect(Collectors.toList()));
-					});
-				}
-			});
-
-			return builder.build();
+		void init(Prop.Builder<BinaryName> builder) {
+			for (final Qualifier q : binaryName) {
+				builder.elseWith(q, it -> {
+					return new BinaryName(binaryName.stream().map(t -> {
+						if (t.equals(q)) {
+							return it;
+						}
+						return t;
+					}).collect(Collectors.toList()));
+				});
+			}
 		}
 
 		@Override
