@@ -13,8 +13,8 @@ final class DefaultNames extends NameSupport<DefaultNames> implements Names {
 	}
 
 	@Override
-	public void appendTo(NameBuilder sb) {
-		sb.append(qualifier);
+	public void appendTo(NameBuilder builder) {
+		qualifier.appendTo(builder);
 	}
 
 	@Override

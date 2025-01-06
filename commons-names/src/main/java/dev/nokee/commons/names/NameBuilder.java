@@ -5,6 +5,10 @@ import static dev.nokee.commons.names.StringUtils.uncapitalize;
 
 interface NameBuilder {
 	NameBuilder append(String s);
+	default NameBuilder append(Qualifier qualifier) {
+		qualifier.appendTo(this);
+		return this;
+	}
 	NameBuilder append(IAppendTo qualifier);
 	NameBuilder append(MainName name);
 

@@ -106,8 +106,8 @@ public final class CppNames {
 		}
 
 		@Override
-		public void appendTo(NameBuilder sb) {
-			qualifyingName(binary).appendTo(sb);
+		public void appendTo(NameBuilder builder) {
+			qualifyingName(binary).appendTo(builder);
 		}
 
 		@Override
@@ -150,8 +150,8 @@ public final class CppNames {
 		}
 
 		@Override
-		public void appendTo(NameBuilder sb) {
-			qualifyingName(component).appendTo(sb);
+		public void appendTo(NameBuilder builder) {
+			qualifyingName(component).appendTo(builder);
 		}
 
 		@Override
@@ -347,12 +347,16 @@ public final class CppNames {
 		@Override
 		public String toString() {
 			NameBuilder builder = NameBuilder.toStringCase();
+
+			// TODO: Not exactly... we should do that differently
 			binaryName.forEach(builder::append);
+
 			return builder.toString();
 		}
 
 		@Override
 		public void appendTo(NameBuilder builder) {
+			// TODO: Not exactly... we should do that differently
 			binaryName.forEach(builder::append);
 		}
 	}

@@ -35,8 +35,9 @@ final class Qualifiers {
 		}
 
 		@Override
-		public void appendTo(NameBuilder sb) {
-			qualifiers.forEach(sb::append);
+		public void appendTo(NameBuilder builder) {
+			// TODO: Not exactly, see BinaryName
+			qualifiers.forEach(builder::append);
 		}
 
 		@Override
@@ -70,8 +71,8 @@ final class Qualifiers {
 		}
 
 		@Override
-		public void appendTo(NameBuilder sb) {
-			sb.append(value);
+		public void appendTo(NameBuilder builder) {
+			builder.append(value);
 		}
 
 		@Override
@@ -103,8 +104,8 @@ final class Qualifiers {
 		}
 
 		@Override
-		public void appendTo(NameBuilder sb) {
-			sb.append((MainName) this);
+		public void appendTo(NameBuilder builder) {
+			builder.append((MainName) this);
 		}
 
 		@Override
