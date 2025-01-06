@@ -30,7 +30,7 @@ final class DefaultQualifyingName extends NameSupport<FullyQualifiedName> implem
 	@Override
 	public void appendTo(NameBuilder builder) {
 		qualifier.appendTo(builder);
-		builder.append(elementName);
+		elementName.appendTo(builder);
 	}
 
 	@Override
