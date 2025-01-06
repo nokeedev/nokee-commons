@@ -2,17 +2,19 @@ package dev.nokee.commons.names;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
-import java.util.Set;
 
-import static dev.nokee.commons.names.StringUtils.capitalize;
 import static java.util.Objects.requireNonNull;
 
 // <verb><qualifyingName>[<Object>]
+// <qualifyingName><Object>
 public final class TaskName extends NameSupport<TaskName> implements ElementName {
+	@Nullable
 	private final String verb;
+
+	@Nullable
 	private final String object;
 
-	private TaskName(String verb, String object) {
+	private TaskName(@Nullable String verb, @Nullable String object) {
 		this.verb = verb;
 		this.object = object;
 	}
@@ -25,8 +27,8 @@ public final class TaskName extends NameSupport<TaskName> implements ElementName
 			.build();
 	}
 
-	public String getVerb() {
-		return verb;
+	public Optional<String> getVerb() {
+		return Optional.ofNullable(verb);
 	}
 
 	public TaskName withVerb(String verb) {
@@ -105,9 +107,24 @@ public final class TaskName extends NameSupport<TaskName> implements ElementName
 		@Override
 		public String toString() {
 			// TODO: this should be the format <verb><qualifier><object>
-			final NameBuilder result = NameBuilder.toStringCase().append(elementName.getVerb()).append(qualifier);
+			final NameBuilder result = NameBuilder.toStringCase();
+			elementName.getVerb().ifPresent(result::append);
+			result.append(qualifier);
 			elementName.getObject().ifPresent(result::append);
 			return result.toString();
+		}
+	}
+
+	public static Builder builder() {
+		return new Builder();
+	}
+
+	public static final class Builder {
+		private Builder() {}
+
+		public TaskName forObject(String object) {
+			requireNonNull(object);
+			return new TaskName(null, object);
 		}
 	}
 }

@@ -1,5 +1,7 @@
 package dev.nokee.commons.names;
 
+import java.util.function.Function;
+
 /**
  * Names are a special type of qualifying names that fits in the middle of additional names, ex: {@literal <componentName>.<binaryName>.<taskName>}, both componentName and binaryName would be node names.
  * Configuration, task, or software component names are generally leaf names.
@@ -36,6 +38,10 @@ public interface Names extends QualifyingName {
 
 	default String taskName(String verb, String object) {
 		return ElementName.taskName(verb, object).qualifiedBy(this).toString();
+	}
+
+	default String taskName(Function<? super TaskName.Builder, ? extends TaskName> action) {
+		return action.apply(ElementName.taskName()).qualifiedBy(this).toString();
 	}
 
 	default String configurationName(String name) {

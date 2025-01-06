@@ -39,6 +39,10 @@ public interface ElementName extends Qualifiable, Name {
 		return TaskName.of(verb, object);
 	}
 
+	static TaskName.Builder taskName() {
+		return TaskName.builder();
+	}
+
 	static ConfigurationName configurationName(String name) {
 		return ConfigurationName.of(name);
 	}
