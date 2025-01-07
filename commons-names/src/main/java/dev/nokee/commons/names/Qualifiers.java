@@ -27,7 +27,7 @@ final class Qualifiers {
 		return new PropQualifier(propName, s);
 	}
 
-	static final class EmptyQualifier implements IParameterizedObject<EmptyQualifier>, NameString {
+	static final class EmptyQualifier implements NameString {
 		@Override
 		public void appendTo(NameBuilder builder) {
 			// nothing to append
@@ -44,7 +44,7 @@ final class Qualifiers {
 		}
 	}
 
-	static final class PropQualifier implements IParameterizedObject<PropQualifier>, NameString {
+	static final class PropQualifier implements NameString {
 		private final String propName;
 		private final NameString delegate;
 
@@ -83,7 +83,7 @@ final class Qualifiers {
 		}
 	}
 
-	static final class CompositeQualifier implements IParameterizedObject<CompositeQualifier>, NameString {
+	static final class CompositeQualifier implements NameString {
 		private final List<NameString> qualifiers = new ArrayList<>();
 		private final Prop<CompositeQualifier> prop;
 
@@ -128,7 +128,7 @@ final class Qualifiers {
 		}
 	}
 
-	static final class DefaultQualifier implements IParameterizedObject<NameString>, NameString {
+	static final class DefaultQualifier implements NameString {
 		private final String value;
 
 		public DefaultQualifier(String value) {
@@ -156,7 +156,7 @@ final class Qualifiers {
 		}
 	}
 
-	static final class MainQualifier implements MainName, IParameterizedObject<NameString>, NameString {
+	static final class MainQualifier implements MainName, NameString {
 		private final NameString qualifier;
 
 		public MainQualifier(NameString qualifier) {

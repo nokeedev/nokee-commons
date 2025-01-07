@@ -1,4 +1,4 @@
 package dev.nokee.commons.names;
 
-interface NameString extends IAppendTo/*, IParameterizedObject<NameString>*/ {
+interface NameString extends IAppendTo, IParameterizedObject<NameString> {
 }
