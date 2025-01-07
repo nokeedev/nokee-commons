@@ -15,11 +15,14 @@ class DirNamingSchemeTests {
 	@Test
 	void testDirNamesSchemeMadeOfMultipleSegments() {
 		Names names = Names.ofMain().append(new OtherName() {
-			private final Qualifier name = Qualifiers.of(Qualifiers.of("debug"), Qualifiers.ofMain(Qualifiers.of("macos")), Qualifiers.of("x86"));
+			private final NameString name = Qualifiers.of(Qualifiers.of("debug"), Qualifiers.ofMain(Qualifiers.of("macos")), Qualifiers.of("x86"));
 
 			@Override
 			public QualifyingName qualifiedBy(Qualifier qualifier) {
-				return new DefaultQualifyingName(qualifier, this, builder -> builder.append(qualifier).append(name).toString());
+				return new DefaultQualifyingName(qualifier, this, builder -> {
+					qualifier.appendTo(builder);
+					return builder.append(name).toString();
+				});
 			}
 
 			@Override

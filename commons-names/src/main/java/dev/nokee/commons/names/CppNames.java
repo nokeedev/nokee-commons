@@ -186,7 +186,7 @@ public final class CppNames {
 		}
 	}
 
-	private static final class BuildTypeQualifier implements Qualifier, IParameterizedObject<BuildTypeQualifier> {
+	private static final class BuildTypeQualifier implements Qualifier, IParameterizedObject<BuildTypeQualifier>, NameString {
 		private final Qualifier value;
 
 		private BuildTypeQualifier(Qualifier value) {
@@ -218,7 +218,7 @@ public final class CppNames {
 		}
 	}
 
-	private static final class OperatingSystemFamilyQualifier implements Qualifier, IParameterizedObject<OperatingSystemFamilyQualifier> {
+	private static final class OperatingSystemFamilyQualifier implements Qualifier, IParameterizedObject<OperatingSystemFamilyQualifier>, NameString {
 		private final Qualifier value;
 
 		private OperatingSystemFamilyQualifier(Qualifier value) {
@@ -250,7 +250,7 @@ public final class CppNames {
 		}
 	}
 
-	private static final class LinkageQualifier implements Qualifier, IParameterizedObject<LinkageQualifier> {
+	private static final class LinkageQualifier implements Qualifier, IParameterizedObject<LinkageQualifier>, NameString {
 		private final Qualifier value;
 
 		private LinkageQualifier(Qualifier value) {
@@ -282,7 +282,7 @@ public final class CppNames {
 		}
 	}
 
-	private static final class MachineArchitectureQualifier implements Qualifier, IParameterizedObject<MachineArchitectureQualifier> {
+	private static final class MachineArchitectureQualifier implements Qualifier, IParameterizedObject<MachineArchitectureQualifier>, NameString {
 		private final Qualifier value;
 
 		private MachineArchitectureQualifier(Qualifier value) {
@@ -315,13 +315,13 @@ public final class CppNames {
 	}
 
 	private static final class BinaryName extends NameSupport<BinaryName> implements OtherName {
-		private final Qualifier binaryName;
+		private final NameString binaryName;
 
-		public BinaryName(Collection<Qualifier> binaryName) {
+		public BinaryName(Collection<NameString> binaryName) {
 			this(Qualifiers.of(binaryName));
 		}
 
-		public BinaryName(Qualifier binaryName) {
+		public BinaryName(NameString binaryName) {
 			this.binaryName = binaryName;
 		}
 
@@ -374,7 +374,7 @@ public final class CppNames {
 			return null;
 		}).orElseThrow(() -> new IllegalStateException("Could not find main or test"));
 
-		List<Qualifier> binaryName = new ArrayList<>();
+		List<NameString> binaryName = new ArrayList<>();
 		or(iter.consumeNext("debug", "release").map(Qualifiers::of).map(BuildTypeQualifier::new), () -> {
 			if (componentOrBinary instanceof CppTestExecutable) {
 				final CppBinary binary = (CppBinary) componentOrBinary;

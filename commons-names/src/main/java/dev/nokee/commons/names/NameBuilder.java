@@ -5,7 +5,7 @@ import static dev.nokee.commons.names.StringUtils.uncapitalize;
 
 interface NameBuilder {
 	NameBuilder append(String s);
-	default NameBuilder append(Qualifier qualifier) {
+	default NameBuilder append(NameString qualifier) {
 		qualifier.appendTo(this);
 		return this;
 	}
@@ -46,7 +46,7 @@ interface NameBuilder {
 			}
 
 			@Override
-			public NameBuilder append(Qualifier qualifier) {
+			public NameBuilder append(NameString qualifier) {
 				// ignores main sub segment
 				boolean currentIgnoreMain = ignoreMain;
 				ignoreMain = true;

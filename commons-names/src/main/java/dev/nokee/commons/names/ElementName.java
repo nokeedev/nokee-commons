@@ -24,11 +24,11 @@ public interface ElementName extends Qualifiable, Name {
 	//   but not the TaskName, ConfigurationName, or SoftwareComponentName
 
 	static OtherName ofMain(String name) {
-		return OtherElementName.main(name);
+		return new OtherElementName(Qualifiers.ofMain(Qualifiers.of(name)));
 	}
 
 	static OtherName of(String name) {
-		return OtherElementName.other(name);
+		return new OtherElementName(Qualifiers.of(name));
 	}
 
 	static TaskName taskName(String verb) {

@@ -4,30 +4,30 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 final class Qualifiers {
-	public static Qualifier of(Qualifier... qualifiers) {
+	public static CompositeQualifier of(NameString... qualifiers) {
 		return new CompositeQualifier(Arrays.asList(qualifiers));
 	}
-	public static Qualifier of(Iterable<Qualifier> qualifiers) {
+	public static CompositeQualifier of(Iterable<NameString> qualifiers) {
 		return new CompositeQualifier(qualifiers);
 	}
 
-	public static Qualifier of(String value) {
+	public static DefaultQualifier of(String value) {
 		return new DefaultQualifier(value);
 	}
 
-	public static Qualifier ofMain(Qualifier qualifier) {
+	public static MainQualifier ofMain(NameString qualifier) {
 		return new MainQualifier(qualifier);
 	}
 
-	private static final class CompositeQualifier implements Qualifier, IParameterizedObject<Qualifier> {
-		private final List<Qualifier> qualifiers = new ArrayList<>();
-		private final Prop<Qualifier> prop;
+	static final class CompositeQualifier implements Qualifier, IParameterizedObject<CompositeQualifier>, NameString {
+		private final List<NameString> qualifiers = new ArrayList<>();
+		private final Prop<CompositeQualifier> prop;
 
-		public CompositeQualifier(Iterable<Qualifier> qualifiers) {
+		public CompositeQualifier(Iterable<NameString> qualifiers) {
 			qualifiers.forEach(this.qualifiers::add);
 
-			Prop.Builder<Qualifier> builder = new Prop.Builder<>(Qualifier.class);
-			for (final Qualifier q : qualifiers) {
+			Prop.Builder<CompositeQualifier> builder = new Prop.Builder<>(CompositeQualifier.class);
+			for (final NameString q : qualifiers) {
 				builder.elseWith(q, it -> {
 					return new CompositeQualifier(this.qualifiers.stream().map(t -> {
 						if (t.equals(q)) {
@@ -46,7 +46,7 @@ final class Qualifiers {
 		}
 
 		@Override
-		public Qualifier with(String propName, Object value) {
+		public CompositeQualifier with(String propName, Object value) {
 			return prop.with(propName, value);
 		}
 
@@ -64,7 +64,7 @@ final class Qualifiers {
 		}
 	}
 
-	private static final class DefaultQualifier implements Qualifier, IParameterizedObject<Qualifier> {
+	static final class DefaultQualifier implements Qualifier, IParameterizedObject<Qualifier>, NameString {
 		private final String value;
 
 		public DefaultQualifier(String value) {
@@ -92,10 +92,10 @@ final class Qualifiers {
 		}
 	}
 
-	private static final class MainQualifier implements Qualifier, MainName, IParameterizedObject<Qualifier> {
-		private final Qualifier qualifier;
+	static final class MainQualifier implements Qualifier, MainName, IParameterizedObject<Qualifier>, NameString {
+		private final NameString qualifier;
 
-		public MainQualifier(Qualifier qualifier) {
+		public MainQualifier(NameString qualifier) {
 			this.qualifier = qualifier;
 		}
 
