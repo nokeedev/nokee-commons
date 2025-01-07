@@ -3,7 +3,7 @@ package dev.nokee.commons.names;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class DefaultRelativeName extends NameSupport<DefaultRelativeName> implements RelativeName {
+final class DefaultRelativeName extends NameSupport<DefaultRelativeName> implements RelativeName {
 	private final FullyQualifiedName fullName;
 	private final QualifiedName relativeName;
 
@@ -13,7 +13,7 @@ public final class DefaultRelativeName extends NameSupport<DefaultRelativeName> 
 	}
 
 	@Override
-	public FullyQualifiedName asFullyQualifiedName() {
+	public FullyQualifiedName toFullName() {
 		return fullName;
 	}
 
