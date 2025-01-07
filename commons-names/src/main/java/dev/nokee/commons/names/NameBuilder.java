@@ -1,15 +1,14 @@
 package dev.nokee.commons.names;
 
+import java.util.function.Consumer;
+
 import static dev.nokee.commons.names.StringUtils.capitalize;
 import static dev.nokee.commons.names.StringUtils.uncapitalize;
 
 interface NameBuilder {
 	NameBuilder append(String s);
-	default NameBuilder append(NameString qualifier) {
-		qualifier.appendTo(this);
-		return this;
-	}
-	NameBuilder append(MainName name);
+	NameBuilder append(Consumer<? super NameBuilder> action);
+	NameBuilder append(NameString.MainName name);
 
 	static NameBuilder accordion(NameBuilder builder) {
 		return new NameBuilder() {
@@ -20,7 +19,13 @@ interface NameBuilder {
 			}
 
 			@Override
-			public NameBuilder append(MainName name) {
+			public NameBuilder append(Consumer<? super NameBuilder> action) {
+				builder.append(it -> action.accept(this));
+				return this;
+			}
+
+			@Override
+			public NameBuilder append(NameString.MainName name) {
 				// ignore
 				return this;
 			}
@@ -34,7 +39,6 @@ interface NameBuilder {
 
 	static NameBuilder dirNames() {
 		return new NameBuilder() {
-			private boolean ignoreMain = false; // by default ignores main segment
 			private final StringBuilder result = new StringBuilder();
 
 			@Override
@@ -46,23 +50,14 @@ interface NameBuilder {
 			}
 
 			@Override
-			public NameBuilder append(NameString qualifier) {
-				// ignores main sub segment
-				boolean currentIgnoreMain = ignoreMain;
-				ignoreMain = true;
-				try {
-					qualifier.appendTo(this);
-				} finally {
-					ignoreMain = currentIgnoreMain;
-				}
+			public NameBuilder append(Consumer<? super NameBuilder> action) {
+				action.accept(accordion(this)); // ignore main sub strings
 				return this;
 			}
 
 			@Override
-			public NameBuilder append(MainName name) {
-				if (!ignoreMain) {
-					return append(name.toString());
-				}
+			public NameBuilder append(NameString.MainName name) {
+				name.delegate().appendTo(this);
 				return this;
 			}
 
@@ -84,8 +79,14 @@ interface NameBuilder {
 			}
 
 			@Override
-			public NameBuilder append(MainName name) {
-				result.append(capitalize(name.toString()));
+			public NameBuilder append(Consumer<? super NameBuilder> action) {
+				action.accept(this);
+				return this;
+			}
+
+			@Override
+			public NameBuilder append(NameString.MainName name) {
+				name.delegate().appendTo(this);
 				return this;
 			}
 

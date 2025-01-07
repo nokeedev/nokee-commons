@@ -116,14 +116,17 @@ final class Qualifiers {
 
 		@Override
 		public void appendTo(NameBuilder builder) {
-			// TODO: Not exactly, see BinaryName
-			qualifiers.forEach(builder::append);
+			builder.append(it -> {
+				for (NameString qualifier : qualifiers) {
+					qualifier.appendTo(it);
+				}
+			});
 		}
 
 		@Override
 		public String toString() {
 			NameBuilder builder = NameBuilder.toStringCase();
-			qualifiers.forEach(builder::append);
+			qualifiers.forEach(it -> it.appendTo(builder));
 			return builder.toString();
 		}
 	}
@@ -156,7 +159,7 @@ final class Qualifiers {
 		}
 	}
 
-	private static final class MainQualifier implements MainName, NameString {
+	private static final class MainQualifier implements NameString.MainName, NameString {
 		private final NameString qualifier;
 
 		public MainQualifier(NameString qualifier) {
@@ -175,12 +178,19 @@ final class Qualifiers {
 
 		@Override
 		public void appendTo(NameBuilder builder) {
-			builder.append((MainName) this);
+			builder.append(this);
 		}
 
 		@Override
 		public String toString() {
-			return NameBuilder.toStringCase().append(qualifier).toString();
+			final NameBuilder builder = NameBuilder.toStringCase();
+			qualifier.appendTo(builder);
+			return builder.toString();
+		}
+
+		@Override
+		public NameString delegate() {
+			return qualifier;
 		}
 	}
 }
