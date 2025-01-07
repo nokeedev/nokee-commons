@@ -209,7 +209,7 @@ public final class CppNames {
 					return Optional.of(Qualifiers.ofMain(Qualifiers.of("debug")));
 				}
 			}
-			return Optional.of(Qualifiers.of(""));
+			return Optional.of(Qualifiers.empty());
 		}).map(it -> Qualifiers.of("buildTypeName", it)).ifPresent(binaryName::add);
 
 		or(iter.consumeNext("shared", "static").map(Qualifiers::of), () -> {
@@ -218,7 +218,7 @@ public final class CppNames {
 			} else if (componentOrBinary instanceof CppStaticLibrary) {
 				return Optional.of(Qualifiers.ofMain(Qualifiers.of("static")));
 			}
-			return Optional.of(Qualifiers.of(""));
+			return Optional.of(Qualifiers.empty());
 		}).map(it -> Qualifiers.of("linkageName", it)).ifPresent(binaryName::add);
 
 		or(iter.consumeNext(LINUX, MACOS, WINDOWS).map(Qualifiers::of), () -> {
@@ -226,7 +226,7 @@ public final class CppNames {
 				final CppBinary binary = (CppBinary) componentOrBinary;
 				return Optional.of(Qualifiers.ofMain(Qualifiers.of(binary.getTargetMachine().getOperatingSystemFamily().getName())));
 			}
-			return Optional.of(Qualifiers.of(""));
+			return Optional.of(Qualifiers.empty());
 		}).map(it -> Qualifiers.of("osFamilyName", it)).ifPresent(binaryName::add);
 
 		or(iter.consumeNext(X86, X86_64, "aarch64").map(Qualifiers::of), () -> {
@@ -234,7 +234,7 @@ public final class CppNames {
 				final CppBinary binary = (CppBinary) componentOrBinary;
 				return Optional.of(Qualifiers.ofMain(Qualifiers.of(binary.getTargetMachine().getArchitecture().getName())));
 			}
-			return Optional.of(Qualifiers.of(""));
+			return Optional.of(Qualifiers.empty());
 		}).map(it -> Qualifiers.of("architectureName", it)).ifPresent(binaryName::add);
 
 		if (binaryName.isEmpty()) {

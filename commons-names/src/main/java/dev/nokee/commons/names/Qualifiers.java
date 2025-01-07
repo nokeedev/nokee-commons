@@ -15,12 +15,33 @@ final class Qualifiers {
 		return new DefaultQualifier(value);
 	}
 
+	public static NameString empty() {
+		return new EmptyQualifier();
+	}
+
 	public static MainQualifier ofMain(NameString qualifier) {
 		return new MainQualifier(qualifier);
 	}
 
 	public static NameString of(String propName, NameString s) {
 		return new PropQualifier(propName, s);
+	}
+
+	static final class EmptyQualifier implements IParameterizedObject<EmptyQualifier>, NameString {
+		@Override
+		public void appendTo(NameBuilder builder) {
+			// nothing to append
+		}
+
+		@Override
+		public Set<String> propSet() {
+			return Collections.emptySet();
+		}
+
+		@Override
+		public EmptyQualifier with(String propName, Object value) {
+			return this; // no property
+		}
 	}
 
 	static final class PropQualifier implements IParameterizedObject<PropQualifier>, NameString {
