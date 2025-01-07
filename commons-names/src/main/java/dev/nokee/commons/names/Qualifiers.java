@@ -4,14 +4,14 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 final class Qualifiers {
-	public static CompositeQualifier of(NameString... qualifiers) {
+	public static NameString of(NameString... qualifiers) {
 		return new CompositeQualifier(Arrays.asList(qualifiers));
 	}
-	public static CompositeQualifier of(Iterable<NameString> qualifiers) {
+	public static NameString of(Iterable<NameString> qualifiers) {
 		return new CompositeQualifier(qualifiers);
 	}
 
-	public static DefaultQualifier of(String value) {
+	public static NameString of(String value) {
 		return new DefaultQualifier(value);
 	}
 
@@ -19,7 +19,7 @@ final class Qualifiers {
 		return new EmptyQualifier();
 	}
 
-	public static MainQualifier ofMain(NameString qualifier) {
+	public static NameString ofMain(NameString qualifier) {
 		return new MainQualifier(qualifier);
 	}
 
@@ -27,7 +27,7 @@ final class Qualifiers {
 		return new PropQualifier(propName, s);
 	}
 
-	static final class EmptyQualifier implements NameString {
+	private static final class EmptyQualifier implements NameString {
 		@Override
 		public void appendTo(NameBuilder builder) {
 			// nothing to append
@@ -44,7 +44,7 @@ final class Qualifiers {
 		}
 	}
 
-	static final class PropQualifier implements NameString {
+	private static final class PropQualifier implements NameString {
 		private final String propName;
 		private final NameString delegate;
 
@@ -83,7 +83,7 @@ final class Qualifiers {
 		}
 	}
 
-	static final class CompositeQualifier implements NameString {
+	private static final class CompositeQualifier implements NameString {
 		private final List<NameString> qualifiers = new ArrayList<>();
 		private final Prop<CompositeQualifier> prop;
 
@@ -128,7 +128,7 @@ final class Qualifiers {
 		}
 	}
 
-	static final class DefaultQualifier implements NameString {
+	private static final class DefaultQualifier implements NameString {
 		private final String value;
 
 		public DefaultQualifier(String value) {
@@ -156,7 +156,7 @@ final class Qualifiers {
 		}
 	}
 
-	static final class MainQualifier implements MainName, NameString {
+	private static final class MainQualifier implements MainName, NameString {
 		private final NameString qualifier;
 
 		public MainQualifier(NameString qualifier) {
