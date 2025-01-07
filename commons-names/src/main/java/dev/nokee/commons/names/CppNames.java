@@ -200,47 +200,47 @@ public final class CppNames {
 		}).orElseThrow(() -> new IllegalStateException("Could not find main or test"));
 
 		List<NameString> binaryName = new ArrayList<>();
-		or(iter.consumeNext("debug", "release").map(Qualifiers::of), () -> {
+		or(iter.consumeNext("debug", "release").map(NameString::of), () -> {
 			if (componentOrBinary instanceof CppTestExecutable) {
 				final CppBinary binary = (CppBinary) componentOrBinary;
 				if (binary.isOptimized()) {
-					return Optional.of(Qualifiers.ofMain(Qualifiers.of("release")));
+					return Optional.of(NameString.ofMain(NameString.of("release")));
 				} else {
-					return Optional.of(Qualifiers.ofMain(Qualifiers.of("debug")));
+					return Optional.of(NameString.ofMain(NameString.of("debug")));
 				}
 			}
-			return Optional.of(Qualifiers.empty());
-		}).map(it -> Qualifiers.of("buildTypeName", it)).ifPresent(binaryName::add);
+			return Optional.of(NameString.empty());
+		}).map(it -> NameString.of("buildTypeName", it)).ifPresent(binaryName::add);
 
-		or(iter.consumeNext("shared", "static").map(Qualifiers::of), () -> {
+		or(iter.consumeNext("shared", "static").map(NameString::of), () -> {
 			if (componentOrBinary instanceof CppSharedLibrary) {
-				return Optional.of(Qualifiers.ofMain(Qualifiers.of("shared")));
+				return Optional.of(NameString.ofMain(NameString.of("shared")));
 			} else if (componentOrBinary instanceof CppStaticLibrary) {
-				return Optional.of(Qualifiers.ofMain(Qualifiers.of("static")));
+				return Optional.of(NameString.ofMain(NameString.of("static")));
 			}
-			return Optional.of(Qualifiers.empty());
-		}).map(it -> Qualifiers.of("linkageName", it)).ifPresent(binaryName::add);
+			return Optional.of(NameString.empty());
+		}).map(it -> NameString.of("linkageName", it)).ifPresent(binaryName::add);
 
-		or(iter.consumeNext(LINUX, MACOS, WINDOWS).map(Qualifiers::of), () -> {
+		or(iter.consumeNext(LINUX, MACOS, WINDOWS).map(NameString::of), () -> {
 			if (componentOrBinary instanceof CppBinary) {
 				final CppBinary binary = (CppBinary) componentOrBinary;
-				return Optional.of(Qualifiers.ofMain(Qualifiers.of(binary.getTargetMachine().getOperatingSystemFamily().getName())));
+				return Optional.of(NameString.ofMain(NameString.of(binary.getTargetMachine().getOperatingSystemFamily().getName())));
 			}
-			return Optional.of(Qualifiers.empty());
-		}).map(it -> Qualifiers.of("osFamilyName", it)).ifPresent(binaryName::add);
+			return Optional.of(NameString.empty());
+		}).map(it -> NameString.of("osFamilyName", it)).ifPresent(binaryName::add);
 
-		or(iter.consumeNext(X86, X86_64, "aarch64").map(Qualifiers::of), () -> {
+		or(iter.consumeNext(X86, X86_64, "aarch64").map(NameString::of), () -> {
 			if (componentOrBinary instanceof CppBinary) {
 				final CppBinary binary = (CppBinary) componentOrBinary;
-				return Optional.of(Qualifiers.ofMain(Qualifiers.of(binary.getTargetMachine().getArchitecture().getName())));
+				return Optional.of(NameString.ofMain(NameString.of(binary.getTargetMachine().getArchitecture().getName())));
 			}
-			return Optional.of(Qualifiers.empty());
-		}).map(it -> Qualifiers.of("architectureName", it)).ifPresent(binaryName::add);
+			return Optional.of(NameString.empty());
+		}).map(it -> NameString.of("architectureName", it)).ifPresent(binaryName::add);
 
 		if (binaryName.isEmpty()) {
 			return result;
 		}
-		return result.append(new OtherElementName(Qualifiers.of(binaryName)));
+		return result.append(new OtherElementName(NameString.of(binaryName)));
 	}
 
 	// Backport of Optional#or(Supplier)

@@ -14,7 +14,7 @@ class DirNamingSchemeTests {
 
 	@Test
 	void testDirNamesSchemeMadeOfMultipleSegments() {
-		Names names = Names.ofMain().append(new OtherElementName(Qualifiers.of(Qualifiers.of("debug"), Qualifiers.ofMain(Qualifiers.of("macos")), Qualifiers.of("x86")))).append("cpp");
+		Names names = Names.ofMain().append(new OtherElementName(NameString.of(NameString.of("debug"), NameString.ofMain(NameString.of("macos")), NameString.of("x86")))).append("cpp");
 		assertThat(names.toString(NameBuilder.dirNames()), equalTo("main/debug/x86/cpp"));
 	}
 }

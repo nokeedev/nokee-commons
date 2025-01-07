@@ -14,21 +14,12 @@ import org.gradle.api.component.AdhocComponentWithVariants;
  * Some element names may participate in further qualification while other won't, aka {@link Task} name or {@link Configuration} name, or {@link AdhocComponentWithVariants} name.
  */
 public interface ElementName extends Qualifiable, Name {
-// Prefixing: <qualifyingName><name>
-// Suffixing: <name><qualifyingName>
-//	static ElementName ofMain() {
-//		throw new UnsupportedOperationException();
-////		return new DefaultElementName(new MainName() {});
-//	}
-	// TODO: Base element name can produce a Qualifier FullyQualifiedName
-	//   but not the TaskName, ConfigurationName, or SoftwareComponentName
-
 	static OtherName ofMain(String name) {
-		return new OtherElementName(Qualifiers.ofMain(Qualifiers.of(name)));
+		return new OtherElementName(NameString.ofMain(NameString.of(name)));
 	}
 
 	static OtherName of(String name) {
-		return new OtherElementName(Qualifiers.of(name));
+		return new OtherElementName(NameString.of(name));
 	}
 
 	static TaskName taskName(String verb) {

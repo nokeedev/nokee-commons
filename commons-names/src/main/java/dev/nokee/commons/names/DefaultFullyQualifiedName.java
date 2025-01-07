@@ -1,6 +1,6 @@
 package dev.nokee.commons.names;
 
-public class DefaultFullyQualifiedName extends NameSupport<FullyQualifiedName> implements FullyQualifiedName {
+final class DefaultFullyQualifiedName extends NameSupport<FullyQualifiedName> implements FullyQualifiedName {
 	private final Qualifier qualifier;
 	private final ElementName elementName;
 	private final Scheme scheme;

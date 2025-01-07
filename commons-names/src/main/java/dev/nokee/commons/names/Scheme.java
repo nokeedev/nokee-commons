@@ -1,5 +1,5 @@
 package dev.nokee.commons.names;
 
-public interface Scheme {
+interface Scheme {
 	String format(NameBuilder builder);
 }

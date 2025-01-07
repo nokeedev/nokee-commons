@@ -33,8 +33,8 @@ class ElementNameTests {
 
 		@Test
 		void test() {
-			assertThat(subject.qualifiedBy(new TestQualifier(Qualifiers.of("foo"))), isA(Qualifier.class));
-			assertThat(ElementName.configurationName("linkElements").qualifiedBy(subject.qualifiedBy(new TestQualifier(Qualifiers.of("foo")))), hasToString("fooLinkElements"));
+			assertThat(subject.qualifiedBy(new TestQualifier(NameString.of("foo"))), isA(Qualifier.class));
+			assertThat(ElementName.configurationName("linkElements").qualifiedBy(subject.qualifiedBy(new TestQualifier(NameString.of("foo")))), hasToString("fooLinkElements"));
 		}
 	}
 
@@ -64,8 +64,8 @@ class ElementNameTests {
 
 		@Test
 		void test() {
-			assertThat(subject.qualifiedBy(new TestQualifier(Qualifiers.of("foo"))), isA(Qualifier.class));
-			assertThat(ElementName.configurationName("linkElements").qualifiedBy(subject.qualifiedBy(new TestQualifier(Qualifiers.of("foo")))), hasToString("fooSharedLibraryLinkElements"));
+			assertThat(subject.qualifiedBy(new TestQualifier(NameString.of("foo"))), isA(Qualifier.class));
+			assertThat(ElementName.configurationName("linkElements").qualifiedBy(subject.qualifiedBy(new TestQualifier(NameString.of("foo")))), hasToString("fooSharedLibraryLinkElements"));
 		}
 	}
 
@@ -95,7 +95,7 @@ class ElementNameTests {
 
 		@Test
 		void qualifiedNameAreNotQualifier() {
-			assertThat(subject.qualifiedBy(new TestQualifier(Qualifiers.of("foo"))), not(isA(Qualifier.class)));
+			assertThat(subject.qualifiedBy(new TestQualifier(NameString.of("foo"))), not(isA(Qualifier.class)));
 		}
 	}
 
@@ -125,7 +125,7 @@ class ElementNameTests {
 
 		@Test
 		void qualifiedNameAreNotQualifier() {
-			assertThat(subject.qualifiedBy(new TestQualifier(Qualifiers.of("foo"))), not(isA(Qualifier.class)));
+			assertThat(subject.qualifiedBy(new TestQualifier(NameString.of("foo"))), not(isA(Qualifier.class)));
 		}
 	}
 
@@ -155,7 +155,7 @@ class ElementNameTests {
 
 		@Test
 		void qualifiedNameAreNotQualifier() {
-			assertThat(subject.qualifiedBy(new TestQualifier(Qualifiers.of("foo"))), not(isA(Qualifier.class)));
+			assertThat(subject.qualifiedBy(new TestQualifier(NameString.of("foo"))), not(isA(Qualifier.class)));
 		}
 	}
 
@@ -185,7 +185,7 @@ class ElementNameTests {
 
 		@Test
 		void qualifiedNameAreNotQualifier() {
-			assertThat(subject.qualifiedBy(new TestQualifier(Qualifiers.of("foo"))), not(isA(Qualifier.class)));
+			assertThat(subject.qualifiedBy(new TestQualifier(NameString.of("foo"))), not(isA(Qualifier.class)));
 		}
 	}
 }
