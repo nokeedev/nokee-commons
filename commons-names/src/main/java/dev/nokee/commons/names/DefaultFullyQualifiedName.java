@@ -36,4 +36,9 @@ final class DefaultFullyQualifiedName extends NameSupport<FullyQualifiedName> im
 	public String toString(NameBuilder builder) {
 		return scheme.format(builder);
 	}
+
+	@Override
+	public RelativeName relativeTo(Qualifier qualifier) {
+		return new DefaultRelativeName(this, elementName.qualifiedBy(DefaultRelativeName.relativeTo(this.qualifier, qualifier)));
+	}
 }

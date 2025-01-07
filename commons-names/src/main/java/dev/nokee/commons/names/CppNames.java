@@ -7,7 +7,10 @@ import org.gradle.language.cpp.CppSharedLibrary;
 import org.gradle.language.cpp.CppStaticLibrary;
 import org.gradle.nativeplatform.test.cpp.CppTestExecutable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import static dev.nokee.commons.names.StringUtils.uncapitalize;
@@ -26,7 +29,7 @@ public final class CppNames {
 		return new ForComponent(component);
 	}
 
-	public static class ForBinary extends NameSupport<ForBinary> implements Names {
+	public static class ForBinary extends ForwardingNames<ForBinary> implements Names {
 		private final Names delegate;
 		private final CppBinary binary;
 
@@ -107,22 +110,12 @@ public final class CppNames {
 		}
 
 		@Override
-		public void appendTo(NameBuilder builder) {
-			delegate.appendTo(builder);
-		}
-
-		@Override
-		public String toString() {
-			return delegate.toString();
-		}
-
-		@Override
-		public String toString(NameBuilder builder) {
-			return delegate.toString(builder);
+		protected Names delegate() {
+			return delegate;
 		}
 	}
 
-	public static final class ForComponent extends NameSupport<ForComponent> implements Names {
+	public static final class ForComponent extends ForwardingNames<ForComponent> implements Names {
 		private final Names delegate;
 		private final CppComponent component;
 
@@ -153,18 +146,8 @@ public final class CppNames {
 		}
 
 		@Override
-		public void appendTo(NameBuilder builder) {
-			delegate.appendTo(builder);
-		}
-
-		@Override
-		public String toString() {
-			return delegate.toString();
-		}
-
-		@Override
-		public String toString(NameBuilder builder) {
-			return delegate.toString(builder);
+		protected Names delegate() {
+			return delegate;
 		}
 	}
 

@@ -24,7 +24,17 @@ final class DefaultNames extends NameSupport<DefaultNames> implements Names {
 	}
 
 	@Override
+	public RelativeName relativeTo(Qualifier qualifier) {
+		return this.qualifier.relativeTo(qualifier);
+	}
+
+	@Override
 	public String toString() {
 		return qualifier.toString();
+	}
+
+	@Override
+	public void accept(Visitor visitor) {
+		qualifier.accept(visitor);
 	}
 }

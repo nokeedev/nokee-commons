@@ -30,6 +30,10 @@ public interface Name extends Comparable<Name> {
 		}
 	}
 
+	static FullyQualifiedName of(Named name) {
+		return new GradleNamedAdapter(name);
+	}
+
 	default String toString(NameBuilder builder) {
 		throw new UnsupportedOperationException();
 	}

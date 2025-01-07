@@ -11,4 +11,9 @@ public class TestQualifier implements Qualifier {
 	public void appendTo(NameBuilder builder) {
 		value.appendTo(builder);
 	}
+
+	@Override
+	public void accept(Visitor visitor) {
+		visitor.visit(this);
+	}
 }

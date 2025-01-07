@@ -35,4 +35,14 @@ final class OtherElementName extends NameSupport<OtherElementName> implements Ot
 	public String toString(NameBuilder builder) {
 		return builder.append(name.toString()).toString();
 	}
+
+	@Override
+	public RelativeName relativeTo(Qualifier qualifier) {
+		throw new UnsupportedOperationException("no qualifier, hence cannot relativize");
+	}
+
+	@Override
+	public void accept(Visitor visitor) {
+		visitor.visit(this);
+	}
 }

@@ -15,7 +15,7 @@ public class JvmNames {
 		return sourceSet.getName().equals("main");
 	}
 
-	public static class ForSourceSet extends NameSupport<ForSourceSet> implements Names {
+	public static class ForSourceSet extends ForwardingNames<ForSourceSet> implements Names {
 		private final Names delegate;
 
 		public ForSourceSet(Names delegate) {
@@ -127,18 +127,8 @@ public class JvmNames {
 		}
 
 		@Override
-		public String toString() {
-			return delegate.toString();
-		}
-
-		@Override
-		public void appendTo(NameBuilder builder) {
-			delegate.appendTo(builder);
-		}
-
-		@Override
-		public String toString(NameBuilder builder) {
-			return delegate.toString(builder);
+		protected Names delegate() {
+			return delegate;
 		}
 	}
 
