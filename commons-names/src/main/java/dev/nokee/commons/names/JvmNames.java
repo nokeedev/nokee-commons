@@ -22,107 +22,107 @@ public class JvmNames {
 			this.delegate = delegate;
 		}
 
-		public String annotationProcessorConfigurationName() {
+		public FullyQualifiedName annotationProcessorConfigurationName() {
 			return configurationName("annotationProcessor");
 		}
 
-		public String apiConfigurationName() {
+		public FullyQualifiedName apiConfigurationName() {
 			return configurationName("api");
 		}
 
-		public String apiElementsConfigurationName() {
+		public FullyQualifiedName apiElementsConfigurationName() {
 			return configurationName("apiElements");
 		}
 
-		public String classesTaskName() {
+		public FullyQualifiedName classesTaskName() {
 			return taskName(it -> it.forObject("classes"));
 		}
 
-		public String compileClasspathConfigurationName() {
+		public FullyQualifiedName compileClasspathConfigurationName() {
 			return configurationName("compileClasspath");
 		}
 
-		public String compileGroovyTaskName() {
+		public FullyQualifiedName compileGroovyTaskName() {
 			return taskName("compile", "groovy");
 		}
 
-		public String compileJavaTaskName() {
+		public FullyQualifiedName compileJavaTaskName() {
 			return taskName("compile", "java");
 		}
 
-		public String compileKotlinTaskName() {
+		public FullyQualifiedName compileKotlinTaskName() {
 			return taskName("compile", "kotlin");
 		}
 
-		public String compileOnlyApiConfigurationName() {
+		public FullyQualifiedName compileOnlyApiConfigurationName() {
 			return configurationName("compileOnlyApi");
 		}
 
-		public String compileOnlyConfigurationName() {
+		public FullyQualifiedName compileOnlyConfigurationName() {
 			return configurationName("compileOnly");
 		}
 
-		public String compileTaskName(String language) {
+		public FullyQualifiedName compileTaskName(String language) {
 			return taskName("compile", language);
 		}
 
-		public String groovydocElementsConfigurationName() {
+		public FullyQualifiedName groovydocElementsConfigurationName() {
 			return configurationName("groovydocElements");
 		}
 
-		public String groovydocJarTaskName() {
+		public FullyQualifiedName groovydocJarTaskName() {
 			return taskName(it -> it.forObject("groovydocJar"));
 		}
 
-		public String groovydocTaskName() {
+		public FullyQualifiedName groovydocTaskName() {
 			return taskName(it -> it.forObject("groovydoc"));
 		}
 
-		public String implementationConfigurationName() {
+		public FullyQualifiedName implementationConfigurationName() {
 			return configurationName("implementation");
 		}
 
-		public String jarTaskName() {
+		public FullyQualifiedName jarTaskName() {
 			return taskName(it -> it.forObject( "jar"));
 		}
 
-		public String javadocElementsConfigurationName() {
+		public FullyQualifiedName javadocElementsConfigurationName() {
 			return configurationName("javadocElements");
 		}
 
-		public String javadocJarTaskName() {
+		public FullyQualifiedName javadocJarTaskName() {
 			return taskName(it -> it.forObject("javadocJar"));
 		}
 
-		public String javadocTaskName() {
+		public FullyQualifiedName javadocTaskName() {
 			return taskName(it -> it.forObject("javadoc"));
 		}
 
-		public String pluginUnderTestMetadataTaskName() {
-			return ElementName.taskName().forObject("pluginUnderTestMetadata").qualifiedBy(this).toString();
+		public FullyQualifiedName pluginUnderTestMetadataTaskName() {
+			return taskName(it -> it.forObject("pluginUnderTestMetadata"));
 		}
 
-		public String processResourcesTaskName() {
+		public FullyQualifiedName processResourcesTaskName() {
 			return taskName("process", "resources");
 		}
 
-		public String runtimeClasspathConfigurationName() {
+		public FullyQualifiedName runtimeClasspathConfigurationName() {
 			return configurationName("runtimeClasspath");
 		}
 
-		public String runtimeElementsConfigurationName() {
+		public FullyQualifiedName runtimeElementsConfigurationName() {
 			return configurationName("runtimeElements");
 		}
 
-		public String runtimeOnlyConfigurationName() {
+		public FullyQualifiedName runtimeOnlyConfigurationName() {
 			return configurationName("runtimeOnly");
 		}
 
-		public String sourcesElementsConfigurationName() {
+		public FullyQualifiedName sourcesElementsConfigurationName() {
 			return configurationName("sourceElements");
 		}
 
-		public String sourcesJarTaskName() {
+		public FullyQualifiedName sourcesJarTaskName() {
 			return taskName(it -> it.forObject("sourcesJar"));
 		}
 
@@ -134,27 +134,27 @@ public class JvmNames {
 
 	//region JVM names focusing on backport and non-modeled names
 	public static String compileOnlyApiConfigurationName(SourceSet sourceSet) {
-		return of(sourceSet).compileOnlyApiConfigurationName();
+		return of(sourceSet).compileOnlyApiConfigurationName().toString();
 	}
 
 	public static String groovydocJarTaskName(SourceSet sourceSet) {
-		return of(sourceSet).groovydocJarTaskName();
+		return of(sourceSet).groovydocJarTaskName().toString();
 	}
 
 	public static String groovydocTaskName(SourceSet sourceSet) {
-		return of(sourceSet).compileGroovyTaskName();
+		return of(sourceSet).compileGroovyTaskName().toString();
 	}
 
 	public static String pluginUnderTestMetadataTaskName(SourceSet sourceSet) {
-		return of(sourceSet).pluginUnderTestMetadataTaskName();
+		return of(sourceSet).pluginUnderTestMetadataTaskName().toString();
 	}
 
 	public static String compileKotlinTaskName(SourceSet sourceSet) {
-		return of(sourceSet).compileKotlinTaskName();
+		return of(sourceSet).compileKotlinTaskName().toString();
 	}
 
 	public static String compileGroovyTaskName(SourceSet sourceSet) {
-		return of(sourceSet).compileGroovyTaskName();
+		return of(sourceSet).compileGroovyTaskName().toString();
 	}
 	//endregion
 }

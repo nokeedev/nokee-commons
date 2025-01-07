@@ -38,75 +38,75 @@ public final class CppNames {
 			this.delegate = new DefaultNames(qualifyingName(binary));
 		}
 
-		public String linkElementsConfigurationName() {
+		public FullyQualifiedName linkElementsConfigurationName() {
 			// <qualifyingName>LinkElements
 			//   releaseLinkElements
 			//   linuxDebugLinkElements
 			// Note: does not exists for CppTestExecutable
-			return INSTANCE.linkElementsConfigurationName().forBinary(binary).toString();
+			return INSTANCE.linkElementsConfigurationName().forBinary(binary);
 		}
 
-		public String runtimeElementsConfigurationName() {
+		public FullyQualifiedName runtimeElementsConfigurationName() {
 			// <qualifyingName>RuntimeElements
 			//   releaseRuntimeElements
 			//   linuxDebugRuntimeElements
 			// Note: does not exists for CppTestExecutable
-			return INSTANCE.runtimeElementsConfigurationName().forBinary(binary).toString();
+			return INSTANCE.runtimeElementsConfigurationName().forBinary(binary);
 		}
 
-		public String nativeLinkConfigurationName() {
+		public FullyQualifiedName nativeLinkConfigurationName() {
 			// nativeLink<qualifyingName>
 			//   nativeLinkRelease
 			//   nativeLinkLinuxDebug
 			//   nativeLinkTest
-			return INSTANCE.nativeLinkConfigurationName().forBinary(binary).toString();
+			return INSTANCE.nativeLinkConfigurationName().forBinary(binary);
 		}
 
-		public String nativeRuntimeConfigurationName() {
+		public FullyQualifiedName nativeRuntimeConfigurationName() {
 			// nativeRuntime<qualifyingName>
 			//   nativeRuntimeRelease
 			//   nativeRuntimeLinuxDebug
 			//   nativeRuntimeTest
-			return INSTANCE.nativeRuntimeConfigurationName().forBinary(binary).toString();
+			return INSTANCE.nativeRuntimeConfigurationName().forBinary(binary);
 		}
 
-		public String compileTaskName() {
+		public FullyQualifiedName compileTaskName() {
 			// compile<qualifyingName>Cpp
 			//   compileReleaseCpp
 			//   compileLinuxDebugCpp
 			//   compileTestCpp
-			return INSTANCE.compileTaskName().forBinary(binary).toString();
+			return INSTANCE.compileTaskName().forBinary(binary);
 		}
 
-		public String compileTaskName(String language) {
+		public FullyQualifiedName compileTaskName(String language) {
 			// compile<qualifyingName><language>
 			// Note: for convenience only
-			return INSTANCE.compileTaskName(language).forBinary(binary).toString();
+			return INSTANCE.compileTaskName(language).forBinary(binary);
 		}
 
-		public String linkTaskName() {
+		public FullyQualifiedName linkTaskName() {
 			// link<qualifyingName>
 			//   linkRelease
 			//   linkLinuxRelease
 			//   linkTest
-			return INSTANCE.linkTaskName().forBinary(binary).toString();
+			return INSTANCE.linkTaskName().forBinary(binary);
 		}
 
-		public String implementationConfigurationName() {
+		public FullyQualifiedName implementationConfigurationName() {
 			// <qualifyingName>Implementation
 			//   mainReleaseImplementation
 			//   mainLinuxDebugImplementation
 			//   testExecutableImplementation - for test executable
 			// Essentially: <binaryName>Implementation
-			return INSTANCE.implementationConfigurationName().forBinary(binary).toString();
+			return INSTANCE.implementationConfigurationName().forBinary(binary);
 		}
 
-		public String cppCompileConfigurationName() {
+		public FullyQualifiedName cppCompileConfigurationName() {
 			// cppCompile<qualifyingName>
 			//   cppCompileRelease
 			//   cppCompileLinuxDebug
 			//   cppCompileTest
-			return INSTANCE.cppCompileConfigurationName().forBinary(binary).toString();
+			return INSTANCE.cppCompileConfigurationName().forBinary(binary);
 		}
 
 		@Override
@@ -124,25 +124,25 @@ public final class CppNames {
 			this.delegate = new DefaultNames(qualifyingName(component));
 		}
 
-		public String cppApiElementsConfigurationName() {
+		public FullyQualifiedName cppApiElementsConfigurationName() {
 			// <qualifyingName>CppApiElements
 			//   cppApiElements
 			// Note: does not exists for CppTestExecutable, for convenience only
-			return INSTANCE.cppApiElementsConfigurationName().forComponent(component).toString();
+			return INSTANCE.cppApiElementsConfigurationName().forComponent(component);
 		}
 
-		public String implementationConfigurationName() {
+		public FullyQualifiedName implementationConfigurationName() {
 			// <qualifyingName>Implementation
 			//   implementation - for ProductionCppComponent
 			//   testImplementation - for CppTestSuite
-			return INSTANCE.implementationConfigurationName().forComponent(component).toString();
+			return INSTANCE.implementationConfigurationName().forComponent(component);
 		}
 
-		public String apiConfigurationName() {
+		public FullyQualifiedName apiConfigurationName() {
 			// <qualifyingName>Api
 			//   api - for CppLibrary
 			// Note: does not exists for anything else, for convenience only
-			return INSTANCE.apiConfigurationName().forComponent(component).toString();
+			return INSTANCE.apiConfigurationName().forComponent(component);
 		}
 
 		@Override
@@ -305,53 +305,53 @@ public final class CppNames {
 
 	//region C++ component names
 	public static String cppApiElementsConfigurationName(CppComponent component) {
-		return INSTANCE.cppApiElementsConfigurationName().forComponent(component).toString();
+		return of(component).cppApiElementsConfigurationName().toString();
 	}
 
 	public static String implementationConfigurationName(CppComponent component) {
-		return INSTANCE.implementationConfigurationName().forComponent(component).toString();
-	}
-
-	public static String implementationConfigurationName(CppBinary binary) {
-		return INSTANCE.implementationConfigurationName().forBinary(binary).toString();
+		return of(component).implementationConfigurationName().toString();
 	}
 
 	public static String apiConfigurationName(CppComponent component) {
-		return INSTANCE.apiConfigurationName().forComponent(component).toString();
+		return of(component).apiConfigurationName().toString();
 	}
 	//endregion
 
 	//region C++ binary names
+	public static String implementationConfigurationName(CppBinary binary) {
+		return of(binary).implementationConfigurationName().toString();
+	}
+
 	public static String linkElementsConfigurationName(CppBinary binary) {
-		return INSTANCE.linkElementsConfigurationName().forBinary(binary).toString();
+		return of(binary).linkElementsConfigurationName().toString();
 	}
 
 	public static String runtimeElementsConfigurationName(CppBinary binary) {
-		return INSTANCE.runtimeElementsConfigurationName().forBinary(binary).toString();
+		return of(binary).runtimeElementsConfigurationName().toString();
 	}
 
 	public static String nativeLinkConfigurationName(CppBinary binary) {
-		return INSTANCE.nativeLinkConfigurationName().forBinary(binary).toString();
+		return of(binary).nativeLinkConfigurationName().toString();
 	}
 
 	public static String nativeRuntimeConfigurationName(CppBinary binary) {
-		return INSTANCE.nativeRuntimeConfigurationName().forBinary(binary).toString();
+		return of(binary).nativeRuntimeConfigurationName().toString();
 	}
 
 	public static String compileTaskName(CppBinary binary) {
-		return INSTANCE.compileTaskName().forBinary(binary).toString();
+		return of(binary).compileTaskName().toString();
 	}
 
 	public static String compileTaskName(CppBinary binary, String language) {
-		return INSTANCE.compileTaskName(language).forBinary(binary).toString();
+		return of(binary).compileTaskName(language).toString();
 	}
 
 	public static String linkTaskName(CppBinary binary) {
-		return INSTANCE.linkTaskName().forBinary(binary).toString();
+		return of(binary).linkTaskName().toString();
 	}
 
 	public static String cppCompileConfigurationName(CppBinary binary) {
-		return INSTANCE.cppCompileConfigurationName().forBinary(binary).toString();
+		return of(binary).cppCompileConfigurationName().toString();
 	}
 	//endregion
 }

@@ -22,7 +22,7 @@ class RelativeNameTests {
 
 		@Test
 		void canRelativizeTaskName() {
-			FullyQualifiedName subject = TaskName.of("compile", "cpp").qualifiedBy(Names.of("test").append("foo"));
+			FullyQualifiedName subject = Names.of("test").append("foo").taskName("compile", "cpp");
 
 			assertThat(subject.toString(NameBuilder.lowerCamelCase()), equalTo("compileTestFooCpp"));
 			assertThat(subject.relativeTo(Names.of("test")).toString(NameBuilder.lowerCamelCase()), equalTo("compileFooCpp"));

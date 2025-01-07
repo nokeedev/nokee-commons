@@ -27,33 +27,31 @@ public interface Names extends QualifyingName {
 		return new DefaultNames(name.qualifiedBy(this));
 	}
 
-	//region Returns String for conveniences
-	default String append(ElementName name) {
-		return name.qualifiedBy(this).toString();
+	default FullyQualifiedName append(ElementName name) {
+		return name.qualifiedBy(this);
 	}
 
-	default String taskName(String verb) {
-		return ElementName.taskName(verb).qualifiedBy(this).toString();
+	default FullyQualifiedName taskName(String verb) {
+		return ElementName.taskName(verb).qualifiedBy(this);
 	}
 
-	default String taskName(String verb, String object) {
-		return ElementName.taskName(verb, object).qualifiedBy(this).toString();
+	default FullyQualifiedName taskName(String verb, String object) {
+		return ElementName.taskName(verb, object).qualifiedBy(this);
 	}
 
-	default String taskName(Function<? super TaskName.Builder, ? extends TaskName> action) {
-		return action.apply(ElementName.taskName()).qualifiedBy(this).toString();
+	default FullyQualifiedName taskName(Function<? super TaskName.Builder, ? extends TaskName> action) {
+		return action.apply(ElementName.taskName()).qualifiedBy(this);
 	}
 
-	default String configurationName(String name) {
-		return ElementName.configurationName(name).qualifiedBy(this).toString();
+	default FullyQualifiedName configurationName(String name) {
+		return ElementName.configurationName(name).qualifiedBy(this);
 	}
 
-	default String configurationName(Function<? super ConfigurationName.Builder, ? extends ConfigurationName> action) {
-		return action.apply(ElementName.configurationName()).qualifiedBy(this).toString();
+	default FullyQualifiedName configurationName(Function<? super ConfigurationName.Builder, ? extends ConfigurationName> action) {
+		return action.apply(ElementName.configurationName()).qualifiedBy(this);
 	}
 
-	default String componentName(String name) {
-		return ElementName.componentName(name).qualifiedBy(this).toString();
+	default FullyQualifiedName componentName(String name) {
+		return ElementName.componentName(name).qualifiedBy(this);
 	}
-	//endregion
 }
