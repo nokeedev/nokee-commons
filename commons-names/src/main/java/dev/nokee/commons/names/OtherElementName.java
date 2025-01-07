@@ -8,6 +8,11 @@ final class OtherElementName extends NameSupport<OtherElementName> implements Ot
 	}
 
 	@Override
+	void init(Prop.Builder<OtherElementName> builder) {
+		builder.elseWith(name, OtherElementName::new);
+	}
+
+	@Override
 	public QualifyingName qualifiedBy(Qualifier qualifier) {
 		return new DefaultQualifyingName(qualifier, this, builder -> {
 			qualifier.appendTo(builder);

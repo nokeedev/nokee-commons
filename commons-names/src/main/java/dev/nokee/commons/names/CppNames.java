@@ -186,181 +186,6 @@ public final class CppNames {
 		}
 	}
 
-	private static final class BuildTypeQualifier implements Qualifier, IParameterizedObject<BuildTypeQualifier>, NameString {
-		private final Qualifier value;
-
-		private BuildTypeQualifier(Qualifier value) {
-			this.value = value;
-		}
-
-		@Override
-		public void appendTo(NameBuilder builder) {
-			value.appendTo(builder);
-		}
-
-		@Override
-		public Set<String> propSet() {
-			return Collections.singleton("buildTypeName");
-		}
-
-		@Override
-		public BuildTypeQualifier with(String propName, Object value) {
-			if (propName.equals("buildTypeName")) {
-				return new BuildTypeQualifier(Qualifiers.of((String) value));
-			} else {
-				return this;
-			}
-		}
-
-		@Override
-		public String toString() {
-			return value.toString();
-		}
-	}
-
-	private static final class OperatingSystemFamilyQualifier implements Qualifier, IParameterizedObject<OperatingSystemFamilyQualifier>, NameString {
-		private final Qualifier value;
-
-		private OperatingSystemFamilyQualifier(Qualifier value) {
-			this.value = value;
-		}
-
-		@Override
-		public void appendTo(NameBuilder builder) {
-			value.appendTo(builder);
-		}
-
-		@Override
-		public Set<String> propSet() {
-			return Collections.singleton("operatingSystemFamilyName");
-		}
-
-		@Override
-		public OperatingSystemFamilyQualifier with(String propName, Object value) {
-			if (propName.equals("operatingSystemFamilyName")) {
-				return new OperatingSystemFamilyQualifier(Qualifiers.of((String) value));
-			} else {
-				return this;
-			}
-		}
-
-		@Override
-		public String toString() {
-			return value.toString();
-		}
-	}
-
-	private static final class LinkageQualifier implements Qualifier, IParameterizedObject<LinkageQualifier>, NameString {
-		private final Qualifier value;
-
-		private LinkageQualifier(Qualifier value) {
-			this.value = value;
-		}
-
-		@Override
-		public void appendTo(NameBuilder builder) {
-			value.appendTo(builder);
-		}
-
-		@Override
-		public Set<String> propSet() {
-			return Collections.singleton("linkageName");
-		}
-
-		@Override
-		public LinkageQualifier with(String propName, Object value) {
-			if (propName.equals("linkageName")) {
-				return new LinkageQualifier(Qualifiers.of((String) value));
-			} else {
-				return this;
-			}
-		}
-
-		@Override
-		public String toString() {
-			return value.toString();
-		}
-	}
-
-	private static final class MachineArchitectureQualifier implements Qualifier, IParameterizedObject<MachineArchitectureQualifier>, NameString {
-		private final Qualifier value;
-
-		private MachineArchitectureQualifier(Qualifier value) {
-			this.value = value;
-		}
-
-		@Override
-		public void appendTo(NameBuilder builder) {
-			value.appendTo(builder);
-		}
-
-		@Override
-		public Set<String> propSet() {
-			return Collections.singleton("architectureName");
-		}
-
-		@Override
-		public MachineArchitectureQualifier with(String propName, Object value) {
-			if (propName.equals("architectureName")) {
-				return new MachineArchitectureQualifier(Qualifiers.of((String) value));
-			} else {
-				return this;
-			}
-		}
-
-		@Override
-		public String toString() {
-			return value.toString();
-		}
-	}
-
-	private static final class BinaryName extends NameSupport<BinaryName> implements OtherName {
-		private final NameString binaryName;
-
-		public BinaryName(Collection<NameString> binaryName) {
-			this(Qualifiers.of(binaryName));
-		}
-
-		public BinaryName(NameString binaryName) {
-			this.binaryName = binaryName;
-		}
-
-		@Override
-		void init(Prop.Builder<BinaryName> builder) {
-			builder.elseWith(binaryName, BinaryName::new);
-		}
-
-		@Override
-		public QualifyingName qualifiedBy(Qualifier qualifier) {
-			return new DefaultQualifyingName(qualifier, this, new Scheme() {
-				@Override
-				public String format(NameBuilder builder) {
-					qualifier.appendTo(builder);
-					builder.append(binaryName);
-					return builder.toString();
-				}
-			});
-		}
-
-		@Override
-		public String toString() {
-			NameBuilder builder = NameBuilder.toStringCase();
-			builder.append(binaryName);
-			return builder.toString();
-		}
-
-		@Override
-		public void appendTo(NameBuilder builder) {
-			builder.append(binaryName);
-		}
-
-		@Override
-		public String toString(NameBuilder builder) {
-			builder.append(binaryName);
-			return builder.toString();
-		}
-	}
-
 	public static QualifyingName qualifyingName(Named componentOrBinary) {
 		final NameSegmentIterator iter = new NameSegmentIterator(componentOrBinary);
 		Names result = null;
@@ -375,47 +200,47 @@ public final class CppNames {
 		}).orElseThrow(() -> new IllegalStateException("Could not find main or test"));
 
 		List<NameString> binaryName = new ArrayList<>();
-		or(iter.consumeNext("debug", "release").map(Qualifiers::of).map(BuildTypeQualifier::new), () -> {
+		or(iter.consumeNext("debug", "release").map(Qualifiers::of), () -> {
 			if (componentOrBinary instanceof CppTestExecutable) {
 				final CppBinary binary = (CppBinary) componentOrBinary;
 				if (binary.isOptimized()) {
-					return Optional.of(new BuildTypeQualifier(Qualifiers.ofMain(Qualifiers.of("release"))));
+					return Optional.of(Qualifiers.ofMain(Qualifiers.of("release")));
 				} else {
-					return Optional.of(new BuildTypeQualifier(Qualifiers.ofMain(Qualifiers.of("debug"))));
+					return Optional.of(Qualifiers.ofMain(Qualifiers.of("debug")));
 				}
 			}
-			return Optional.of(new BuildTypeQualifier(Qualifiers.of("")));
-		}).ifPresent(binaryName::add);
+			return Optional.of(Qualifiers.of(""));
+		}).map(it -> Qualifiers.of("buildTypeName", it)).ifPresent(binaryName::add);
 
-		or(iter.consumeNext("shared", "static").map(Qualifiers::of).map(LinkageQualifier::new), () -> {
+		or(iter.consumeNext("shared", "static").map(Qualifiers::of), () -> {
 			if (componentOrBinary instanceof CppSharedLibrary) {
-				return Optional.of(new LinkageQualifier(Qualifiers.ofMain(Qualifiers.of("shared"))));
+				return Optional.of(Qualifiers.ofMain(Qualifiers.of("shared")));
 			} else if (componentOrBinary instanceof CppStaticLibrary) {
-				return Optional.of(new LinkageQualifier(Qualifiers.ofMain(Qualifiers.of("static"))));
+				return Optional.of(Qualifiers.ofMain(Qualifiers.of("static")));
 			}
-			return Optional.of(new LinkageQualifier(Qualifiers.of("")));
-		}).ifPresent(binaryName::add);
+			return Optional.of(Qualifiers.of(""));
+		}).map(it -> Qualifiers.of("linkageName", it)).ifPresent(binaryName::add);
 
-		or(iter.consumeNext(LINUX, MACOS, WINDOWS).map(Qualifiers::of).map(OperatingSystemFamilyQualifier::new), () -> {
+		or(iter.consumeNext(LINUX, MACOS, WINDOWS).map(Qualifiers::of), () -> {
 			if (componentOrBinary instanceof CppBinary) {
 				final CppBinary binary = (CppBinary) componentOrBinary;
-				return Optional.of(new OperatingSystemFamilyQualifier(Qualifiers.ofMain(Qualifiers.of(binary.getTargetMachine().getOperatingSystemFamily().getName()))));
+				return Optional.of(Qualifiers.ofMain(Qualifiers.of(binary.getTargetMachine().getOperatingSystemFamily().getName())));
 			}
-			return Optional.of(new OperatingSystemFamilyQualifier(Qualifiers.of("")));
-		}).ifPresent(binaryName::add);
+			return Optional.of(Qualifiers.of(""));
+		}).map(it -> Qualifiers.of("osFamilyName", it)).ifPresent(binaryName::add);
 
-		or(iter.consumeNext(X86, X86_64, "aarch64").map(Qualifiers::of).map(MachineArchitectureQualifier::new), () -> {
+		or(iter.consumeNext(X86, X86_64, "aarch64").map(Qualifiers::of), () -> {
 			if (componentOrBinary instanceof CppBinary) {
 				final CppBinary binary = (CppBinary) componentOrBinary;
-				return Optional.of(new MachineArchitectureQualifier(Qualifiers.ofMain(Qualifiers.of(binary.getTargetMachine().getArchitecture().getName()))));
+				return Optional.of(Qualifiers.ofMain(Qualifiers.of(binary.getTargetMachine().getArchitecture().getName())));
 			}
-			return Optional.of(new MachineArchitectureQualifier(Qualifiers.of("")));
-		}).ifPresent(binaryName::add);
+			return Optional.of(Qualifiers.of(""));
+		}).map(it -> Qualifiers.of("architectureName", it)).ifPresent(binaryName::add);
 
 		if (binaryName.isEmpty()) {
 			return result;
 		}
-		return result.append(new BinaryName(binaryName));
+		return result.append(new OtherElementName(Qualifiers.of(binaryName)));
 	}
 
 	// Backport of Optional#or(Supplier)

@@ -19,6 +19,49 @@ final class Qualifiers {
 		return new MainQualifier(qualifier);
 	}
 
+	public static NameString of(String propName, NameString s) {
+		return new PropQualifier(propName, s);
+	}
+
+	static final class PropQualifier implements IParameterizedObject<PropQualifier>, NameString {
+		private final String propName;
+		private final NameString delegate;
+
+		private PropQualifier(String propName, NameString delegate) {
+			this.propName = propName;
+			this.delegate = delegate;
+		}
+
+		@Override
+		public void appendTo(NameBuilder builder) {
+			delegate.appendTo(builder);
+		}
+
+		@Override
+		public Set<String> propSet() {
+			return Collections.singleton(propName);
+		}
+
+		@Override
+		public PropQualifier with(String propName, Object value) {
+			if (propName.equals(this.propName)) {
+				if (value instanceof NameString) {
+					return new PropQualifier(this.propName, (NameString) value);
+				} else if (value instanceof String) {
+					return new PropQualifier(this.propName, Qualifiers.of((String) value));
+				} else {
+					throw new IllegalArgumentException("Unsupported qualifier type: " + value);
+				}
+			}
+			return this;
+		}
+
+		@Override
+		public String toString() {
+			return delegate.toString();
+		}
+	}
+
 	static final class CompositeQualifier implements Qualifier, IParameterizedObject<CompositeQualifier>, NameString {
 		private final List<NameString> qualifiers = new ArrayList<>();
 		private final Prop<CompositeQualifier> prop;

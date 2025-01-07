@@ -177,8 +177,8 @@ class CppNamesFunctionalTests {
 
 		@Test
 		void testOperatingSystemFamilyQualifyingNames() {
-			buildFile.append(verifyThat("components.withType(CppBinary).collect { qualifyingName(it).with('operatingSystemFamilyName', 'freebsd').toString() } == " + freebsdQualifyingNames().shortName().toString(GradleDsl.GROOVY)));
-			buildFile.append(verifyThat("components.withType(CppBinary).collect { qualifyingName(it).with('operatingSystemFamilyName', 'freebsd').toString(lowerCamelCase()) } == " + freebsdQualifyingNames().longName().toString(GradleDsl.GROOVY)));
+			buildFile.append(verifyThat("components.withType(CppBinary).collect { qualifyingName(it).with('osFamilyName', 'freebsd').toString() } == " + freebsdQualifyingNames().shortName().toString(GradleDsl.GROOVY)));
+			buildFile.append(verifyThat("components.withType(CppBinary).collect { qualifyingName(it).with('osFamilyName', 'freebsd').toString(lowerCamelCase()) } == " + freebsdQualifyingNames().longName().toString(GradleDsl.GROOVY)));
 			runner.build();
 		}
 
