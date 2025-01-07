@@ -83,7 +83,7 @@ final class Qualifiers {
 		}
 	}
 
-	static final class CompositeQualifier implements Qualifier, IParameterizedObject<CompositeQualifier>, NameString {
+	static final class CompositeQualifier implements IParameterizedObject<CompositeQualifier>, NameString {
 		private final List<NameString> qualifiers = new ArrayList<>();
 		private final Prop<CompositeQualifier> prop;
 
@@ -128,7 +128,7 @@ final class Qualifiers {
 		}
 	}
 
-	static final class DefaultQualifier implements Qualifier, IParameterizedObject<Qualifier>, NameString {
+	static final class DefaultQualifier implements IParameterizedObject<NameString>, NameString {
 		private final String value;
 
 		public DefaultQualifier(String value) {
@@ -141,7 +141,7 @@ final class Qualifiers {
 		}
 
 		@Override
-		public Qualifier with(String propName, Object value) {
+		public NameString with(String propName, Object value) {
 			return this;
 		}
 
@@ -156,7 +156,7 @@ final class Qualifiers {
 		}
 	}
 
-	static final class MainQualifier implements Qualifier, MainName, IParameterizedObject<Qualifier>, NameString {
+	static final class MainQualifier implements MainName, IParameterizedObject<NameString>, NameString {
 		private final NameString qualifier;
 
 		public MainQualifier(NameString qualifier) {
@@ -169,7 +169,7 @@ final class Qualifiers {
 		}
 
 		@Override
-		public Qualifier with(String propName, Object value) {
+		public NameString with(String propName, Object value) {
 			return this;
 		}
 

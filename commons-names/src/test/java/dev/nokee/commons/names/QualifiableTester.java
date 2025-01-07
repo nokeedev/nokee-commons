@@ -10,14 +10,14 @@ public interface QualifiableTester {
 
 	@Test
 	default void canBeQualifiedWith_debugWindows() {
-		assertThat(subject().qualifiedBy(Qualifiers.of(Qualifiers.of("release"), Qualifiers.of("windows"))), hasToString(releaseWindowsQualifiedName()));
+		assertThat(subject().qualifiedBy(new TestQualifier(Qualifiers.of(Qualifiers.of("release"), Qualifiers.of("windows")))), hasToString(releaseWindowsQualifiedName()));
 	}
 
 	String releaseWindowsQualifiedName();
 
 	@Test
 	default void canBeQualifiedWith_debugMainLinux() {
-		assertThat(subject().qualifiedBy(Qualifiers.of(Qualifiers.of("debug"), Qualifiers.ofMain(Qualifiers.of("linux")))), hasToString(debugQualifiedName()));
+		assertThat(subject().qualifiedBy(new TestQualifier(Qualifiers.of(Qualifiers.of("debug"), Qualifiers.ofMain(Qualifiers.of("linux"))))), hasToString(debugQualifiedName()));
 	}
 
 	String debugQualifiedName();

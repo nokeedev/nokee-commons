@@ -273,7 +273,7 @@ public final class CppNames {
 		return new ImplementationConfigurationNameBuilder() {
 			@Override
 			public FullyQualifiedName forBinary(CppBinary binary) {
-				return ElementName.configurationName("implementation").qualifiedBy(Qualifiers.of(binary.getName()));
+				return ElementName.configurationName("implementation").qualifiedBy(builder -> builder.append(binary.getName()));
 			}
 
 			@Override
