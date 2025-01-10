@@ -3,9 +3,6 @@ package dev.nokee.commons.names;
 import java.util.function.Function;
 
 // TODO: We should make this an interface to allow "Configuration Name" implementation
-// TODO: Support a different naming scheme (default is <qualifyingName><Name> but create a builder to allow <name><QualifyingName>)
-//   This would avoid requirements to create custom implementation.
-//   Also add a builder method in Names
 public final class ConfigurationName extends NameSupport<ConfigurationName> implements ElementName {
 	private final String name;
 	private final Function<? super Qualifier, ? extends Scheme> factory;
