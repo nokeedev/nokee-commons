@@ -45,4 +45,7 @@ public interface ElementName extends Qualifiable, Name {
 	static SoftwareComponentName componentName(String name) {
 		return SoftwareComponentName.of(name);
 	}
+
+	@Override
+	FullyQualifiedName qualifiedBy(Qualifier qualifier);
 }
