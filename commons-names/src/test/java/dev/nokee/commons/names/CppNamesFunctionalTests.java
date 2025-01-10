@@ -175,6 +175,16 @@ class CppNamesFunctionalTests {
 
 		abstract ExpectedNames dbgoptQualifyingNames();
 
+
+		@Test
+		void testLinkageQualifyingNames() {
+			buildFile.append(verifyThat("components.withType(CppBinary).collect { qualifyingName(it).with('linkageName', 'bundle').toString() } == " + bundleQualifyingNames().shortName().toString(GradleDsl.GROOVY)));
+			buildFile.append(verifyThat("components.withType(CppBinary).collect { qualifyingName(it).with('linkageName', 'bundle').toString(lowerCamelCase()) } == " + bundleQualifyingNames().longName().toString(GradleDsl.GROOVY)));
+			runner.build();
+		}
+
+		abstract ExpectedNames bundleQualifyingNames();
+
 		@Test
 		void testOperatingSystemFamilyQualifyingNames() {
 			buildFile.append(verifyThat("components.withType(CppBinary).collect { qualifyingName(it).with('osFamilyName', 'freebsd').toString() } == " + freebsdQualifyingNames().shortName().toString(GradleDsl.GROOVY)));
@@ -248,6 +258,21 @@ class CppNamesFunctionalTests {
 					@Override
 					public Expression longName() {
 						return listOf(string("mainDbgoptSharedLinuxAarch64"));
+					}
+				};
+			}
+
+			@Override
+			ExpectedNames bundleQualifyingNames() {
+				return new ExpectedNames() {
+					@Override
+					public Expression shortName() {
+						return listOf(string("debugBundle"), string("releaseBundle"));
+					}
+
+					@Override
+					public Expression longName() {
+						return listOf(string("mainDebugBundleLinuxAarch64"), string("mainReleaseBundleLinuxAarch64"));
 					}
 				};
 			}
@@ -407,6 +432,21 @@ class CppNamesFunctionalTests {
 			}
 
 			@Override
+			ExpectedNames bundleQualifyingNames() {
+				return new ExpectedNames() {
+					@Override
+					public Expression shortName() {
+						return listOf(string("debugBundle"), string("releaseBundle"));
+					}
+
+					@Override
+					public Expression longName() {
+						return listOf(string("mainDebugBundleLinuxAarch64"), string("mainReleaseBundleLinuxAarch64"));
+					}
+				};
+			}
+
+			@Override
 			ExpectedNames freebsdQualifyingNames() {
 				return new ExpectedNames() {
 					@Override
@@ -547,6 +587,21 @@ class CppNamesFunctionalTests {
 					@Override
 					public Expression longName() {
 						return listOf(string("testDbgoptLinuxAarch64"));
+					}
+				};
+			}
+
+			@Override
+			ExpectedNames bundleQualifyingNames() {
+				return new ExpectedNames() {
+					@Override
+					public Expression shortName() {
+						return listOf(string("testBundle"));
+					}
+
+					@Override
+					public Expression longName() {
+						return listOf(string("testDebugBundleLinuxAarch64"));
 					}
 				};
 			}
