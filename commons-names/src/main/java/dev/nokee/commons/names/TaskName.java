@@ -15,6 +15,7 @@ public final class TaskName extends NameSupport<TaskName> implements ElementName
 	private final String object;
 
 	private TaskName(@Nullable String verb, @Nullable String object) {
+		assert verb != null || object != null;
 		this.verb = verb;
 		this.object = object;
 	}
