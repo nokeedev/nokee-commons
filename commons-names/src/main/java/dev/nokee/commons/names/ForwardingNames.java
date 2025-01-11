@@ -26,5 +26,10 @@ abstract class ForwardingNames<SELF extends QualifiedName> extends NameSupport<S
 		delegate().accept(visitor);
 	}
 
+	@Override
+	public Object get(String propName) {
+		return delegate().get(propName);
+	}
+
 	protected abstract Names delegate();
 }

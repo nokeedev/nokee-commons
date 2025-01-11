@@ -3,7 +3,7 @@ package dev.nokee.commons.names;
 import java.util.*;
 import java.util.stream.Collectors;
 
-abstract class NameString implements IAppendTo, IParameterizedObject<NameString> {
+abstract class NameString implements IAppendTo, IParameterizedObject<NameString>, NamingScheme.Segment {
 	interface MainName {
 		NameString delegate();
 	}
@@ -31,6 +31,13 @@ abstract class NameString implements IAppendTo, IParameterizedObject<NameString>
 		return new PropQualifier(propName, s);
 	}
 
+	@Override
+	public Optional<Object> format(Name prop) {
+		return Optional.of(this);
+	}
+
+	public abstract Object get(String propName);
+
 	private static final class EmptyQualifier extends NameString {
 		@Override
 		public void appendTo(NameBuilder builder) {
@@ -45,6 +52,11 @@ abstract class NameString implements IAppendTo, IParameterizedObject<NameString>
 		@Override
 		public EmptyQualifier with(String propName, Object value) {
 			return this; // no property
+		}
+
+		@Override
+		public Object get(String propName) {
+			return null;
 		}
 	}
 
@@ -84,6 +96,14 @@ abstract class NameString implements IAppendTo, IParameterizedObject<NameString>
 		@Override
 		public String toString() {
 			return delegate.toString();
+		}
+
+		@Override
+		public Object get(String propName) {
+			if (propName.equals(this.propName)) {
+				return delegate;
+			}
+			return null;
 		}
 	}
 
@@ -133,6 +153,17 @@ abstract class NameString implements IAppendTo, IParameterizedObject<NameString>
 			qualifiers.forEach(it -> it.appendTo(builder));
 			return builder.toString();
 		}
+
+		@Override
+		public Object get(String propName) {
+			for (NameString q : qualifiers) {
+				Object result = q.get(propName);
+				if (result != null) {
+					return result;
+				}
+			}
+			return null;
+		}
 	}
 
 	private static final class DefaultQualifier extends NameString {
@@ -160,6 +191,16 @@ abstract class NameString implements IAppendTo, IParameterizedObject<NameString>
 		@Override
 		public String toString() {
 			return NameBuilder.toStringCase().append(value).toString();
+		}
+
+		@Override
+		public Optional<Object> format(Name prop) {
+			return Optional.of(this);
+		}
+
+		@Override
+		public Object get(String propName) {
+			return null;
 		}
 	}
 
@@ -195,6 +236,11 @@ abstract class NameString implements IAppendTo, IParameterizedObject<NameString>
 		@Override
 		public NameString delegate() {
 			return qualifier;
+		}
+
+		@Override
+		public Object get(String propName) {
+			return null;
 		}
 	}
 }

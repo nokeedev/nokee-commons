@@ -3,9 +3,9 @@ package dev.nokee.commons.names;
 final class DefaultQualifyingName extends NameSupport<FullyQualifiedName> implements QualifyingName {
 	private final Qualifier qualifier;
 	private final OtherName elementName;
-	private final Scheme scheme;
+	private final NamingScheme scheme;
 
-	public DefaultQualifyingName(Qualifier qualifier, OtherName elementName, Scheme scheme) {
+	public DefaultQualifyingName(Qualifier qualifier, OtherName elementName, NamingScheme scheme) {
 		this.qualifier = qualifier;
 		this.elementName = elementName;
 		this.scheme = scheme;
@@ -15,6 +15,10 @@ final class DefaultQualifyingName extends NameSupport<FullyQualifiedName> implem
 	void init(Prop.Builder<FullyQualifiedName> builder) {
 		builder.with("qualifier", this::withQualifier)
 			.with("elementName", this::withElementName)
+			.prop("qualifier", this::getQualifier)
+			.prop("elementName", this::getElementName)
+			.prop(elementName, elementName::get)
+//			.prop(qualifier, qualifier::get) TODO!!!
 			.elseWith(qualifier, this::withQualifier)
 			.elseWith(elementName, this::withElementName);
 	}
@@ -23,8 +27,16 @@ final class DefaultQualifyingName extends NameSupport<FullyQualifiedName> implem
 		return new DefaultQualifyingName(qualifier, elementName, scheme);
 	}
 
+	public Qualifier getQualifier() {
+		return qualifier;
+	}
+
 	public FullyQualifiedName withElementName(ElementName elementName) {
 		return elementName.qualifiedBy(qualifier);
+	}
+
+	public ElementName getElementName() {
+		return elementName;
 	}
 
 	@Override
@@ -35,12 +47,12 @@ final class DefaultQualifyingName extends NameSupport<FullyQualifiedName> implem
 
 	@Override
 	public String toString() {
-		return scheme.format(NameBuilder.toStringCase());
+		return scheme.format(this).using(NameBuilder::toStringCase);
 	}
 
 	@Override
 	public String toString(NameBuilder builder) {
-		return scheme.format(builder);
+		return scheme.format(this).using(() -> builder);
 	}
 
 	@Override

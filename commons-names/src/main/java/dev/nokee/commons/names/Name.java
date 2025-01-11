@@ -2,6 +2,8 @@ package dev.nokee.commons.names;
 
 import org.gradle.api.Named;
 
+import javax.annotation.Nullable;
+
 /**
  * Strongly represent a name object.
  * A name object has a very simple contract where the {@code Object#toString()} returns the string representation of the name.
@@ -29,6 +31,9 @@ public interface Name extends Comparable<Name> {
 			return new ObjectNameAdapter(name);
 		}
 	}
+
+	@Nullable
+	Object get(String propertyName);
 
 	static FullyQualifiedName of(Named name) {
 		return new GradleNamedAdapter(name);

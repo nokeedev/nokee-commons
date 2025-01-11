@@ -3,11 +3,14 @@ package dev.nokee.commons.names;
 import javax.annotation.Nullable;
 import java.util.Optional;
 
+import static dev.nokee.commons.names.NamingScheme.property;
+import static dev.nokee.commons.names.NamingScheme.qualifier;
 import static java.util.Objects.requireNonNull;
 
 // <verb><qualifyingName>[<Object>]
 // <qualifyingName><Object>
 public final class TaskName extends NameSupport<TaskName> implements ElementName {
+	private final NamingScheme scheme = NamingScheme.of(property("verb"), qualifier(), property("object"));
 	@Nullable
 	private final String verb;
 
@@ -23,7 +26,9 @@ public final class TaskName extends NameSupport<TaskName> implements ElementName
 	@Override
 	void init(Prop.Builder<TaskName> builder) {
 		builder.with("verb", this::withVerb)
-			.with("object", this::withObject);
+			.with("object", this::withObject)
+			.prop("verb", () -> getVerb().orElse(null))
+			.prop("object", () -> getObject().orElse(null));
 	}
 
 	public Optional<String> getVerb() {
@@ -45,15 +50,7 @@ public final class TaskName extends NameSupport<TaskName> implements ElementName
 	@Override
 	public FullyQualifiedName qualifiedBy(Qualifier qualifier) {
 		// TODO: this should be the format <verb><qualifier><object>
-		return new DefaultFullyQualifiedName(qualifier, this, new Scheme() {
-			@Override
-			public String format(NameBuilder builder) {
-				getVerb().ifPresent(builder::append);
-				qualifier.appendTo(builder);
-				getObject().ifPresent(builder::append);
-				return builder.toString();
-			}
-		});
+		return new DefaultFullyQualifiedName(qualifier, this, scheme);
 	}
 
 	public static TaskName of(String taskName) {
@@ -79,10 +76,7 @@ public final class TaskName extends NameSupport<TaskName> implements ElementName
 
 	@Override
 	public String toString() {
-		NameBuilder builder = NameBuilder.toStringCase();
-		getVerb().ifPresent(builder::append);
-		getObject().ifPresent(builder::append);
-		return builder.toString();
+		return scheme.format(this).using(NameBuilder::toStringCase);
 	}
 
 	public static Builder builder() {

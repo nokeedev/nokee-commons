@@ -45,4 +45,8 @@ abstract class NameSupport<SELF> implements IParameterizedObject<SELF> {
 	public SELF with(String propName, Object value) {
 		return prop().with(propName, value);
 	}
+
+	public Object get(String propName) {
+		return prop().get(propName);
+	}
 }

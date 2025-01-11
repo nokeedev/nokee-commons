@@ -18,12 +18,12 @@ class ElementNameTests {
 
 		@Override
 		public String releaseWindowsQualifiedName() {
-			return "releaseWindowsExecutable";
+			return "releaseWindows";
 		}
 
 		@Override
 		public String debugQualifiedName() {
-			return "debugExecutable";
+			return "debug";
 		}
 
 		@Override
