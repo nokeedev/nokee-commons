@@ -2,7 +2,7 @@ package dev.nokee.commons.names;
 
 import java.util.Set;
 
-abstract class NameSupport<SELF> implements IParameterizedObject<SELF> {
+abstract class NameSupport<SELF> implements IParameterizedObject<SELF>, IHasProp {
 	private Prop<SELF> prop;
 
 	protected NameSupport() {}
@@ -17,6 +17,11 @@ abstract class NameSupport<SELF> implements IParameterizedObject<SELF> {
 
 		Name other = Name.of(obj);
 		return toString().equals(other.toString());
+	}
+
+	public int compareTo(String obj) {
+		Name other = Name.of(obj);
+		return toString().compareTo(other.toString());
 	}
 
 	@Override

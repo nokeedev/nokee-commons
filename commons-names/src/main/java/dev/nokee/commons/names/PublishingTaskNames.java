@@ -23,8 +23,7 @@ public final class PublishingTaskNames {
 
 		@Override
 		void init(Prop.Builder<GenerateMetadataFileTaskName> builder) {
-			builder.with("publicationName", this::withPublicationName)
-				.prop("publicationName", this::getPublicationName);
+			builder.with("publicationName", this::withPublicationName, this::getPublicationName);
 		}
 
 		public GenerateMetadataFileTaskName withPublicationName(String publicationName) {
@@ -63,8 +62,7 @@ public final class PublishingTaskNames {
 
 		@Override
 		void init(Prop.Builder<GeneratePomFileTaskName> builder) {
-			builder.with("publicationName", this::withPublicationName)
-				.prop("publicationName", this::getPublicationName);
+			builder.with("publicationName", this::withPublicationName, this::getPublicationName);
 		}
 
 		public GeneratePomFileTaskName withPublicationName(String publicationName) {
@@ -99,8 +97,7 @@ public final class PublishingTaskNames {
 
 		@Override
 		void init(Prop.Builder<GenerateDescriptorFileTaskName> builder) {
-			builder.with("publicationName", this::withPublicationName)
-				.prop("publicationName", this::getPublicationName);
+			builder.with("publicationName", this::withPublicationName, this::getPublicationName);
 		}
 
 		public GenerateDescriptorFileTaskName withPublicationName(String publicationName) {
@@ -181,8 +178,7 @@ public final class PublishingTaskNames {
 
 		@Override
 		void init(Prop.Builder<PublishAllPublicationsToRepositoryTaskName> builder) {
-			builder.with("repositoryName", this::withRepositoryName)
-				.prop("repositoryName", this::getRepositoryName);
+			builder.with("repositoryName", this::withRepositoryName, this::getRepositoryName);
 		}
 
 		public String getRepositoryName() {
@@ -209,8 +205,7 @@ public final class PublishingTaskNames {
 
 		@Override
 		void init(Prop.Builder<PublishPublicationToMavenLocalTaskName> builder) {
-			builder.with("publicationName", this::withPublicationName)
-				.prop("publicationName", this::getPublicationName);
+			builder.with("publicationName", this::withPublicationName, this::getPublicationName);
 		}
 
 		public String getPublicationName() {
@@ -239,10 +234,8 @@ public final class PublishingTaskNames {
 
 		@Override
 		void init(Prop.Builder<PublishPublicationToRepositoryTaskName> builder) {
-			builder.with("publicationName", this::withPublicationName)
-				.with("repositoryName", this::withRepositoryName)
-				.prop("publicationName", this::getPublicationName)
-				.prop("repositoryName", this::getRepositoryName);
+			builder.with("publicationName", this::withPublicationName, this::getPublicationName)
+				.with("repositoryName", this::withRepositoryName, this::getRepositoryName);
 		}
 
 		public String getPublicationName() {

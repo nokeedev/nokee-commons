@@ -25,10 +25,8 @@ public final class TaskName extends NameSupport<TaskName> implements ElementName
 
 	@Override
 	void init(Prop.Builder<TaskName> builder) {
-		builder.with("verb", this::withVerb)
-			.with("object", this::withObject)
-			.prop("verb", () -> getVerb().orElse(null))
-			.prop("object", () -> getObject().orElse(null));
+		builder.with("verb", this::withVerb, () -> getVerb().orElse(null))
+			.with("object", this::withObject, () -> getObject().orElse(null));
 	}
 
 	public Optional<String> getVerb() {

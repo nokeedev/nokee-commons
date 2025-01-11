@@ -11,8 +11,7 @@ final class OtherElementName extends NameSupport<OtherElementName> implements Ot
 
 	@Override
 	void init(Prop.Builder<OtherElementName> builder) {
-		builder.elseWith(name, OtherElementName::new)
-			.prop(name, name::get);
+		builder.elseWith(name, OtherElementName::new);
 	}
 
 	@Override

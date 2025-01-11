@@ -3,7 +3,7 @@ package dev.nokee.commons.names;
 import java.util.*;
 import java.util.stream.Collectors;
 
-abstract class NameString implements IAppendTo, IParameterizedObject<NameString>, NamingScheme.Segment {
+abstract class NameString implements IAppendTo, IParameterizedObject<NameString>, NamingScheme.Segment, IHasProp {
 	interface MainName {
 		NameString delegate();
 	}
@@ -35,8 +35,6 @@ abstract class NameString implements IAppendTo, IParameterizedObject<NameString>
 	public Optional<Object> format(Name prop) {
 		return Optional.of(this);
 	}
-
-	public abstract Object get(String propName);
 
 	private static final class EmptyQualifier extends NameString {
 		@Override

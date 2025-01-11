@@ -13,14 +13,8 @@ final class DefaultFullyQualifiedName extends NameSupport<FullyQualifiedName> im
 
 	@Override
 	void init(Prop.Builder<FullyQualifiedName> builder) {
-		builder.with("qualifier", this::withQualifier)
-			.with("elementName", this::withElementName)
-			.prop("qualifier", this::getQualifier)
-			.prop("elementName", this::getElementName)
-			.prop(elementName, elementName::get)
-//			.prop(qualifier, qualifier::get) TODO!!!
-			.elseWith(qualifier, this::withQualifier)
-			.elseWith(elementName, this::withElementName);
+		builder.with("qualifier", this::withQualifier, this::getQualifier)
+			.with("elementName", this::withElementName, this::getElementName);
 	}
 
 	public DefaultFullyQualifiedName withQualifier(Qualifier qualifier) {

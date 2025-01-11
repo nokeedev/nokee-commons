@@ -14,7 +14,7 @@ final class DefaultRelativeName extends NameSupport<DefaultRelativeName> impleme
 
 	@Override
 	void init(Prop.Builder<DefaultRelativeName> builder) {
-		builder.prop(relativeName, relativeName::get);
+		builder.prop(relativeName);
 	}
 
 	@Override

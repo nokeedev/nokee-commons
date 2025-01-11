@@ -36,6 +36,29 @@ class ElementNameTests {
 			assertThat(subject.qualifiedBy(new TestQualifier(NameString.of("foo"))), isA(Qualifier.class));
 			assertThat(ElementName.configurationName("linkElements").qualifiedBy(subject.qualifiedBy(new TestQualifier(NameString.of("foo")))), hasToString("fooLinkElements"));
 		}
+
+		@Nested
+		class QualifiedTests implements QualifiedNameTester {
+			@Override
+			public QualifiedName subject() {
+				return subject.qualifiedBy(new TestQualifier(NameString.of("debugOpt")));
+			}
+
+			@Override
+			public String otherNameQualifiedName() {
+				return "debugOptOther";
+			}
+
+			@Override
+			public String otherTaskNameQualifiedName() {
+				return "doDebugOptSomething";
+			}
+
+			@Override
+			public String otherQualifierQualifiedName() {
+				return "other";
+			}
+		}
 	}
 
 	@Nested
@@ -67,6 +90,29 @@ class ElementNameTests {
 			assertThat(subject.qualifiedBy(new TestQualifier(NameString.of("foo"))), isA(Qualifier.class));
 			assertThat(ElementName.configurationName("linkElements").qualifiedBy(subject.qualifiedBy(new TestQualifier(NameString.of("foo")))), hasToString("fooSharedLibraryLinkElements"));
 		}
+
+		@Nested
+		class QualifiedTests implements QualifiedNameTester {
+			@Override
+			public QualifiedName subject() {
+				return subject.qualifiedBy(new TestQualifier(NameString.of("debugOpt")));
+			}
+
+			@Override
+			public String otherNameQualifiedName() {
+				return "debugOptOther";
+			}
+
+			@Override
+			public String otherTaskNameQualifiedName() {
+				return "doDebugOptSomething";
+			}
+
+			@Override
+			public String otherQualifierQualifiedName() {
+				return "otherSharedLibrary";
+			}
+		}
 	}
 
 	@Nested
@@ -96,6 +142,82 @@ class ElementNameTests {
 		@Test
 		void qualifiedNameAreNotQualifier() {
 			assertThat(subject.qualifiedBy(new TestQualifier(NameString.of("foo"))), not(isA(Qualifier.class)));
+		}
+
+		@Nested
+		class QualifiedTests implements QualifiedNameTester {
+			@Override
+			public QualifiedName subject() {
+				return subject.qualifiedBy(new TestQualifier(NameString.of("debugOpt")));
+			}
+
+			@Override
+			public String otherNameQualifiedName() {
+				return "debugOptOther";
+			}
+
+			@Override
+			public String otherTaskNameQualifiedName() {
+				return "doDebugOptSomething";
+			}
+
+			@Override
+			public String otherQualifierQualifiedName() {
+				return "linkOther";
+			}
+		}
+	}
+
+	@Nested
+	class ObjectOnlyTaskNameTests implements NameTester, QualifiableTester {
+		TaskName subject = ElementName.taskName().forObject("objects");
+
+		@Override
+		public TaskName subject() {
+			return subject;
+		}
+
+		@Override
+		public String releaseWindowsQualifiedName() {
+			return "releaseWindowsObjects";
+		}
+
+		@Override
+		public String debugQualifiedName() {
+			return "debugObjects";
+		}
+
+		@Override
+		public String name() {
+			return "objects";
+		}
+
+		@Test
+		void qualifiedNameAreNotQualifier() {
+			assertThat(subject.qualifiedBy(new TestQualifier(NameString.of("foo"))), not(isA(Qualifier.class)));
+		}
+
+		@Nested
+		class QualifiedTests implements QualifiedNameTester {
+			@Override
+			public QualifiedName subject() {
+				return subject.qualifiedBy(new TestQualifier(NameString.of("debugOpt")));
+			}
+
+			@Override
+			public String otherNameQualifiedName() {
+				return "debugOptOther";
+			}
+
+			@Override
+			public String otherTaskNameQualifiedName() {
+				return "doDebugOptSomething";
+			}
+
+			@Override
+			public String otherQualifierQualifiedName() {
+				return "otherObjects";
+			}
 		}
 	}
 
@@ -127,6 +249,29 @@ class ElementNameTests {
 		void qualifiedNameAreNotQualifier() {
 			assertThat(subject.qualifiedBy(new TestQualifier(NameString.of("foo"))), not(isA(Qualifier.class)));
 		}
+
+		@Nested
+		class QualifiedTests implements QualifiedNameTester {
+			@Override
+			public QualifiedName subject() {
+				return subject.qualifiedBy(new TestQualifier(NameString.of("debugOpt")));
+			}
+
+			@Override
+			public String otherNameQualifiedName() {
+				return "debugOptOther";
+			}
+
+			@Override
+			public String otherTaskNameQualifiedName() {
+				return "doDebugOptSomething";
+			}
+
+			@Override
+			public String otherQualifierQualifiedName() {
+				return "compileOtherCpp";
+			}
+		}
 	}
 
 	@Nested
@@ -157,6 +302,29 @@ class ElementNameTests {
 		void qualifiedNameAreNotQualifier() {
 			assertThat(subject.qualifiedBy(new TestQualifier(NameString.of("foo"))), not(isA(Qualifier.class)));
 		}
+
+		@Nested
+		class QualifiedTests implements QualifiedNameTester {
+			@Override
+			public QualifiedName subject() {
+				return subject.qualifiedBy(new TestQualifier(NameString.of("debugOpt")));
+			}
+
+			@Override
+			public String otherNameQualifiedName() {
+				return "debugOptOther";
+			}
+
+			@Override
+			public String otherTaskNameQualifiedName() {
+				return "doDebugOptSomething";
+			}
+
+			@Override
+			public String otherQualifierQualifiedName() {
+				return "otherHeaderSearchPaths";
+			}
+		}
 	}
 
 	@Nested
@@ -186,6 +354,29 @@ class ElementNameTests {
 		@Test
 		void qualifiedNameAreNotQualifier() {
 			assertThat(subject.qualifiedBy(new TestQualifier(NameString.of("foo"))), not(isA(Qualifier.class)));
+		}
+
+		@Nested
+		class QualifiedTests implements QualifiedNameTester {
+			@Override
+			public QualifiedName subject() {
+				return subject.qualifiedBy(new TestQualifier(NameString.of("debugOpt")));
+			}
+
+			@Override
+			public String otherNameQualifiedName() {
+				return "debugOptOther";
+			}
+
+			@Override
+			public String otherTaskNameQualifiedName() {
+				return "doDebugOptSomething";
+			}
+
+			@Override
+			public String otherQualifierQualifiedName() {
+				return "cppOther";
+			}
 		}
 	}
 }

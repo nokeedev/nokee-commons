@@ -119,7 +119,7 @@ public class JvmNames {
 		}
 
 		public FullyQualifiedName sourcesElementsConfigurationName() {
-			return configurationName("sourceElements");
+			return configurationName("sourcesElements");
 		}
 
 		public FullyQualifiedName sourcesJarTaskName() {
@@ -142,7 +142,11 @@ public class JvmNames {
 	}
 
 	public static String groovydocTaskName(SourceSet sourceSet) {
-		return of(sourceSet).compileGroovyTaskName().toString();
+		return of(sourceSet).groovydocTaskName().toString();
+	}
+
+	public static String groovydocElementsConfigurationName(SourceSet sourceSet) {
+		return of(sourceSet).groovydocElementsConfigurationName().toString();
 	}
 
 	public static String pluginUnderTestMetadataTaskName(SourceSet sourceSet) {

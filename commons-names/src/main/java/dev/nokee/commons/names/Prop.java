@@ -60,8 +60,22 @@ final class Prop<OUT> {
 			this.outType = outType;
 		}
 
-		public <IN> Builder<OUT> with(String propName, Function<? super IN, ? extends OUT> method) {
+		public <IN> Builder<OUT> with(String propName, Function<? super IN, ? extends OUT> method, Supplier<? extends IN> getter) {
 			map.put(propName, (Function<Object, OUT>) method);
+			props.put(propName, (Supplier<Object>) getter);
+
+			// TODO: defer this to the end.
+			IN obj = getter.get();
+			if (obj instanceof IParameterizedObject) {
+				for (String propName2 : ((IParameterizedObject<IN>) obj).propSet()) {
+					map.computeIfAbsent(propName2, n -> it -> method.apply(((IParameterizedObject<IN>) obj).with(n, it)));
+				}
+			}
+			if (obj instanceof IHasProp) {
+				for (String propName2 : ((IHasProp) obj).propSet()) {
+					props.computeIfAbsent(propName2, n -> () -> ((IHasProp) obj).get(n));
+				}
+			}
 			return this;
 		}
 
@@ -71,11 +85,11 @@ final class Prop<OUT> {
 					map.computeIfAbsent(propName, n -> it -> method.apply(((IParameterizedObject<T>) obj).with(n, it)));
 				}
 			}
-			return this;
-		}
-
-		public <T> Builder<OUT> prop(String propName, Supplier<? extends T> method) {
-			props.put(propName, (Supplier<Object>) method);
+			if (obj instanceof IHasProp) {
+				for (String propName : ((IHasProp) obj).propSet()) {
+					props.computeIfAbsent(propName, n -> () -> ((IHasProp) obj).get(n));
+				}
+			}
 			return this;
 		}
 
@@ -83,6 +97,15 @@ final class Prop<OUT> {
 			if (obj instanceof IParameterizedObject) {
 				for (String propName : ((IParameterizedObject<T>) obj).propSet()) {
 					props.computeIfAbsent(propName, n -> () -> method.apply(n));
+				}
+			}
+			return this;
+		}
+
+		public <T> Builder<OUT> prop(T obj) {
+			if (obj instanceof IHasProp) {
+				for (String propName : ((IHasProp) obj).propSet()) {
+					props.computeIfAbsent(propName, n -> () -> ((IHasProp) obj).get(n));
 				}
 			}
 			return this;
