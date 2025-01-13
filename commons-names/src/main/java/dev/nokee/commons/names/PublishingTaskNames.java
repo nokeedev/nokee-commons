@@ -3,6 +3,7 @@ package dev.nokee.commons.names;
 import org.gradle.api.artifacts.repositories.ArtifactRepository;
 import org.gradle.api.publish.Publication;
 import org.gradle.api.specs.Spec;
+import org.gradle.api.tasks.TaskContainer;
 
 import static dev.nokee.commons.names.StringUtils.capitalize;
 
@@ -12,9 +13,9 @@ import static dev.nokee.commons.names.StringUtils.capitalize;
 public final class PublishingTaskNames {
 	private static final PublishingTaskNames INSTANCE = new PublishingTaskNames();
 
-	interface PublishingTaskName extends Name {}
+	/*public*/ interface PublishingTaskName extends Name {}
 
-	public static final class GenerateMetadataFileTaskName extends NameSupport<GenerateMetadataFileTaskName> implements PublishingTaskName, QualifiedName {
+	private static final class GenerateMetadataFileTaskName extends NameSupport<GenerateMetadataFileTaskName> implements PublishingTaskName, QualifiedName {
 		private final String publicationName;
 
 		private GenerateMetadataFileTaskName(String publicationName) {
@@ -41,19 +42,25 @@ public final class PublishingTaskNames {
 		}
 	}
 
-	public interface ForPublicationBuilder<T extends PublishingTaskName> {
+	/*public*/ interface ForPublicationBuilder<T extends PublishingTaskName> {
 		T forPublication(Publication publication);
 	}
 
-	public ForPublicationBuilder<GenerateMetadataFileTaskName> generateMetadataFileTaskName() {
+	/*public*/ ForPublicationBuilder<PublishingTaskName> generateMetadataFileTaskName() {
 		return publication -> new GenerateMetadataFileTaskName(publication.getName());
 	}
 
+	/**
+	 * Returns the <code>generateMetadataFileFor<i>PublicationName</i>Publication</code> task name.
+	 *
+	 * @param publication  the publication object that qualify the task name, must not be null
+	 * @return a task name
+	 */
 	public static String generateMetadataFileTaskName(Publication publication) {
 		return INSTANCE.generateMetadataFileTaskName().forPublication(publication).toString();
 	}
 
-	public static final class GeneratePomFileTaskName extends NameSupport<GeneratePomFileTaskName> implements PublishingTaskName, QualifiedName {
+	private static final class GeneratePomFileTaskName extends NameSupport<GeneratePomFileTaskName> implements PublishingTaskName, QualifiedName {
 		private final String publicationName;
 
 		private GeneratePomFileTaskName(String publicationName) {
@@ -80,15 +87,21 @@ public final class PublishingTaskNames {
 		}
 	}
 
-	public ForPublicationBuilder<GeneratePomFileTaskName> generatePomFileTaskName() {
+	/*public*/ ForPublicationBuilder<PublishingTaskName> generatePomFileTaskName() {
 		return publication -> new GeneratePomFileTaskName(publication.getName());
 	}
 
+	/**
+	 * Returns the <code>generatePomFileFor<i>PublicationName</i>Publication</code> task name.
+	 *
+	 * @param publication  the publication object that qualify the task name, must not be null
+	 * @return a task name
+	 */
 	public static String generatePomFileTaskName(Publication publication) {
 		return INSTANCE.generatePomFileTaskName().forPublication(publication).toString();
 	}
 
-	public static final class GenerateDescriptorFileTaskName extends NameSupport<GenerateDescriptorFileTaskName> implements PublishingTaskName, QualifiedName {
+	private static final class GenerateDescriptorFileTaskName extends NameSupport<GenerateDescriptorFileTaskName> implements PublishingTaskName, QualifiedName {
 		private final String publicationName;
 
 		private GenerateDescriptorFileTaskName(String publicationName) {
@@ -115,19 +128,25 @@ public final class PublishingTaskNames {
 		}
 	}
 
-	public ForPublicationBuilder<GenerateDescriptorFileTaskName> generateDescriptorFileTaskName() {
+	/*public*/ ForPublicationBuilder<PublishingTaskName> generateDescriptorFileTaskName() {
 		return publication -> new GenerateDescriptorFileTaskName(publication.getName());
 	}
 
+	/**
+	 * Returns the <code>generateDescriptorFileFor<i>PublicationName</i>Publication</code> task name.
+	 *
+	 * @param publication  the publication object that qualify the task name, must not be null
+	 * @return a task name
+	 */
 	public static String generateDescriptorFileTaskName(Publication publication) {
 		return INSTANCE.generateDescriptorFileTaskName().forPublication(publication).toString();
 	}
 
-	public interface ToMavenLocalTaskName extends Name {}
+	/*public*/ interface ToMavenLocalTaskName extends Name {}
 
-	public interface ToRepositoryTaskName extends Name {}
+	/*public*/ interface ToRepositoryTaskName extends Name {}
 
-	public interface ToRepositoryBuilder {
+	/*public*/ interface ToRepositoryBuilder {
 		ToMavenLocalTaskName toMavenLocal();
 
 		Spec<String> toAnyRepositories();
@@ -135,7 +154,7 @@ public final class PublishingTaskNames {
 		ToRepositoryTaskName to(ArtifactRepository repository);
 	}
 
-	public static final class PublishTaskName extends NameSupport<PublishTaskName> implements ToRepositoryBuilder, Name {
+	/*public*/ static final class PublishTaskName extends NameSupport<PublishTaskName> implements ToRepositoryBuilder, Name {
 		@Override
 		public ToMavenLocalTaskName toMavenLocal() {
 			return new PublishToMavenLocalTaskName();
@@ -158,14 +177,14 @@ public final class PublishingTaskNames {
 	}
 
 	// TODO: TaskName
-	public static final class PublishToMavenLocalTaskName extends NameSupport<PublishToMavenLocalTaskName> implements ToMavenLocalTaskName {
+	/*public*/ static final class PublishToMavenLocalTaskName extends NameSupport<PublishToMavenLocalTaskName> implements ToMavenLocalTaskName {
 		@Override
 		public String toString() {
 			return "publishToMavenLocal";
 		}
 	}
 
-	public PublishTaskName publishTaskName() {
+	/*public*/ PublishTaskName publishTaskName() {
 		return new PublishTaskName();
 	}
 
@@ -284,14 +303,27 @@ public final class PublishingTaskNames {
 		}
 	}
 
-	public ToRepositoryBuilder publishTaskName(Publication publication) {
+	/*public*/ ToRepositoryBuilder publishTaskName(Publication publication) {
 		return new PublishTaskNameBuilder(publication.getName());
 	}
 
+	/**
+	 * Returns the <code>publish<i>PublicationName</i>PublicationTo<i>RepositoryName</i>Repository</code> task name.
+	 *
+	 * @param publication  the publication object that qualify the task name, must not be null
+	 * @return a task name
+	 */
 	public static String publishPublicationToRepositoryTaskName(Publication publication, ArtifactRepository repository) {
 		return INSTANCE.publishTaskName(publication).to(repository).toString();
 	}
 
+	/**
+	 * Returns a specification that match <code>publish<i>PublicationName</i>PublicationTo*</code> task names.
+	 *
+	 * @param publication  the publication object that qualify the task names to match, must not be null
+	 * @return a specification for task names
+	 * @see TaskContainer#named(Spec)
+	 */
 	public static Spec<String> publishPublicationToAnyRepositories(Publication publication) {
 		return INSTANCE.publishTaskName(publication).toAnyRepositories();
 	}

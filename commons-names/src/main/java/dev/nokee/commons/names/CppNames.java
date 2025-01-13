@@ -1,11 +1,9 @@
 package dev.nokee.commons.names;
 
 import org.gradle.api.Named;
-import org.gradle.language.cpp.CppBinary;
-import org.gradle.language.cpp.CppComponent;
-import org.gradle.language.cpp.CppSharedLibrary;
-import org.gradle.language.cpp.CppStaticLibrary;
+import org.gradle.language.cpp.*;
 import org.gradle.nativeplatform.test.cpp.CppTestExecutable;
+import org.gradle.nativeplatform.test.cpp.CppTestSuite;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +16,9 @@ import static org.gradle.nativeplatform.MachineArchitecture.X86;
 import static org.gradle.nativeplatform.MachineArchitecture.X86_64;
 import static org.gradle.nativeplatform.OperatingSystemFamily.*;
 
+/**
+ * Task and configuration names for {@literal cpp-library}, {@literal cpp-application} and {@literal cpp-unit-test} plugins.
+ */
 public final class CppNames {
 	private static final CppNames INSTANCE = new CppNames();
 
@@ -39,73 +40,38 @@ public final class CppNames {
 		}
 
 		public FullyQualifiedName linkElementsConfigurationName() {
-			// <qualifyingName>LinkElements
-			//   releaseLinkElements
-			//   linuxDebugLinkElements
-			// Note: does not exists for CppTestExecutable
 			return INSTANCE.linkElementsConfigurationName().forBinary(binary);
 		}
 
 		public FullyQualifiedName runtimeElementsConfigurationName() {
-			// <qualifyingName>RuntimeElements
-			//   releaseRuntimeElements
-			//   linuxDebugRuntimeElements
-			// Note: does not exists for CppTestExecutable
 			return INSTANCE.runtimeElementsConfigurationName().forBinary(binary);
 		}
 
 		public FullyQualifiedName nativeLinkConfigurationName() {
-			// nativeLink<qualifyingName>
-			//   nativeLinkRelease
-			//   nativeLinkLinuxDebug
-			//   nativeLinkTest
 			return INSTANCE.nativeLinkConfigurationName().forBinary(binary);
 		}
 
 		public FullyQualifiedName nativeRuntimeConfigurationName() {
-			// nativeRuntime<qualifyingName>
-			//   nativeRuntimeRelease
-			//   nativeRuntimeLinuxDebug
-			//   nativeRuntimeTest
 			return INSTANCE.nativeRuntimeConfigurationName().forBinary(binary);
 		}
 
 		public FullyQualifiedName compileTaskName() {
-			// compile<qualifyingName>Cpp
-			//   compileReleaseCpp
-			//   compileLinuxDebugCpp
-			//   compileTestCpp
 			return INSTANCE.compileTaskName().forBinary(binary);
 		}
 
 		public FullyQualifiedName compileTaskName(String language) {
-			// compile<qualifyingName><language>
-			// Note: for convenience only
 			return INSTANCE.compileTaskName(language).forBinary(binary);
 		}
 
 		public FullyQualifiedName linkTaskName() {
-			// link<qualifyingName>
-			//   linkRelease
-			//   linkLinuxRelease
-			//   linkTest
 			return INSTANCE.linkTaskName().forBinary(binary);
 		}
 
 		public FullyQualifiedName implementationConfigurationName() {
-			// <qualifyingName>Implementation
-			//   mainReleaseImplementation
-			//   mainLinuxDebugImplementation
-			//   testExecutableImplementation - for test executable
-			// Essentially: <binaryName>Implementation
 			return INSTANCE.implementationConfigurationName().forBinary(binary);
 		}
 
 		public FullyQualifiedName cppCompileConfigurationName() {
-			// cppCompile<qualifyingName>
-			//   cppCompileRelease
-			//   cppCompileLinuxDebug
-			//   cppCompileTest
 			return INSTANCE.cppCompileConfigurationName().forBinary(binary);
 		}
 
@@ -125,23 +91,14 @@ public final class CppNames {
 		}
 
 		public FullyQualifiedName cppApiElementsConfigurationName() {
-			// <qualifyingName>CppApiElements
-			//   cppApiElements
-			// Note: does not exists for CppTestExecutable, for convenience only
 			return INSTANCE.cppApiElementsConfigurationName().forComponent(component);
 		}
 
 		public FullyQualifiedName implementationConfigurationName() {
-			// <qualifyingName>Implementation
-			//   implementation - for ProductionCppComponent
-			//   testImplementation - for CppTestSuite
 			return INSTANCE.implementationConfigurationName().forComponent(component);
 		}
 
 		public FullyQualifiedName apiConfigurationName() {
-			// <qualifyingName>Api
-			//   api - for CppLibrary
-			// Note: does not exists for anything else, for convenience only
 			return INSTANCE.apiConfigurationName().forComponent(component);
 		}
 
@@ -169,6 +126,16 @@ public final class CppNames {
 		}
 	}
 
+	/**
+	 * Returns the qualifying name for nested domain object of the specified C++ component or binary.
+	 * <p>
+	 * We use deep modeling of the domain object name to allow horizontal name translation.
+	 * Because of the accordion naming scheme, some dimensions of the name may be lost.
+	 * For this reason, we will try our best to account for those lost dimensions.
+	 *
+	 * @param componentOrBinary  the C++ component/binary object to extract the qualifying name from, must not be null
+	 * @return a qualifying name
+	 */
 	public static QualifyingName qualifyingName(Named componentOrBinary) {
 		final NameSegmentIterator iter = new NameSegmentIterator(componentOrBinary);
 		Names result = null;
@@ -238,21 +205,21 @@ public final class CppNames {
 	}
 
 	//region Name builders
-	public interface ForComponentBuilder {
+	/*public*/ interface ForComponentBuilder {
 		FullyQualifiedName forComponent(CppComponent component);
 	}
 
-	public interface ForBinaryBuilder {
+	/*public*/ interface ForBinaryBuilder {
 		FullyQualifiedName forBinary(CppBinary binary);
 	}
 
-	public ForComponentBuilder cppApiElementsConfigurationName() {
+	/*public*/ ForComponentBuilder cppApiElementsConfigurationName() {
 		return component -> ElementName.configurationName("cppApiElements").qualifiedBy(qualifyingName(component));
 	}
 
-	public interface ImplementationConfigurationNameBuilder extends ForComponentBuilder, ForBinaryBuilder {}
+	/*public*/ interface ImplementationConfigurationNameBuilder extends ForComponentBuilder, ForBinaryBuilder {}
 
-	public ImplementationConfigurationNameBuilder implementationConfigurationName() {
+	/*public*/ ImplementationConfigurationNameBuilder implementationConfigurationName() {
 		return new ImplementationConfigurationNameBuilder() {
 			@Override
 			public FullyQualifiedName forBinary(CppBinary binary) {
@@ -266,90 +233,234 @@ public final class CppNames {
 		};
 	}
 
-	public ForComponentBuilder apiConfigurationName() {
+	/*public*/ ForComponentBuilder apiConfigurationName() {
 		return component -> ElementName.configurationName("api").qualifiedBy(qualifyingName(component));
 	}
 
-	public ForBinaryBuilder linkElementsConfigurationName() {
+	/*public*/ ForBinaryBuilder linkElementsConfigurationName() {
 		return binary -> ElementName.configurationName("linkElements").qualifiedBy(qualifyingName(binary));
 	}
 
-	public ForBinaryBuilder runtimeElementsConfigurationName() {
+	/*public*/ ForBinaryBuilder runtimeElementsConfigurationName() {
 		return binary -> ElementName.configurationName("runtimeElements").qualifiedBy(qualifyingName(binary));
 	}
 
-	public ForBinaryBuilder nativeLinkConfigurationName() {
+	/*public*/ ForBinaryBuilder nativeLinkConfigurationName() {
 		return binary -> ElementName.configurationName().prefix("nativeLink").qualifiedBy(qualifyingName(binary));
 	}
 
-	public ForBinaryBuilder nativeRuntimeConfigurationName() {
+	/*public*/ ForBinaryBuilder nativeRuntimeConfigurationName() {
 		return binary -> ElementName.configurationName().prefix("nativeRuntime").qualifiedBy(qualifyingName(binary));
 	}
 
-	public ForBinaryBuilder cppCompileConfigurationName() {
+	/*public*/ ForBinaryBuilder cppCompileConfigurationName() {
 		return binary -> ElementName.configurationName().prefix("cppCompile").qualifiedBy(qualifyingName(binary));
 	}
 
-	public ForBinaryBuilder compileTaskName() {
+	/*public*/ ForBinaryBuilder compileTaskName() {
 		return binary -> ElementName.taskName("compile", "cpp").qualifiedBy(qualifyingName(binary));
 	}
 
-	public ForBinaryBuilder compileTaskName(String language) {
+	/*public*/ ForBinaryBuilder compileTaskName(String language) {
 		return binary -> ElementName.taskName("compile", language).qualifiedBy(qualifyingName(binary));
 	}
 
-	public ForBinaryBuilder linkTaskName() {
+	/*public*/ ForBinaryBuilder linkTaskName() {
 		return binary -> ElementName.taskName("link").qualifiedBy(qualifyingName(binary));
 	}
 	//endregion
 
 	//region C++ component names
+	/**
+	 * Returns the <code><i>qualifyingName</i>CppApiElements</code> configuration name.
+	 * For example:
+	 * <ul>
+	 *   <li>cppApiElements</li>
+	 * </ul>
+	 * <b>Note:</b> does not exist for {@link CppTestSuite}, for convenience only
+	 *
+	 * @param component  the C++ component object that qualify the configuration name, must not be null
+	 * @return a configuration name
+	 */
 	public static String cppApiElementsConfigurationName(CppComponent component) {
 		return of(component).cppApiElementsConfigurationName().toString();
 	}
 
+	/**
+	 * Returns the <code><i>qualifyingName</i>Implementation</code> configuration name.
+	 * For example:
+	 * <ul>
+	 *   <li>implementation - for {@link ProductionCppComponent}</li>
+	 *   <li>testImplementation - for {@link CppTestSuite}</li>
+	 * </ul>
+	 *
+	 * @param component  the C++ component object that qualify the configuration name, must not be null
+	 * @return a configuration name
+	 * @see #implementationConfigurationName(CppBinary) for {@link CppBinary} variant of this configuration name
+	 */
 	public static String implementationConfigurationName(CppComponent component) {
 		return of(component).implementationConfigurationName().toString();
 	}
 
+	/**
+	 * Returns the <code><i>qualifyingName</i>Api</code> configuration name.
+	 * For example:
+	 * <ul>
+	 *   <li>api - for {@link CppLibrary}</li>
+	 * </ul>
+	 * <b>Note:</b> does not exist for anything else, for convenience only.
+	 *
+	 * @param component  the C++ component object that qualify the configuration name, must not be null
+	 * @return a configuration name
+	 */
 	public static String apiConfigurationName(CppComponent component) {
 		return of(component).apiConfigurationName().toString();
 	}
 	//endregion
 
 	//region C++ binary names
+	/**
+	 * Returns the <code><i>binaryName</i>Implementation</code> configuration name.
+	 * For example:
+	 * <ul>
+	 *   <li><u>mainRelease</u>Implementation</li>
+	 *   <li><u>mainLinuxDebug</u>Implementation</li>
+	 *   <li><u>testExecutable</u>Implementation - for {@link CppTestExecutable}</li>
+	 * </ul>
+	 * <b>Note:</b> this name diverge from the typical naming scheme.
+	 *
+	 * @param binary  the C++ binary object that qualify the configuration name, must not be null
+	 * @return a configuration name
+	 */
 	public static String implementationConfigurationName(CppBinary binary) {
 		return of(binary).implementationConfigurationName().toString();
 	}
 
+	/**
+	 * Returns the <code><i>qualifyingName</i>LinkElements</code> configuration name.
+	 * For example:
+	 * <ul>
+	 *   <li><u>release</u>LinkElements</li>
+	 *   <li><u>linuxDebug</u>LinkElements</li>
+	 * </ul>
+	 * <b>Note:</b> does not exist for {@link CppTestExecutable}.
+	 *
+	 * @param binary  the C++ binary object that qualify the configuration name, must not be null
+	 * @return a configuration name
+	 */
 	public static String linkElementsConfigurationName(CppBinary binary) {
 		return of(binary).linkElementsConfigurationName().toString();
 	}
 
+	/**
+	 * Returns the <code><i>qualifyingName</i>RuntimeElements</code> configuration name.
+	 * For example:
+	 * <ul>
+	 *   <li><u>release</u>RuntimeElements</li>
+	 *   <li><u>linuxDebug</u>RuntimeElements</li>
+	 * </ul>
+	 * <b>Note:</b> does not exist for {@link CppTestExecutable}.
+	 *
+	 * @param binary  the C++ binary object that qualify the configuration name, must not be null
+	 * @return a configuration name
+	 */
 	public static String runtimeElementsConfigurationName(CppBinary binary) {
 		return of(binary).runtimeElementsConfigurationName().toString();
 	}
 
+	/**
+	 * Returns the <code>nativeLink<i>QualifyingName</i></code> configuration name.
+	 * For example:
+	 * <ul>
+	 *   <li>nativeLink<u>Release</u></li>
+	 *   <li>nativeLink<u>LinuxDebug</u></li>
+	 *   <li>nativeLink<u>Test</u></li>
+	 * </ul>
+	 *
+	 * @param binary  the C++ binary object that qualify the configuration name, must not be null
+	 * @return a configuration name
+	 */
 	public static String nativeLinkConfigurationName(CppBinary binary) {
 		return of(binary).nativeLinkConfigurationName().toString();
 	}
 
+	/**
+	 * Returns the <code>nativeRuntime<i>QualifyingName</i></code> configuration name.
+	 * For example:
+	 * <ul>
+	 *   <li>nativeRuntime<u>Release</u></li>
+	 *   <li>nativeRuntime<u>LinuxDebug</u></li>
+	 *   <li>nativeRuntime<u>Test</u></li>
+	 * </ul>
+	 *
+	 * @param binary  the C++ binary object that qualify the configuration name, must not be null
+	 * @return a configuration name
+	 */
 	public static String nativeRuntimeConfigurationName(CppBinary binary) {
 		return of(binary).nativeRuntimeConfigurationName().toString();
 	}
 
+	/**
+	 * Returns the <code>compile<i>QualifyingName</i>Cpp</code> task name.
+	 * For example:
+	 * <ul>
+	 *   <li>compile<u>Release</u>Cpp</li>
+	 *   <li>compile<u>LinuxDebug</u>Cpp</li>
+	 *   <li>compile<u>Test</u>Cpp</li>
+	 * </ul>
+	 *
+	 * @param binary  the C++ binary object that qualify the task name, must not be null
+	 * @return a task name
+	 */
 	public static String compileTaskName(CppBinary binary) {
 		return of(binary).compileTaskName().toString();
 	}
 
+	/**
+	 * Returns the <code>compile<i>QualifyingName</i><i>Language</i></code> task name.
+	 * For example:
+	 * <ul>
+	 *   <li>compile<u>Release</u>C</li>
+	 *   <li>compile<u>TestDebug</u>ObjCpp</li>
+	 * </ul>
+	 * <b>Note:</b> mixed language compilation does not exist, for convenience only.
+	 *
+	 * @param binary  the C++ binary object that qualify the task name, must not be null
+	 * @param language  the implementation language to compile, must not be null
+	 * @return a task name
+	 */
 	public static String compileTaskName(CppBinary binary, String language) {
 		return of(binary).compileTaskName(language).toString();
 	}
 
+	/**
+	 * Returns the <code>link<i>QualifyingName</i></code> task name.
+	 * For example:
+	 * <ul>
+	 *   <li>link<u>Release</u></li>
+	 *   <li>link<u>LinuxDebug</u></li>
+	 *   <li>link<u>Test</u></li>
+	 * </ul>
+	 *
+	 * @param binary  the C++ binary object that qualify the task name, must not be null
+	 * @return a task name
+	 */
 	public static String linkTaskName(CppBinary binary) {
 		return of(binary).linkTaskName().toString();
 	}
 
+	/**
+	 * Returns the <code>cppCompile<i>QualifyingName</i></code> configuration name.
+	 * For example:
+	 * <ul>
+	 *   <li>cppCompile<u>Release</u></li>
+	 *   <li>cppCompile<u>LinuxDebug</u></li>
+	 *   <li>cppCompile<u>Test</u></li>
+	 * </ul>
+	 *
+	 * @param binary  the C++ binary object that qualify the configuration name, must not be null
+	 * @return a configuration name
+	 */
 	public static String cppCompileConfigurationName(CppBinary binary) {
 		return of(binary).cppCompileConfigurationName().toString();
 	}

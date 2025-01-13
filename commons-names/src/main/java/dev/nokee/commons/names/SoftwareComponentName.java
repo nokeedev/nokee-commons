@@ -3,7 +3,7 @@ package dev.nokee.commons.names;
 import static dev.nokee.commons.names.NamingScheme.qualifier;
 import static dev.nokee.commons.names.NamingScheme.string;
 
-public final class SoftwareComponentName extends NameSupport<SoftwareComponentName> implements ElementName {
+final class SoftwareComponentName extends NameSupport<SoftwareComponentName> implements ElementName {
 	private final NamingScheme scheme;
 
 	private SoftwareComponentName(NamingScheme scheme) {

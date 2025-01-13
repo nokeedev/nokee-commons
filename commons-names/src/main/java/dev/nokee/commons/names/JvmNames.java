@@ -2,20 +2,23 @@ package dev.nokee.commons.names;
 
 import org.gradle.api.tasks.SourceSet;
 
+/**
+ * Task and configuration names for {@literal java}, {@literal java-library}, {@literal groovy}, and Kotlin plugins.
+ */
 public class JvmNames {
-	public static ForSourceSet of(SourceSet sourceSet) {
+	/*public*/ static ForSourceSet of(SourceSet sourceSet) {
 		if (isMain(sourceSet)) {
 			return new ForSourceSet(Names.ofMain());
 		}
 		return new ForSourceSet(Names.of(sourceSet.getName()));
 	}
 
-	// backport of SourceSet#isMain(SourceSet)
+	// Backport of SourceSet#isMain(SourceSet)
 	private static boolean isMain(SourceSet sourceSet) {
 		return sourceSet.getName().equals("main");
 	}
 
-	public static class ForSourceSet extends ForwardingNames<ForSourceSet> implements Names {
+	/*public*/ static class ForSourceSet extends ForwardingNames<ForSourceSet> implements Names {
 		private final Names delegate;
 
 		public ForSourceSet(Names delegate) {
@@ -133,30 +136,110 @@ public class JvmNames {
 	}
 
 	//region JVM names focusing on backport and non-modeled names
+	/**
+	 * Returns the <code><i>qualifyingName</i>CompileOnlyApi</code> configuration name.
+	 * For example:
+	 * <ul>
+	 *   <li>compileOnlyApi</li>
+	 * </ul>
+	 *
+	 * <p><b>Note 1:</b> only exists for {@literal java-library} project.</p>
+	 * <p><b>Note 2:</b> From Gradle 6.7 and later, use {@link SourceSet#getCompileOnlyApiConfigurationName()}.</p>
+	 *
+	 * @param sourceSet  the source set object that qualify the configuration name, must not be null
+	 * @return a configuration name
+	 */
 	public static String compileOnlyApiConfigurationName(SourceSet sourceSet) {
 		return of(sourceSet).compileOnlyApiConfigurationName().toString();
 	}
 
+	/**
+	 * Returns the <code><i>qualifyingName</i>GroovydocJar</code> task name.
+	 * For example:
+	 * <ul>
+	 *   <li>groovydocJar</li>
+	 *   <li><u>test</u>GroovydocJar</li>
+	 * </ul>
+	 *
+	 * <p><b>Note:</b> does not exist on {@literal groovy} project, for convenience only.</p>
+	 *
+	 * @param sourceSet  the source set object that qualify the task name, must not be null
+	 * @return a task name
+	 */
 	public static String groovydocJarTaskName(SourceSet sourceSet) {
 		return of(sourceSet).groovydocJarTaskName().toString();
 	}
 
+	/**
+	 * Returns the <code><i>qualifyingName</i>Groovydoc</code> task name.
+	 * For example:
+	 * <ul>
+	 *   <li>groovydoc</li>
+	 *   <li><u>test</u>Groovydoc</li>
+	 * </ul>
+	 *
+	 * <p><b>Note:</b> exists only on {@literal groovy} project.</p>
+	 *
+	 * @param sourceSet  the source set object that qualify the task name, must not be null
+	 * @return a task name
+	 */
 	public static String groovydocTaskName(SourceSet sourceSet) {
 		return of(sourceSet).groovydocTaskName().toString();
 	}
 
+	/**
+	 * Returns the <code><i>qualifyingName</i>GroovydocElements</code> configuration name.
+	 * For example:
+	 * <ul>
+	 *   <li>groovydocElements</li>
+	 *   <li><u>test</u>GroovydocElements</li>
+	 * </ul>
+	 *
+	 * <p><b>Note:</b> does not exist on {@literal groovy} project, for convenience only and symmetry with {@link SourceSet#getJavadocElementsConfigurationName()}</p>
+	 *
+	 * @param sourceSet  the source set object that qualify the configuration name, must not be null
+	 * @return a configuration name
+	 */
 	public static String groovydocElementsConfigurationName(SourceSet sourceSet) {
 		return of(sourceSet).groovydocElementsConfigurationName().toString();
 	}
 
-	public static String pluginUnderTestMetadataTaskName(SourceSet sourceSet) {
-		return of(sourceSet).pluginUnderTestMetadataTaskName().toString();
+	/**
+	 * Returns the <code>pluginUnderTestMetadata</code> task name.
+	 * <p><b>Note:</b> exist only for {@literal java-gradle-plugin} project.</p>
+	 *
+	 * @return a task name
+	 */
+	public static String pluginUnderTestMetadataTaskName() {
+		return ElementName.taskName().forObject("pluginUnderTestMetadata").toString();
 	}
 
+	/**
+	 * Returns the <code>compile<i>QualifyingName</i>Kotlin</code> task name.
+	 * For example:
+	 * <ul>
+	 *   <li>compileKotlin</li>
+	 *   <li>compile<u>Test</u>Kotlin</li>
+	 * </ul>
+	 * <p><b>Note:</b> exist only for Kotlin project, for convenience only.</p>
+	 *
+	 * @return a task name
+	 */
 	public static String compileKotlinTaskName(SourceSet sourceSet) {
 		return of(sourceSet).compileKotlinTaskName().toString();
 	}
 
+	/**
+	 * Returns the <code>compile<i>QualifyingName</i>Groovy</code> task name.
+	 * For example:
+	 * <ul>
+	 *   <li>compileGroovy</li>
+	 *   <li>compile<u>Test</u>Groovy</li>
+	 * </ul>
+	 * <p><b>Note:</b> exist only for {@literal groovy} project, for convenience only.</p>
+	 *
+	 * @return a task name
+	 */
 	public static String compileGroovyTaskName(SourceSet sourceSet) {
 		return of(sourceSet).compileGroovyTaskName().toString();
 	}

@@ -1,12 +1,11 @@
 package dev.nokee.commons.names;
 
 /**
- * Represent an element name that was qualified.
+ * Represents a name that was qualified with a {@link Qualifier}.
  *
  * @see Qualifiable#qualifiedBy(Qualifier)
  */
 public interface QualifiedName extends Name {
-	default QualifiedName with(String propName, Object value) {
-		throw new UnsupportedOperationException();
-	}
+	// TODO: Should this be on Name?
+	QualifiedName with(String propName, Object value);
 }

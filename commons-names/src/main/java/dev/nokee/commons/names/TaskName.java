@@ -5,10 +5,19 @@ import java.util.Optional;
 
 import static dev.nokee.commons.names.NamingScheme.property;
 import static dev.nokee.commons.names.NamingScheme.qualifier;
+import static dev.nokee.commons.names.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
-// <verb><qualifyingName>[<Object>]
-// <qualifyingName><Object>
+/**
+ * Represents a task name in Gradle.
+ * Task name has three distinct scheme:
+ * <ul>
+ *   <li>verb-only: {@literal linkTest} - see {@link ElementName#taskName(String)}</li>
+ *   <li>verb and object: {@literal compileTestCpp}, {@literal processTestResources} - see {@link ElementName#taskName(String, String)}</li>
+ *   <li>object-only: {@literal testClasses}, {@literal testJar} - see {@link ElementName#taskName()} and {@link TaskName.Builder#forObject(String)}</li>
+ * </ul>
+ */
+// TODO: Convert into interface
 public final class TaskName extends NameSupport<TaskName> implements ElementName {
 	private final NamingScheme scheme = NamingScheme.of(property("verb"), qualifier(), property("object"));
 	@Nullable
@@ -51,23 +60,45 @@ public final class TaskName extends NameSupport<TaskName> implements ElementName
 		return new DefaultFullyQualifiedName(qualifier, this, scheme);
 	}
 
+	/**
+	 * Returns an {@link TaskName} instance where qualifiers are appended to the specified task name.
+	 * For example:
+	 * <ul>
+	 *   <li><i>taskName</i><u>SomeQualifier</u></li>
+	 * </ul>
+	 *
+	 * @param taskName  the task name, must not be null
+	 * @return a qualifiable task name
+	 */
 	public static TaskName of(String taskName) {
 		requireNonNull(taskName);
-//		checkArgument(!taskName.isEmpty(), "'taskName' must not be empty");
-//		checkArgument(Character.isLowerCase(taskName.charAt(0)));
+		checkArgument(!taskName.trim().isEmpty(), "'taskName' must not be blank");
+		checkArgument(Character.isLowerCase(taskName.charAt(0)), "'taskName' must start with a lowercase letter");
 		return new TaskName(taskName, null);
 	}
 
+	/**
+	 * Returns an {@link TaskName} instance where qualifiers are sandwiched between the specified verb and object (sometime referred as target).
+	 * For example:
+	 * <ul>
+	 *   <li><i>verb</i><u>SomeQualifier</u><i>Object</i></li>
+	 * </ul>
+	 *
+	 * @param verb  the verb for the task name, must not be null
+	 * @param object  the object/target for the task name, must not be null
+	 * @return a qualifiable task name
+	 */
 	public static TaskName of(String verb, String object) {
 		requireNonNull(verb);
 		requireNonNull(object);
-//		checkArgument(!verb.isEmpty());
-//		checkArgument(!object.isEmpty());
-//		checkArgument(Character.isLowerCase(verb.charAt(0)));
-//		checkArgument(Character.isLowerCase(object.charAt(0)));
+		checkArgument(!verb.trim().isEmpty(), "'verb' must not be blank");
+		checkArgument(!object.trim().isEmpty(), "'object' must not be blank");
+		checkArgument(Character.isLowerCase(verb.charAt(0)), "'verb' must start with a lowercase letter");
+		checkArgument(Character.isLowerCase(object.charAt(0)), "'object' must start with a lowercase letter");
 		return new TaskName(verb, object);
 	}
 
+	@Deprecated // only for backward compatibility
 	public static String taskName(String verb, String object) {
 		return of(verb, object).toString();
 	}

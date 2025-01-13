@@ -1,7 +1,7 @@
 package dev.nokee.commons.names;
 
 /**
- * Represent an object that can qualify a name.
+ * Represents qualifying aspect of a {@link Name}.
  *
  * @see QualifyingName
  * @see QualifiedName
