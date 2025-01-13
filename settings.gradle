@@ -92,7 +92,7 @@ gradle.allprojects {
 
 		apply plugin: 'signing'
 		signing {
-			sign(publishing.publications)
+			sign(publishing.publications.java)
 			if (!project.hasProperty('signing.secretKeyRingFile')) {
 				def signingKeyId = findProperty("signing.keyId").toString()
 				def signingKey = findProperty("signing.key").toString()
