@@ -17,7 +17,7 @@ import static java.util.Objects.requireNonNull;
 import static org.hamcrest.Matchers.equalTo;
 
 public final class NamedMatcher<T> extends FeatureMatcher<T, String> {
-	public NamedMatcher(Matcher<? super String> matcher) {
+	private NamedMatcher(Matcher<? super String> matcher) {
 		super(requireNonNull(matcher), "an object named", "the object's name");
 	}
 
