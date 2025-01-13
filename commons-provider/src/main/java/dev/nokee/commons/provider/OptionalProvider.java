@@ -16,7 +16,7 @@ public final class OptionalProvider<T> {
 	private final Provider<T> provider;
 
 	private OptionalProvider(Provider<T> provider) {
-		this.provider = Objects.requireNonNull(provider);;
+		this.provider = Objects.requireNonNull(provider);
 	}
 
 	public static <T> OptionalProvider<T> of(Provider<T> provider) {
