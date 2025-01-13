@@ -11,8 +11,8 @@ final class NamingScheme {
 		this.segments = segments;
 	}
 
-	public Foo format(Name name) {
-		return new Foo() {
+	public Formatter format(Name name) {
+		return new Formatter() {
 			@Override
 			public String using(Factory<NameBuilder> factory) {
 				NameBuilder builder = factory.create();
@@ -32,7 +32,7 @@ final class NamingScheme {
 		};
 	}
 
-	public interface Foo {
+	public interface Formatter {
 		String using(Factory<NameBuilder> factory);
 	}
 
