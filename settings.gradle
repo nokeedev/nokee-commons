@@ -27,6 +27,12 @@ gradle.allprojects {
 		}
 	}
 	pluginManager.withPlugin('java-library') {
+		java {
+			withSourcesJar()
+			withJavadocJar()
+		}
+	}
+	pluginManager.withPlugin('java-library') {
 		pluginManager.withPlugin('jvm-test-suite') {
 			testing {
 				suites {
