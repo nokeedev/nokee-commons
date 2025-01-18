@@ -6,5 +6,10 @@ package dev.nokee.commons.names;
  * @see FullyQualifiedName#relativeTo(Qualifier)
  */
 public interface RelativeName extends QualifiedName {
+	/**
+	 * Returns the associated fully qualified name represented by this relative name.
+	 *
+	 * @return the name this relative name was derived from, never null
+	 */
 	FullyQualifiedName toFullName();
 }

@@ -6,6 +6,9 @@ package dev.nokee.commons.names;
  * @see Qualifiable#qualifiedBy(Qualifier)
  */
 public interface QualifiedName extends Name {
-	// TODO: Should this be on Name?
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	QualifiedName with(String propName, Object value);
 }

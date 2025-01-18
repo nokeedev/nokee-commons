@@ -31,6 +31,15 @@ gradle.allprojects {
 			withSourcesJar()
 			withJavadocJar()
 		}
+
+		tasks.named('javadoc', Javadoc) {
+			options {
+				showFromPublic()
+				links += 'https://docs.gradle.org/current/javadoc/'
+				classpath += configurations.detachedConfiguration(dependencies.create('dev.gradleplugins:gradle-api:8.11'))
+				// TODO: Maybe infer windowsTitle based on project name
+			}
+		}
 	}
 	pluginManager.withPlugin('java-library') {
 		pluginManager.withPlugin('jvm-test-suite') {

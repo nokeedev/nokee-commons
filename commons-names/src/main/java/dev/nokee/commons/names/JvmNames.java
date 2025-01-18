@@ -223,6 +223,7 @@ public class JvmNames {
 	 * </ul>
 	 * <p><b>Note:</b> exist only for Kotlin project, for convenience only.</p>
 	 *
+	 * @param sourceSet  the source set object that qualify this task name, must not be null
 	 * @return a task name
 	 */
 	public static String compileKotlinTaskName(SourceSet sourceSet) {
@@ -238,6 +239,7 @@ public class JvmNames {
 	 * </ul>
 	 * <p><b>Note:</b> exist only for {@literal groovy} project, for convenience only.</p>
 	 *
+	 * @param sourceSet  the source set object that qualify this task name, must not be null
 	 * @return a task name
 	 */
 	public static String compileGroovyTaskName(SourceSet sourceSet) {

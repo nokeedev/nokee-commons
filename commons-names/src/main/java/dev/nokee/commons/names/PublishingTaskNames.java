@@ -311,6 +311,7 @@ public final class PublishingTaskNames {
 	 * Returns the <code>publish<i>PublicationName</i>PublicationTo<i>RepositoryName</i>Repository</code> task name.
 	 *
 	 * @param publication  the publication object that qualify the task name, must not be null
+	 * @param repository  the repository object that qualify the task name, must not be null
 	 * @return a task name
 	 */
 	public static String publishPublicationToRepositoryTaskName(Publication publication, ArtifactRepository repository) {

@@ -8,19 +8,30 @@ import java.util.function.Function;
  * Configuration, task, or software component names are generally leaf names.
  */
 public interface Names extends QualifyingName {
+	/**
+	 * Creates a name hierarchy using the conventional {@literal main} node.
+	 *
+	 * @return a name hierarchy
+	 */
 	static Names ofMain() {
 		return new DefaultNames(ElementName.ofMain("main"));
 	}
 
-	static Names ofMain(String name) {
-		return new DefaultNames(ElementName.ofMain(name));
-	}
-
+	/**
+	 * Creates a name hierarchy using the specified name as the root node.
+	 *
+	 * @param name  the root name, must not be null
+	 * @return a name hierarchy
+	 */
 	static Names of(String name) {
 		return new DefaultNames(ElementName.of(name));
 	}
 
 	/**
+	 * Same as {@code append(ElementName.of(name))}.
+	 *
+	 * @param name  the other name to append, must not be null
+	 * @return a name hierarchy
 	 * @see #append(OtherName) for more information.
 	 */
 	default Names append(String name) {
@@ -48,6 +59,10 @@ public interface Names extends QualifyingName {
 	}
 
 	/**
+	 * Same as {@code append(ElementName.taskName(verb))}.
+	 *
+	 * @param verb  the task prefix, must not be null
+	 * @return a name
 	 * @see #append(ElementName) convenience for {@code append(ElementName.taskName(verb)}.
 	 */
 	default FullyQualifiedName taskName(String verb) {
@@ -55,6 +70,11 @@ public interface Names extends QualifyingName {
 	}
 
 	/**
+	 * Same as {@code append(ElementName.taskName(verb, object))}.
+	 *
+	 * @param verb  the task prefix, must not be null
+	 * @param object  the task suffix, must not be null
+	 * @return a name
 	 * @see #append(ElementName) convenience for {@code append(ElementName.taskName(verb, object)}.
 	 */
 	default FullyQualifiedName taskName(String verb, String object) {
@@ -62,6 +82,10 @@ public interface Names extends QualifyingName {
 	}
 
 	/**
+	 * Same as {@code append(action.apply(ElementName.taskName())}.
+	 *
+	 * @param action  the builder configuration, must not be null
+	 * @return a name
 	 * @see #append(ElementName) convenience for {@code append(action.apply(ElementName.taskName())}.
 	 */
 	default FullyQualifiedName taskName(Function<? super TaskName.Builder, ? extends TaskName> action) {
@@ -69,6 +93,10 @@ public interface Names extends QualifyingName {
 	}
 
 	/**
+	 * Same as {@code append(ElementName.configurationName(name))}.
+	 *
+	 * @param name  the configuration name, must not be null
+	 * @return a name
 	 * @see #append(ElementName) convenience for {@code append(ElementName.configurationName(name))}.
 	 */
 	default FullyQualifiedName configurationName(String name) {
@@ -76,6 +104,10 @@ public interface Names extends QualifyingName {
 	}
 
 	/**
+	 * Same as {@code append(action.apply(ElementName.configurationName()))}.
+	 *
+	 * @param action  the builder configuration, must not be null
+	 * @return a name
 	 * @see #append(ElementName) convenience for {@code append(action.apply(ElementName.configurationName()))}.
 	 */
 	default FullyQualifiedName configurationName(Function<? super ConfigurationName.Builder, ? extends ConfigurationName> action) {
@@ -83,6 +115,10 @@ public interface Names extends QualifyingName {
 	}
 
 	/**
+	 * Same as {@code append(ElementName.componentName(name))}.
+	 *
+	 * @param name  the software component name, must not be null
+	 * @return a name
 	 * @see #append(ElementName) convenience for {@code append(ElementName.componentName(name))}.
 	 */
 	default FullyQualifiedName componentName(String name) {

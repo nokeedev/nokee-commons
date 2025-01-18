@@ -12,6 +12,12 @@ dependencies {
 	compileOnlyApi gradleApi('6.2.1')
 }
 
+tasks.named('javadoc', Javadoc) {
+	options {
+		windowTitle 'Nokee Commons'
+	}
+}
+
 testing {
 	suites {
 		test {
