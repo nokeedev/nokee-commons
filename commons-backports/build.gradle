@@ -1,0 +1,30 @@
+plugins {
+	id 'java-library'
+	id 'java-gradle-plugin' // for gradle-testkit support, should not be required
+	id 'jvm-test-suite'
+	id 'maven-publish'
+}
+
+version = '1.0'
+
+dependencies {
+	compileOnlyApi gradleApi('6.2.1')
+}
+
+tasks.named('javadoc', Javadoc) {
+	options {
+		windowTitle 'Nokee Commons: Backports'
+	}
+}
+
+testing {
+	suites {
+		test {
+			dependencies {
+				implementation gradleTestKit()
+				implementation 'dev.gradleplugins:gradle-build-script'
+				implementation project(':commons-hamcrest')
+			}
+		}
+	}
+}
