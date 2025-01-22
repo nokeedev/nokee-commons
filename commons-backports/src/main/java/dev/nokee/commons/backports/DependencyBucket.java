@@ -183,30 +183,29 @@ public abstract /*final*/ class DependencyBucket {
 	 * Adds a dependency constraint to this bucket and configure it.
 	 *
 	 * @param dependencyConstraint  the dependency constraint to add
-	 * @param configuration  an action to configure the dependency constraint
+	 * @param configureAction  an action to configure the dependency constraint
 	 */
-	public void addConstraint(DependencyConstraint dependencyConstraint, Action<? super DependencyConstraint> configuration) {
-		configuration.execute(dependencyConstraint);
-		addConstraint(dependencyConstraint);
+	public void addConstraint(DependencyConstraint dependencyConstraint, Action<? super DependencyConstraint> configureAction) {
+		dependencyConstraints.add((DependencyConstraint) peek(configureAction).transform(dependencyConstraint));
 	}
 
 	/**
 	 * Adds a dependency constraint to this bucket, using a {@link Provider} to lazily create the constraint.
 	 *
-	 * @param dependencyConstraint  the dependency constraint to add
+	 * @param dependencyConstraint  the dependency constraint to add, may provide no value
 	 */
 	public void addConstraint(Provider<? extends DependencyConstraint> dependencyConstraint) {
-		dependencyConstraints.add(dependencyConstraint);
+		dependencyConstraints.addAll(asOptional(dependencyConstraint));
 	}
 
 	/**
 	 * Adds a dependency constraint to this bucket and configure it, using a {@link Provider} to lazily create the constraint.
 	 *
-	 * @param dependencyConstraint  the dependency constraint to add
+	 * @param dependencyConstraint  the dependency constraint to add, may provide no value
 	 * @param configuration  an action to configure the dependency constraint
 	 */
 	public void addConstraint(Provider<? extends DependencyConstraint> dependencyConstraint, Action<? super DependencyConstraint> configuration) {
-		addConstraint(dependencyConstraint.map(peek(configuration)));
+		dependencyConstraints.addAll(asOptional(dependencyConstraint.map(peek(configuration))));
 	}
 	//endregion
 
