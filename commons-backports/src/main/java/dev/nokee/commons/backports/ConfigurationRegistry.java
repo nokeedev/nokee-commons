@@ -5,9 +5,6 @@ import org.gradle.api.NamedDomainObjectProvider;
 import org.gradle.api.NonExtensible;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ConfigurationContainer;
-import org.gradle.api.artifacts.ConsumableConfiguration;
-import org.gradle.api.artifacts.DependencyScopeConfiguration;
-import org.gradle.api.artifacts.ResolvableConfiguration;
 import org.gradle.util.GradleVersion;
 
 import javax.inject.Inject;
@@ -28,6 +25,11 @@ import java.util.Optional;
 public abstract /*final*/ class ConfigurationRegistry {
 	private final ConfigurationContainer configurations;
 
+	/**
+	 * Construct an instance for the specified {@link ConfigurationContainer}.
+	 *
+	 * @param configurations  the configuration container delegate
+	 */
 	@Inject
 	public ConfigurationRegistry(ConfigurationContainer configurations) {
 		this.configurations = configurations;

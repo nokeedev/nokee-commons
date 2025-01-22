@@ -14,12 +14,24 @@ import org.gradle.api.provider.SetProperty;
 import javax.inject.Inject;
 import java.util.Set;
 
+/**
+ * Represents a bucket of dependencies of a component.
+ *
+ * <p>
+ * Create your own instance of the factory using {@link org.gradle.api.model.ObjectFactory#newInstance(Class, Object...)}.
+ * </p>
+ */
 @NonExtensible
 public abstract /*final*/ class DependencyBucket {
 	private final SetProperty<Dependency> dependencies;
 	private final SetProperty<DependencyConstraint> dependencyConstraints;
 	private final DependencyFactory dependencyFactory;
 
+	/**
+	 * Construct an instance.
+	 *
+	 * @param objects  the object factory for internal use
+	 */
 	@Inject
 	public DependencyBucket(ObjectFactory objects) {
 		this.dependencies = objects.setProperty(Dependency.class);
@@ -84,6 +96,7 @@ public abstract /*final*/ class DependencyBucket {
 	 *
 	 * @param dependency  the dependency to add
 	 * @param configureAction  an action to configure the dependency
+	 * @param <DependencyType>  the dependency type
 	 */
 	public <DependencyType extends Dependency> void addDependency(DependencyType dependency, Action<? super DependencyType> configureAction) {
 		configureAction.execute(dependency);
@@ -94,6 +107,7 @@ public abstract /*final*/ class DependencyBucket {
 	 * Add a dependency to this bucket and configure it, using a {@link Provider} to lazily create the dependency.
 	 *
 	 * @param dependencyProvider the dependency to add
+	 * @param <DependencyType>  the dependency type
 	 */
 	public <DependencyType extends Dependency> void addDependency(Provider<DependencyType> dependencyProvider) {
 		dependencies.add(dependencyProvider);
@@ -104,6 +118,7 @@ public abstract /*final*/ class DependencyBucket {
 	 *
 	 * @param dependencyProvider  the dependency to add
 	 * @param configureAction  an action to configure the dependency
+	 * @param <DependencyType>  the dependency type
 	 */
 	public <DependencyType extends Dependency> void addDependency(Provider<DependencyType> dependencyProvider, Action<? super DependencyType> configureAction) {
 		dependencies.add(dependencyProvider.map(peek(configureAction)));
@@ -123,6 +138,7 @@ public abstract /*final*/ class DependencyBucket {
 	 *
 	 * @param dependencyProvider  the dependency to add
 	 * @param configureAction  an action to configure the dependency
+	 * @param <DependencyType>  the dependency type
 	 */
 	public <DependencyType extends Dependency> void addDependency(ProviderConvertible<DependencyType> dependencyProvider, Action<? super DependencyType> configureAction) {
 		addDependency(dependencyProvider.asProvider(), configureAction);
@@ -206,6 +222,7 @@ public abstract /*final*/ class DependencyBucket {
 	 *
 	 * @param bundle  the bundle to add
 	 * @param configureAction  an action to configure each dependency in the bundle
+	 * @param <DependencyType>  the dependency type
 	 */
 	public <DependencyType extends Dependency> void addBundle(Iterable<? extends DependencyType> bundle, Action<? super DependencyType> configureAction) {
 		bundle.forEach(it -> addDependency(it, configureAction));
@@ -225,6 +242,7 @@ public abstract /*final*/ class DependencyBucket {
 	 *
 	 * @param bundleProvider  the bundle to add
 	 * @param configureAction  an action to configure each dependency in the bundle
+	 * @param <DependencyType>  the dependency type
 	 */
 	public <DependencyType extends Dependency> void addBundle(Provider<? extends Iterable<? extends DependencyType>> bundleProvider, Action<? super DependencyType> configureAction) {
 		dependencies.addAll(bundleProvider.map(bundle -> {
@@ -247,6 +265,7 @@ public abstract /*final*/ class DependencyBucket {
 	 *
 	 * @param bundleProvider  the bundle to add
 	 * @param configureAction  an action to configure each dependency in the bundle
+	 * @param <DependencyType>  the dependency type
 	 */
 	public <DependencyType extends Dependency> void addBundle(ProviderConvertible<? extends Iterable<? extends DependencyType>> bundleProvider, Action<? super DependencyType> configureAction) {
 		addBundle(bundleProvider.asProvider(), configureAction);

@@ -30,6 +30,11 @@ import java.util.Map;
 public abstract /*final*/ class DependencyFactory {
 	private final DependencyHandler delegate;
 
+	/**
+	 * Construct an instance using {@link DependencyHandler#create(Object)} as the dependency factory delegate.
+	 *
+	 * @param delegate  the dependency factory delegate
+	 */
 	@Inject
 	public DependencyFactory(DependencyHandler delegate) {
 		this.delegate = delegate;
@@ -108,9 +113,10 @@ public abstract /*final*/ class DependencyFactory {
 	 *   <li>classifier: the classifier (optional)</li>
 	 *   <li>ext: the extension (optional)</li>
 	 * </ul>
-	 * </p>
 	 *
+	 * @param notation  the dependency notation
 	 * @return the new dependency instance
+	 * @see DependencyHandler for accepted keys on the map notation
 	 */
 	public ExternalModuleDependency create(Map<String, ?> notation) {
 		return (ExternalModuleDependency) delegate.create(notation);
