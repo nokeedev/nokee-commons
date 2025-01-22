@@ -12,7 +12,11 @@ import org.gradle.api.provider.ProviderConvertible;
 import org.gradle.api.provider.SetProperty;
 
 import javax.inject.Inject;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * Represents a bucket of dependencies of a component.
@@ -47,7 +51,7 @@ public abstract /*final*/ class DependencyBucket {
 	 * @see DependencyFactory#create(CharSequence) for valid dependency notation for this method
 	 */
 	public void addDependency(CharSequence dependencyNotation) {
-		addDependency(dependencyFactory.create(dependencyNotation));
+		dependencies.add(dependencyFactory.create(dependencyNotation));
 	}
 
 	/**
@@ -58,7 +62,7 @@ public abstract /*final*/ class DependencyBucket {
 	 * @see DependencyFactory#create(CharSequence) for valid dependency notation for this method
 	 */
 	public void addDependency(CharSequence dependencyNotation, Action<? super ExternalModuleDependency> configureAction) {
-		addDependency(dependencyFactory.create(dependencyNotation), configureAction);
+		dependencies.add((Dependency) peek(configureAction).transform(dependencyFactory.create(dependencyNotation)));
 	}
 
 	/**
@@ -77,7 +81,7 @@ public abstract /*final*/ class DependencyBucket {
 	 * @see DependencyFactory#create(FileCollection)
 	 */
 	public void addDependency(FileCollection fileCollection) {
-		addDependency(dependencyFactory.create(fileCollection));
+		dependencies.add(dependencyFactory.create(fileCollection));
 	}
 
 	/**
@@ -88,7 +92,7 @@ public abstract /*final*/ class DependencyBucket {
 	 * @see DependencyFactory#create(FileCollection)
 	 */
 	public void addDependency(FileCollection fileCollection, Action<? super FileCollectionDependency> configureAction) {
-		addDependency(dependencyFactory.create(fileCollection), configureAction);
+		dependencies.add((Dependency) peek(configureAction).transform(dependencyFactory.create(fileCollection)));
 	}
 
 	/**
@@ -99,49 +103,48 @@ public abstract /*final*/ class DependencyBucket {
 	 * @param <DependencyType>  the dependency type
 	 */
 	public <DependencyType extends Dependency> void addDependency(DependencyType dependency, Action<? super DependencyType> configureAction) {
-		configureAction.execute(dependency);
-		dependencies.add(dependency);
+		dependencies.add((Dependency) peek(configureAction).transform(dependency));
 	}
 
 	/**
 	 * Add a dependency to this bucket and configure it, using a {@link Provider} to lazily create the dependency.
 	 *
-	 * @param dependencyProvider the dependency to add
+	 * @param dependencyProvider the dependency to add, may provide no value
 	 * @param <DependencyType>  the dependency type
 	 */
 	public <DependencyType extends Dependency> void addDependency(Provider<DependencyType> dependencyProvider) {
-		dependencies.add(dependencyProvider);
+		dependencies.addAll(asOptional(dependencyProvider));
 	}
 
 	/**
 	 * Add a dependency to this bucket and configure it, using a {@link Provider} to lazily create the dependency.
 	 *
-	 * @param dependencyProvider  the dependency to add
+	 * @param dependencyProvider  the dependency to add, may provide no value
 	 * @param configureAction  an action to configure the dependency
 	 * @param <DependencyType>  the dependency type
 	 */
 	public <DependencyType extends Dependency> void addDependency(Provider<DependencyType> dependencyProvider, Action<? super DependencyType> configureAction) {
-		dependencies.add(dependencyProvider.map(peek(configureAction)));
+		dependencies.addAll(asOptional(dependencyProvider.map(peek(configureAction))));
 	}
 
 	/**
 	 * Add a dependency to this bucket and configure it.
 	 *
-	 * @param dependencyProvider  the dependency to add
+	 * @param dependencyProvider  the dependency to add, may provide no value
 	 */
 	public void addDependency(ProviderConvertible<? extends Dependency> dependencyProvider) {
-		addDependency(dependencyProvider.asProvider());
+		dependencies.addAll(asOptional(dependencyProvider.asProvider()));
 	}
 
 	/**
 	 * Add a dependency to this bucket and configure it.
 	 *
-	 * @param dependencyProvider  the dependency to add
+	 * @param dependencyProvider  the dependency to add, may provide no value
 	 * @param configureAction  an action to configure the dependency
 	 * @param <DependencyType>  the dependency type
 	 */
 	public <DependencyType extends Dependency> void addDependency(ProviderConvertible<DependencyType> dependencyProvider, Action<? super DependencyType> configureAction) {
-		addDependency(dependencyProvider.asProvider(), configureAction);
+		dependencies.addAll(asOptional(dependencyProvider.asProvider().map(peek(configureAction))));
 	}
 
 	/**
@@ -151,7 +154,7 @@ public abstract /*final*/ class DependencyBucket {
 	 * @see DependencyFactory#create(Project)
 	 */
 	public void addDependency(Project project) {
-		addDependency(dependencyFactory.create(project));
+		dependencies.add(dependencyFactory.create(project));
 	}
 
 	/**
@@ -162,7 +165,7 @@ public abstract /*final*/ class DependencyBucket {
 	 * @see DependencyFactory#create(Project)
 	 */
 	public void addDependency(Project project, Action<? super ProjectDependency> configureAction) {
-		addDependency(dependencyFactory.create(project), configureAction);
+		dependencies.add((Dependency) peek(configureAction).transform(dependencyFactory.create(project)));
 	}
 	//endregion
 
@@ -214,7 +217,7 @@ public abstract /*final*/ class DependencyBucket {
 	 * @param bundle  the bundle to add
 	 */
 	public void addBundle(Iterable<? extends Dependency> bundle) {
-		bundle.forEach(this::addDependency);
+		bundle.forEach(dependencies::add);
 	}
 
 	/**
@@ -225,50 +228,47 @@ public abstract /*final*/ class DependencyBucket {
 	 * @param <DependencyType>  the dependency type
 	 */
 	public <DependencyType extends Dependency> void addBundle(Iterable<? extends DependencyType> bundle, Action<? super DependencyType> configureAction) {
-		bundle.forEach(it -> addDependency(it, configureAction));
+		transformEach(peek(configureAction)).transform(bundle).forEach(it -> dependencies.add((Dependency) it));
 	}
 
 	/**
 	 * Add a bundle to this bucket, using a {@link Provider} to lazily create the bundle.
 	 *
-	 * @param bundleProvider  the bundle to add
+	 * @param bundleProvider  the bundle to add, may provide no value
 	 */
 	public void addBundle(Provider<? extends Iterable<? extends Dependency>> bundleProvider) {
-		dependencies.addAll(bundleProvider);
+		dependencies.addAll(bundleProvider.map(toDependencyList()).orElse(Collections.emptyList()));
 	}
 
 	/**
 	 * Add a bundle to this bucket and configure each dependency, using a {@link Provider} to lazily create the bundle.
 	 *
-	 * @param bundleProvider  the bundle to add
+	 * @param bundleProvider  the bundle to add, may provide no value
 	 * @param configureAction  an action to configure each dependency in the bundle
 	 * @param <DependencyType>  the dependency type
 	 */
 	public <DependencyType extends Dependency> void addBundle(Provider<? extends Iterable<? extends DependencyType>> bundleProvider, Action<? super DependencyType> configureAction) {
-		dependencies.addAll(bundleProvider.map(bundle -> {
-			bundle.forEach(it -> addDependency(it, configureAction));
-			return bundle;
-		}));
+		dependencies.addAll(bundleProvider.map(transformEach(peek(configureAction))).orElse(Collections.emptyList()));
 	}
 
 	/**
 	 * Add a bundle to this bucket.
 	 *
-	 * @param bundleProvider  the bundle to add
+	 * @param bundleProvider  the bundle to add, may provide no value
 	 */
 	public void addBundle(ProviderConvertible<? extends Iterable<? extends Dependency>> bundleProvider) {
-		addBundle(bundleProvider.asProvider());
+		dependencies.addAll(bundleProvider.asProvider().map(toDependencyList()).orElse(Collections.emptyList()));
 	}
 
 	/**
 	 * Add a bundle to this bucket and configure each dependency.
 	 *
-	 * @param bundleProvider  the bundle to add
+	 * @param bundleProvider  the bundle to add, may provide no value
 	 * @param configureAction  an action to configure each dependency in the bundle
 	 * @param <DependencyType>  the dependency type
 	 */
 	public <DependencyType extends Dependency> void addBundle(ProviderConvertible<? extends Iterable<? extends DependencyType>> bundleProvider, Action<? super DependencyType> configureAction) {
-		addBundle(bundleProvider.asProvider(), configureAction);
+		dependencies.addAll(bundleProvider.asProvider().map(transformEach(peek(configureAction))).orElse(Collections.emptyList()));
 	}
 	//endregion
 
@@ -277,6 +277,18 @@ public abstract /*final*/ class DependencyBucket {
 			action.execute(it);
 			return it;
 		};
+	}
+
+	private static <OUT, IN> Transformer<List<OUT>, Iterable<? extends IN>> transformEach(Transformer<? extends OUT, ? super IN> mapper) {
+		return it -> StreamSupport.stream(it.spliterator(), false).map(mapper::transform).collect(Collectors.toList());
+	}
+
+	private static <T> Provider<? extends Iterable<T>> asOptional(Provider<T> provider) {
+		return provider.map(Collections::singletonList).orElse(Collections.emptyList());
+	}
+
+	private static <T extends Dependency> Transformer<List<Dependency>, Iterable<? extends T>> toDependencyList() {
+		return transformEach(Dependency.class::cast);
 	}
 
 	/**
