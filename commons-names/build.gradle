@@ -14,7 +14,7 @@ dependencies {
 
 tasks.named('javadoc', Javadoc) {
 	options {
-		windowTitle 'Nokee Commons'
+		windowTitle 'Nokee Commons: Names'
 	}
 }
 

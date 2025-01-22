@@ -329,7 +329,7 @@ class ElementNameTests {
 
 	@Nested
 	class ComponentNameTests implements NameTester, QualifiableTester {
-		SoftwareComponentName subject = ElementName.componentName("cpp");
+		ElementName subject = ElementName.componentName("cpp");
 
 		@Override
 		public ElementName subject() {
