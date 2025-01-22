@@ -5,7 +5,7 @@ import org.gradle.api.Task;
 import org.hamcrest.FeatureMatcher;
 import org.hamcrest.Matcher;
 
-public class BuildDependenciesMatcher extends FeatureMatcher<Buildable, Iterable<Task>> {
+public final class BuildDependenciesMatcher extends FeatureMatcher<Buildable, Iterable<Task>> {
 	public BuildDependenciesMatcher(Matcher<? super Iterable<Task>> matcher) {
 		super(matcher, "a buildable object with dependencies", "buildable object with dependencies");
 	}
