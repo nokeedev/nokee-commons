@@ -6,6 +6,7 @@ plugins {
 }
 
 version = '1.0'
+description = 'Backports of important Gradle APIs.'
 
 dependencies {
 	compileOnlyApi gradleApi('6.2.1')
