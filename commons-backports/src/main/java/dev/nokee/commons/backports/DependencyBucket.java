@@ -41,6 +41,9 @@ public abstract /*final*/ class DependencyBucket {
 		this.dependencies = objects.setProperty(Dependency.class);
 		this.dependencyConstraints = objects.setProperty(DependencyConstraint.class);
 		this.dependencyFactory = objects.newInstance(DependencyFactory.class);
+
+		this.dependencies.finalizeValueOnRead();
+		this.dependencyConstraints.finalizeValueOnRead();
 	}
 
 	//region Dependency
