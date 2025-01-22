@@ -14,7 +14,7 @@ dependencies {
 tasks.named('javadoc', Javadoc) {
 	options {
 		windowTitle 'Nokee Commons: Backports'
-		exclude("org/gradle/api")
+		exclude("org/gradle/api") // refer to Gradle documentation instead
 	}
 }
 
