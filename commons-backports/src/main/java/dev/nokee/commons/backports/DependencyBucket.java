@@ -1,5 +1,10 @@
 package dev.nokee.commons.backports;
 
+import groovy.lang.Closure;
+import groovy.lang.GroovyObject;
+import groovy.lang.MetaMethod;
+import org.codehaus.groovy.runtime.HandleMetaClass;
+import org.codehaus.groovy.runtime.InvokerHelper;
 import org.gradle.api.Action;
 import org.gradle.api.NonExtensible;
 import org.gradle.api.Project;
@@ -8,16 +13,19 @@ import org.gradle.api.artifacts.*;
 import org.gradle.api.artifacts.dsl.DependencyHandler;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.model.ObjectFactory;
+import org.gradle.api.plugins.ExtensionAware;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.provider.ProviderConvertible;
 import org.gradle.api.provider.SetProperty;
 import org.gradle.util.GradleVersion;
 
 import javax.inject.Inject;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 /**
@@ -362,6 +370,127 @@ public abstract /*final*/ class DependencyBucket {
 	}
 
 	// TODO: Add toString() implementation
-	// TODO: Add decorator method for Groovy DSL
 	// TODO: Add extension methods for Kotlin DSL
+
+	/**
+	 * Represents a factory for building dependency factory.
+	 */
+	@NonExtensible
+	public static abstract /*final*/ class Factory {
+		private final ObjectFactory objects;
+
+		/**
+		 * Constructs an instance.
+		 *
+		 * @param objects  the object factory for internal use
+		 */
+		@Inject
+		public Factory(ObjectFactory objects) {
+			this.objects = objects;
+		}
+
+		/**
+		 * Creates a named dependency bucket.
+		 *
+		 * @param bucketName  the name of the dependency bucket
+		 * @return a builder for the named bucket
+		 */
+		public Builder create(String bucketName) {
+			return objects.newInstance(Builder.class, bucketName);
+		}
+
+		/**
+		 * Represents a bucket being built.
+		 * @see DependencyBucket
+		 */
+		public static abstract /*final*/ class Builder extends DependencyBucket {
+			private final String bucketName;
+
+			/**
+			 * {@inheritDoc}
+			 */
+			@Inject
+			public Builder(String bucketName, ObjectFactory objects) {
+				super(objects);
+				this.bucketName = bucketName;
+			}
+
+			private static final class MetaMethodClosure extends Closure {
+				private final String bucketName;
+				private final String method;
+
+				public MetaMethodClosure(String bucketName, Object owner, MetaMethod method) {
+					super(owner);
+					this.bucketName = bucketName;
+					this.method = method.getName();
+
+					this.maximumNumberOfParameters = method.getParameterTypes().length;
+					this.parameterTypes = method.getNativeParameterTypes();
+				}
+
+				@SuppressWarnings({"unchecked", "rawtypes"})
+				private Object doCall(Object... arguments) {
+					String method = this.method;
+					Object[] parameters = arguments;
+					if (parameters[0] instanceof Provider) {
+						parameters = Arrays.copyOf(arguments, arguments.length);
+						parameters[0] = ((Provider) parameters[0]).map(it -> {
+							if (it instanceof Dependency) {
+								return Collections.singletonList(it);
+							}
+							return it;
+						});
+						method = "addBundle";
+					}
+					return InvokerHelper.invokeMethod(((ExtensionAware) getDelegate()).getExtensions().getByName(bucketName), method, parameters);
+				}
+			}
+
+			/**
+			 * Registers bucket to specified object, necessary for Groovy DSL.
+			 *
+			 * @param object  the object to decorate
+			 * @return this instance
+			 */
+			public Builder asExtension(Object object) {
+				if (object instanceof ExtensionAware) {
+					((ExtensionAware) object).getExtensions().add(bucketName, this);
+				}
+
+				if (object instanceof GroovyObject) {
+					assert object instanceof ExtensionAware;
+
+					HandleMetaClass metaClass = new HandleMetaClass(((GroovyObject) object).getMetaClass());
+					Stream.of(InvokerHelper.getMetaClass(DependencyBucket.class), InvokerHelper.getMetaClass(this))
+						.flatMap(it -> Stream.concat(
+							it.respondsTo(this, "addBundle").stream(),
+							it.respondsTo(this, "addDependency").stream()
+						))
+						.forEach(m -> {
+							metaClass.setProperty(bucketName, new MetaMethodClosure(bucketName, this, m));
+						});
+					((GroovyObject) object).setMetaClass(metaClass);
+				}
+				return this;
+			}
+
+			/**
+			 * Connects bucket to specified configuration.
+			 *
+			 * @param configuration  the configuration to connect with the bucket
+			 * @return this instance
+			 */
+			public Builder of(Configuration configuration) {
+				// Note: This may not work because of badly behaving plugins (like Kotlin until version ???)
+				configuration.getDependencies().addAllLater(getDependencies());
+				configuration.getDependencyConstraints().addAllLater(getDependencyConstraints());
+				return this;
+			}
+
+			@Override
+			public String toString() {
+				return "dependency bucket '" + bucketName + "'";
+			}
+		}
+	}
 }
