@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.1] - 2025-01-25
+
+This minor version adds missing C++ names for install and create task.
+We also improved the Javadoc of the module.
+
 ## [1.0] - 2025-01-13
 
 We're super excited to introduce the Nokee Commons Names project.

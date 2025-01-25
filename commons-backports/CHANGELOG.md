@@ -1,6 +1,13 @@
 # Changelog
 
-## [1.0] - 2025-??-??
+## [1.1] - 2025-01-25
+
+This minor version align the implementation of the `DependencyBucket` with its latest counterpart as well as fix some bugs.
+All provider taking API now allows no-value providers.
+We also work around the immutability of `MinimalExternalModuleDependency` (released with Gradle 6.8).
+Finally, we introduced a factory/builder API for creating the buckets, decorating `ExtensionAware` objects, and attaching the bucket to a `Configuration`.
+
+## [1.0] - 2025-01-21
 
 We're super excited to introduce the Nokee Commons: Backports project.
 This first version is the result of several years of working with plugins supporting multiple Gradle versions.
