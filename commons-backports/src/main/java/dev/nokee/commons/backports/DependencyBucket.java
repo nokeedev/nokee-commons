@@ -339,7 +339,7 @@ public abstract /*final*/ class DependencyBucket {
 		};
 	}
 
-	private static <OUT, IN> Transformer<List<OUT>, Iterable<? extends IN>> transformEach(Transformer<? extends OUT, ? super IN> mapper) {
+	private /*static*/ <OUT, IN> Transformer<List<OUT>, Iterable<? extends IN>> transformEach(Transformer<? extends OUT, ? super IN> mapper) {
 		return it -> StreamSupport.stream(it.spliterator(), false).map(mapper::transform).collect(Collectors.toList());
 	}
 
@@ -347,7 +347,7 @@ public abstract /*final*/ class DependencyBucket {
 		return provider.map(Collections::singletonList).orElse(Collections.emptyList());
 	}
 
-	private static <T extends Dependency> Transformer<List<Dependency>, Iterable<? extends T>> toDependencyList() {
+	private /*static*/ <T extends Dependency> Transformer<List<Dependency>, Iterable<? extends T>> toDependencyList() {
 		return transformEach(Dependency.class::cast);
 	}
 
