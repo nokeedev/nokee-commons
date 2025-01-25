@@ -5,11 +5,13 @@ import org.gradle.api.NonExtensible;
 import org.gradle.api.Project;
 import org.gradle.api.Transformer;
 import org.gradle.api.artifacts.*;
+import org.gradle.api.artifacts.dsl.DependencyHandler;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.provider.ProviderConvertible;
 import org.gradle.api.provider.SetProperty;
+import org.gradle.util.GradleVersion;
 
 import javax.inject.Inject;
 import java.util.Collections;
@@ -41,10 +43,58 @@ public abstract /*final*/ class DependencyBucket {
 		this.dependencies = objects.setProperty(Dependency.class);
 		this.dependencyConstraints = objects.setProperty(DependencyConstraint.class);
 		this.dependencyFactory = objects.newInstance(DependencyFactory.class);
+		this.mutabilityHandler = objects.newInstance(mutabilityHandlerType());
 
 		this.dependencies.finalizeValueOnRead();
 		this.dependencyConstraints.finalizeValueOnRead();
 	}
+
+	//region Ensure mutability for MinimalExternalModuleDependency
+	private final MutabilityHandler mutabilityHandler;
+
+	private static Class<? extends MutabilityHandler> mutabilityHandlerType() {
+		if (GradleVersion.current().compareTo(GradleVersion.version("6.8")) >= 0) {
+			return MinimalExternalModuleDependencyMutability.class;
+		} else {
+			return NoOpDependencyMutability.class;
+		}
+	}
+
+	private <DependencyType extends Dependency> DependencyType ensureMutable(DependencyType dependency) {
+		return mutabilityHandler.ensureMutable(dependency);
+	}
+
+	private interface MutabilityHandler {
+		<DependencyType extends Dependency> DependencyType ensureMutable(DependencyType dependency);
+	}
+
+	@NonExtensible
+	/*private*/ static /*final*/ class NoOpDependencyMutability implements MutabilityHandler {
+		@Inject
+		public NoOpDependencyMutability() {}
+
+		@Override
+		public <DependencyType extends Dependency> DependencyType ensureMutable(DependencyType dependency) {
+			return dependency;
+		}
+	}
+
+	@NonExtensible
+	/*private*/ static abstract /*final*/ class MinimalExternalModuleDependencyMutability implements MutabilityHandler {
+		private final DependencyHandler dependencies;
+
+		@Inject
+		public MinimalExternalModuleDependencyMutability(DependencyHandler dependencies) {
+			this.dependencies = dependencies;
+		}
+
+		@SuppressWarnings("unchecked")
+		public <DependencyType extends Dependency> DependencyType ensureMutable(DependencyType dependency) {
+			// Only done to make MinimalExternalModuleDependency mutable for configuration
+			return (DependencyType) dependencies.create(dependency);
+		}
+	}
+	//endregion
 
 	//region Dependency
 	/**
@@ -106,7 +156,7 @@ public abstract /*final*/ class DependencyBucket {
 	 * @param <DependencyType>  the dependency type
 	 */
 	public <DependencyType extends Dependency> void addDependency(DependencyType dependency, Action<? super DependencyType> configureAction) {
-		dependencies.add((Dependency) peek(configureAction).transform(dependency));
+		dependencies.add((Dependency) peek(configureAction).transform(ensureMutable(dependency)));
 	}
 
 	/**
@@ -127,7 +177,7 @@ public abstract /*final*/ class DependencyBucket {
 	 * @param <DependencyType>  the dependency type
 	 */
 	public <DependencyType extends Dependency> void addDependency(Provider<DependencyType> dependencyProvider, Action<? super DependencyType> configureAction) {
-		dependencies.addAll(asOptional(dependencyProvider.map(peek(configureAction))));
+		dependencies.addAll(asOptional(dependencyProvider.map(this::ensureMutable).map(peek(configureAction))));
 	}
 
 	/**
@@ -147,7 +197,7 @@ public abstract /*final*/ class DependencyBucket {
 	 * @param <DependencyType>  the dependency type
 	 */
 	public <DependencyType extends Dependency> void addDependency(ProviderConvertible<DependencyType> dependencyProvider, Action<? super DependencyType> configureAction) {
-		dependencies.addAll(asOptional(dependencyProvider.asProvider().map(peek(configureAction))));
+		dependencies.addAll(asOptional(dependencyProvider.asProvider().map(this::ensureMutable).map(peek(configureAction))));
 	}
 
 	/**
@@ -230,7 +280,7 @@ public abstract /*final*/ class DependencyBucket {
 	 * @param <DependencyType>  the dependency type
 	 */
 	public <DependencyType extends Dependency> void addBundle(Iterable<? extends DependencyType> bundle, Action<? super DependencyType> configureAction) {
-		transformEach(peek(configureAction)).transform(bundle).forEach(it -> dependencies.add((Dependency) it));
+		transformEach(peek(configureAction)).transform(transformEach((DependencyType it) -> ensureMutable(it)).transform(bundle)).forEach(it -> dependencies.add((Dependency) it));
 	}
 
 	/**
@@ -250,7 +300,7 @@ public abstract /*final*/ class DependencyBucket {
 	 * @param <DependencyType>  the dependency type
 	 */
 	public <DependencyType extends Dependency> void addBundle(Provider<? extends Iterable<? extends DependencyType>> bundleProvider, Action<? super DependencyType> configureAction) {
-		dependencies.addAll(bundleProvider.map(transformEach(peek(configureAction))).orElse(Collections.emptyList()));
+		dependencies.addAll(bundleProvider.map(transformEach(this::ensureMutable)).map(transformEach(peek(configureAction))).orElse(Collections.emptyList()));
 	}
 
 	/**
@@ -270,7 +320,7 @@ public abstract /*final*/ class DependencyBucket {
 	 * @param <DependencyType>  the dependency type
 	 */
 	public <DependencyType extends Dependency> void addBundle(ProviderConvertible<? extends Iterable<? extends DependencyType>> bundleProvider, Action<? super DependencyType> configureAction) {
-		dependencies.addAll(bundleProvider.asProvider().map(transformEach(peek(configureAction))).orElse(Collections.emptyList()));
+		dependencies.addAll(bundleProvider.asProvider().map(transformEach(this::ensureMutable)).map(transformEach(peek(configureAction))).orElse(Collections.emptyList()));
 	}
 	//endregion
 
