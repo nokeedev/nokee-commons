@@ -1,3 +1,6 @@
 [submodule "commons-build-script"]
 	path = commons-build-script
 	url = git@github.com:gradle-plugins/gradle-build-script.git
+[submodule "commons-exemplar"]
+	path = commons-exemplar
+	url = git@github.com:nokeedev/nokee-commons-exemplar.git
