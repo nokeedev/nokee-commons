@@ -149,6 +149,22 @@ class CppNamesFunctionalTests {
 		}
 
 		abstract Expression linkTaskNames();
+
+		@Test
+		void testCreateTaskName() {
+			buildFile.append(verifyThat("components.withType(CppBinary).collect { createTaskName(it) } == " + createTaskNames().toString(GradleDsl.GROOVY)));
+			runner.build();
+		}
+
+		abstract Expression createTaskNames();
+
+		@Test
+		void testInstallTaskName() {
+			buildFile.append(verifyThat("components.withType(CppBinary).collect { installTaskName(it) } == " + installTaskNames().toString(GradleDsl.GROOVY)));
+			runner.build();
+		}
+
+		abstract Expression installTaskNames();
 	}
 
 	interface ExpectedNames {
@@ -370,6 +386,16 @@ class CppNamesFunctionalTests {
 			Expression linkTaskNames() {
 				return listOf(string("linkDebugShared"), string("linkDebugStatic"), string("linkReleaseShared"), string("linkReleaseStatic"));
 			}
+
+			@Override
+			Expression createTaskNames() {
+				return listOf(string("createDebugShared"), string("createDebugStatic"), string("createReleaseShared"), string("createReleaseStatic"));
+			}
+
+			@Override
+			Expression installTaskNames() {
+				return listOf(string("installDebugShared"), string("installDebugStatic"), string("installReleaseShared"), string("installReleaseStatic"));
+			}
 		}
 	}
 
@@ -530,6 +556,16 @@ class CppNamesFunctionalTests {
 			Expression linkTaskNames() {
 				return listOf(string("linkDebugAarch64"), string("linkDebugX86"), string("linkReleaseAarch64"), string("linkReleaseX86"));
 			}
+
+			@Override
+			Expression createTaskNames() {
+				return listOf(string("createDebugAarch64"), string("createDebugX86"), string("createReleaseAarch64"), string("createReleaseX86"));
+			}
+
+			@Override
+			Expression installTaskNames() {
+				return listOf(string("installDebugAarch64"), string("installDebugX86"), string("installReleaseAarch64"), string("installReleaseX86"));
+			}
 		}
 	}
 
@@ -689,6 +725,16 @@ class CppNamesFunctionalTests {
 			@Override
 			Expression linkTaskNames() {
 				return listOf(string("linkTestLinux"));
+			}
+
+			@Override
+			Expression createTaskNames() {
+				return listOf(string("createTestLinux"));
+			}
+
+			@Override
+			Expression installTaskNames() {
+				return listOf(string("installTestLinux"));
 			}
 		}
 	}

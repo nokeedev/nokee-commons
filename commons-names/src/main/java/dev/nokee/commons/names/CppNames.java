@@ -67,6 +67,14 @@ public final class CppNames {
 			return INSTANCE.linkTaskName().forBinary(binary);
 		}
 
+		public FullyQualifiedName createTaskName() {
+			return INSTANCE.createTaskName().forBinary(binary);
+		}
+
+		public FullyQualifiedName installTaskName() {
+			return INSTANCE.installTaskName().forBinary(binary);
+		}
+
 		public FullyQualifiedName implementationConfigurationName() {
 			return INSTANCE.implementationConfigurationName().forBinary(binary);
 		}
@@ -268,6 +276,14 @@ public final class CppNames {
 	/*public*/ ForBinaryBuilder linkTaskName() {
 		return binary -> ElementName.taskName("link").qualifiedBy(qualifyingName(binary));
 	}
+
+	/*public*/ ForBinaryBuilder createTaskName() {
+		return binary -> ElementName.taskName("create").qualifiedBy(qualifyingName(binary));
+	}
+
+	/*public*/ ForBinaryBuilder installTaskName() {
+		return binary -> ElementName.taskName("install").qualifiedBy(qualifyingName(binary));
+	}
 	//endregion
 
 	//region C++ component names
@@ -447,6 +463,38 @@ public final class CppNames {
 	 */
 	public static String linkTaskName(CppBinary binary) {
 		return of(binary).linkTaskName().toString();
+	}
+
+	/**
+	 * Returns the <code>create<i>QualifyingName</i></code> task name.
+	 * For example:
+	 * <ul>
+	 *   <li>create<u>Release</u></li>
+	 *   <li>create<u>LinuxDebug</u></li>
+	 *   <li>create<u>Test</u></li>
+	 * </ul>
+	 *
+	 * @param binary  the C++ binary object that qualify the task name, must not be null
+	 * @return a task name
+	 */
+	public static String createTaskName(CppBinary binary) {
+		return of(binary).createTaskName().toString();
+	}
+
+	/**
+	 * Returns the <code>install<i>QualifyingName</i></code> task name.
+	 * For example:
+	 * <ul>
+	 *   <li>install<u>Release</u></li>
+	 *   <li>install<u>LinuxDebug</u></li>
+	 *   <li>install<u>Test</u></li>
+	 * </ul>
+	 *
+	 * @param binary  the C++ binary object that qualify the task name, must not be null
+	 * @return a task name
+	 */
+	public static String installTaskName(CppBinary binary) {
+		return of(binary).installTaskName().toString();
 	}
 
 	/**
