@@ -75,6 +75,10 @@ public final class CppNames {
 			return INSTANCE.installTaskName().forBinary(binary);
 		}
 
+		public FullyQualifiedName assembleTaskName() {
+			return INSTANCE.assembleTaskName().forBinary(binary);
+		}
+
 		public FullyQualifiedName implementationConfigurationName() {
 			return INSTANCE.implementationConfigurationName().forBinary(binary);
 		}
@@ -108,6 +112,10 @@ public final class CppNames {
 
 		public FullyQualifiedName apiConfigurationName() {
 			return INSTANCE.apiConfigurationName().forComponent(component);
+		}
+
+		public FullyQualifiedName assembleTaskName() {
+			return INSTANCE.assembleTaskName().forComponent(component);
 		}
 
 		@Override
@@ -284,6 +292,22 @@ public final class CppNames {
 	/*public*/ ForBinaryBuilder installTaskName() {
 		return binary -> ElementName.taskName("install").qualifiedBy(qualifyingName(binary));
 	}
+
+	/*public*/ interface AssembleTaskNameBuilder extends ForComponentBuilder, ForBinaryBuilder {}
+
+	/*public*/ AssembleTaskNameBuilder assembleTaskName() {
+		return new AssembleTaskNameBuilder() {
+			@Override
+			public FullyQualifiedName forBinary(CppBinary binary) {
+				return ElementName.taskName("assemble").qualifiedBy(qualifyingName(binary));
+			}
+
+			@Override
+			public FullyQualifiedName forComponent(CppComponent component) {
+				return ElementName.taskName("assemble").qualifiedBy(qualifyingName(component));
+			}
+		};
+	}
 	//endregion
 
 	//region C++ component names
@@ -331,6 +355,21 @@ public final class CppNames {
 	 */
 	public static String apiConfigurationName(CppComponent component) {
 		return of(component).apiConfigurationName().toString();
+	}
+
+	/**
+	 * Returns the <code>assemble<i>QualifyingName</i></code> task name.
+	 * For example:
+	 * <ul>
+	 *   <li>assemble - for {@link CppLibrary} or {@link CppApplication}</li>
+	 *   <li>assembleTest - for {@link CppTestSuite}</li>
+	 * </ul>
+	 *
+	 * @param component  the C++ component object that qualify the task name, must not be null
+	 * @return a task name
+	 */
+	public static String assembleTaskName(CppComponent component) {
+		return of(component).assembleTaskName().toString();
 	}
 	//endregion
 
@@ -480,6 +519,23 @@ public final class CppNames {
 	public static String createTaskName(CppBinary binary) {
 		return of(binary).createTaskName().toString();
 	}
+
+	/**
+	 * Returns the <code>assemble<i>QualifyingName</i></code> task name.
+	 * For example:
+	 * <ul>
+	 *   <li>assemble<u>Release</u></li>
+	 *   <li>assemble<u>LinuxDebug</u></li>
+	 *   <li>assemble<u>Test</u></li>
+	 * </ul>
+	 *
+	 * @param binary  the C++ binary object that qualify the task name, must not be null
+	 * @return a task name
+	 */
+	public static String assembleTaskName(CppBinary binary) {
+		return of(binary).assembleTaskName().toString();
+	}
+
 
 	/**
 	 * Returns the <code>install<i>QualifyingName</i></code> task name.

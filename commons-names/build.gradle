@@ -5,7 +5,7 @@ plugins {
 	id 'java-gradle-plugin' // for gradle-testkit support, should not be required
 }
 
-version = '1.1'
+version = '1.2'
 description = 'Gradle domain object naming made easy.'
 
 dependencies {

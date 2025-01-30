@@ -165,6 +165,14 @@ class CppNamesFunctionalTests {
 		}
 
 		abstract Expression installTaskNames();
+
+		@Test
+		void testAssembleTaskName() {
+			buildFile.append(verifyThat("components.withType(CppBinary).collect { assembleTaskName(it) } == " + assembleTaskNames().toString(GradleDsl.GROOVY)));
+			runner.build();
+		}
+
+		abstract Expression assembleTaskNames();
 	}
 
 	interface ExpectedNames {
@@ -396,6 +404,11 @@ class CppNamesFunctionalTests {
 			Expression installTaskNames() {
 				return listOf(string("installDebugShared"), string("installDebugStatic"), string("installReleaseShared"), string("installReleaseStatic"));
 			}
+
+			@Override
+			Expression assembleTaskNames() {
+				return listOf(string("assembleDebugShared"), string("assembleDebugStatic"), string("assembleReleaseShared"), string("assembleReleaseStatic"));
+			}
 		}
 	}
 
@@ -566,6 +579,11 @@ class CppNamesFunctionalTests {
 			Expression installTaskNames() {
 				return listOf(string("installDebugAarch64"), string("installDebugX86"), string("installReleaseAarch64"), string("installReleaseX86"));
 			}
+
+			@Override
+			Expression assembleTaskNames() {
+				return listOf(string("assembleDebugAarch64"), string("assembleDebugX86"), string("assembleReleaseAarch64"), string("assembleReleaseX86"));
+			}
 		}
 	}
 
@@ -735,6 +753,11 @@ class CppNamesFunctionalTests {
 			@Override
 			Expression installTaskNames() {
 				return listOf(string("installTestLinux"));
+			}
+
+			@Override
+			Expression assembleTaskNames() {
+				return listOf(string("assembleTestLinux"));
 			}
 		}
 	}
