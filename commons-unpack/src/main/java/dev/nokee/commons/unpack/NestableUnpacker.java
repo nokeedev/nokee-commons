@@ -17,10 +17,10 @@ package dev.nokee.commons.unpack;
 
 import javax.annotation.Nullable;
 
-public final class NestableUnpacker implements Unpacker {
-	private final Unpacker delegate;
+public final class NestableUnpacker implements UnpackerEx {
+	private final UnpackerEx delegate;
 
-	public NestableUnpacker(Unpacker delegate) {
+	public NestableUnpacker(UnpackerEx delegate) {
 		this.delegate = delegate;
 	}
 

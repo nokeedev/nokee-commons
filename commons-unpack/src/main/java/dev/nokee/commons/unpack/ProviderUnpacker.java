@@ -19,7 +19,7 @@ import org.gradle.api.provider.Provider;
 
 import javax.annotation.Nullable;
 
-public final class ProviderUnpacker implements Unpacker {
+public final class ProviderUnpacker implements UnpackerEx {
 	@Nullable
 	@Override
 	public Object unpack(@Nullable Object target) {

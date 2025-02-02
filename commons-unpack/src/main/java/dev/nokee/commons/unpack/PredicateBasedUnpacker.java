@@ -21,11 +21,11 @@ import javax.annotation.Nullable;
 import java.util.function.Predicate;
 
 @EqualsAndHashCode
-public final class PredicateBasedUnpacker implements Unpacker {
-	private final Unpacker delegate;
+public final class PredicateBasedUnpacker implements UnpackerEx {
+	private final UnpackerEx delegate;
 	private final Predicate<Object> predicate;
 
-	public PredicateBasedUnpacker(Unpacker delegate, Predicate<Object> predicate) {
+	public PredicateBasedUnpacker(UnpackerEx delegate, Predicate<Object> predicate) {
 		this.delegate = delegate;
 		this.predicate = predicate;
 	}

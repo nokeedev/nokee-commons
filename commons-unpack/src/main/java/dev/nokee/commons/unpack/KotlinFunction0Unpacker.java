@@ -18,7 +18,7 @@ package dev.nokee.commons.unpack;
 import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
 
-public final class KotlinFunction0Unpacker implements Unpacker {
+public final class KotlinFunction0Unpacker implements UnpackerEx {
 	private static final Class<?> KOTLIN_FUNCTION0_CLASS = loadKotlinFunction0Class();
 
 	@Nullable

@@ -19,17 +19,17 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public final class CompositeUnpacker implements Unpacker {
-	private final Collection<Unpacker> unpackers = new ArrayList<>();
+public final class CompositeUnpacker implements UnpackerEx {
+	private final Collection<UnpackerEx> unpackers = new ArrayList<>();
 
-	public CompositeUnpacker(Iterable<Unpacker> unpackers) {
+	public CompositeUnpacker(Iterable<UnpackerEx> unpackers) {
 		unpackers.forEach(this.unpackers::add);
 	}
 
 	@Nullable
 	@Override
 	public Object unpack(@Nullable Object target) {
-		for (Unpacker unpacker : unpackers) {
+		for (UnpackerEx unpacker : unpackers) {
 			if (unpacker.canUnpack(target)) {
 				return unpacker.unpack(target);
 			}

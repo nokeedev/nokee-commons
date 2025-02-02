@@ -2,7 +2,7 @@ package dev.nokee.commons.unpack;
 
 import javax.annotation.Nullable;
 
-public final class NullUnpacker implements Unpacker {
+final class NullUnpacker implements UnpackerEx {
 	@Nullable
 	@Override
 	public Object unpack(@Nullable Object target) {

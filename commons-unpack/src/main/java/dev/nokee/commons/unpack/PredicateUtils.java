@@ -23,6 +23,6 @@ public final class PredicateUtils {
 	private PredicateUtils() {}
 
 	public static <T> Predicate<T> until(Class<?> type) {
-		return new NotPredicate<>(instanceOf(type));
+		return instanceOf(type).negate()::test;
 	}
 }

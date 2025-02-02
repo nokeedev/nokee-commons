@@ -18,7 +18,7 @@ package dev.nokee.commons.unpack;
 import javax.annotation.Nullable;
 import java.util.concurrent.Callable;
 
-public final class CallableUnpacker implements Unpacker {
+public final class CallableUnpacker implements UnpackerEx {
 	@Nullable
 	@Override
 	public Object unpack(@Nullable Object target) {

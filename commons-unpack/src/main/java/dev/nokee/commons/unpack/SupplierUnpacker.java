@@ -18,7 +18,7 @@ package dev.nokee.commons.unpack;
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
-public final class SupplierUnpacker implements Unpacker {
+public final class SupplierUnpacker implements UnpackerEx {
 	@Nullable
 	@Override
 	public Object unpack(@Nullable Object target) {

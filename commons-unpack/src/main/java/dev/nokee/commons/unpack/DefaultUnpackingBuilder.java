@@ -22,9 +22,9 @@ import java.util.function.Predicate;
 
 @EqualsAndHashCode
 public final class DefaultUnpackingBuilder<T> implements DeferredUtils.UnpackingBuilder<T> {
-	private final Unpacker unpacker;
+	private final UnpackerEx unpacker;
 
-	public DefaultUnpackingBuilder(Unpacker unpacker) {
+	public DefaultUnpackingBuilder(UnpackerEx unpacker) {
 		this.unpacker = unpacker;
 	}
 

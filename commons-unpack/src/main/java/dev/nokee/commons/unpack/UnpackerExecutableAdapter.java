@@ -21,9 +21,9 @@ import javax.annotation.Nullable;
 
 @EqualsAndHashCode
 public final class UnpackerExecutableAdapter<T> implements Executable<T> {
-	private final Unpacker unpacker;
+	private final UnpackerEx unpacker;
 
-	public UnpackerExecutableAdapter(Unpacker unpacker) {
+	public UnpackerExecutableAdapter(UnpackerEx unpacker) {
 		this.unpacker = unpacker;
 	}
 

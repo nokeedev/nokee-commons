@@ -25,15 +25,15 @@ import java.util.*;
 import java.util.function.Predicate;
 
 public final class DeferredUtils {
-	public static final Unpacker IDENTITY_UNPACKER = new IdentityUnpacker();
-	private static final Unpacker NESTABLE_DEFERRED = new NestableUnpacker(new CompositeUnpacker(Arrays.asList(new CallableUnpacker(), new SupplierUnpacker(), new KotlinFunction0Unpacker())));
-	private static final Unpacker DEFAULT_UNPACKER = new CompositeUnpacker(Arrays.asList(new NullUnpacker(), NESTABLE_DEFERRED, new ProviderUnpacker()));
+	public static final UnpackerEx IDENTITY_UNPACKER = new IdentityUnpacker();
+	private static final UnpackerEx NESTABLE_DEFERRED = new NestableUnpacker(new CompositeUnpacker(Arrays.asList(new CallableUnpacker(), new SupplierUnpacker(), new KotlinFunction0Unpacker())));
+	private static final UnpackerEx DEFAULT_UNPACKER = new CompositeUnpacker(Arrays.asList(new NullUnpacker(), NESTABLE_DEFERRED, new ProviderUnpacker()));
 
-	public static Unpacker nestableDeferred() {
+	public static UnpackerEx nestableDeferred() {
 		return NESTABLE_DEFERRED;
 	}
 
-	public static Unpacker deferred() {
+	public static UnpackerEx deferred() {
 		return DEFAULT_UNPACKER;
 	}
 
@@ -49,7 +49,7 @@ public final class DeferredUtils {
 		return deferred().unpack(deferred);
 	}
 
-	public static <T> UnpackingBuilder<T> unpack(Unpacker unpacker) {
+	public static <T> UnpackingBuilder<T> unpack(UnpackerEx unpacker) {
 		return new DefaultUnpackingBuilder<>(unpacker);
 	}
 
@@ -88,7 +88,7 @@ public final class DeferredUtils {
 		return new FlatUnpackBuilder<>(DEFAULT_FLATTENER, DEFAULT_UNPACKER);
 	}
 
-	public static <T> UnpackingBuilder<List<T>> flatUnpack(Unpacker unpacker) {
+	public static <T> UnpackingBuilder<List<T>> flatUnpack(UnpackerEx unpacker) {
 		return new FlatUnpackBuilder<>(DEFAULT_FLATTENER, unpacker);
 	}
 
@@ -111,7 +111,7 @@ public final class DeferredUtils {
 
 	public interface FlatteningBuilder extends ConditionalBuilder<List<Object>>, Executable<List<Object>> {
 		UnpackingBuilder<List<Object>> unpack();
-		UnpackingBuilder<List<Object>> unpack(Unpacker f);
+		UnpackingBuilder<List<Object>> unpack(UnpackerEx f);
 	}
 
 	@EqualsAndHashCode
@@ -138,7 +138,7 @@ public final class DeferredUtils {
 		}
 
 		@Override
-		public UnpackingBuilder<List<Object>> unpack(Unpacker unpacker) {
+		public UnpackingBuilder<List<Object>> unpack(UnpackerEx unpacker) {
 			return new FlatUnpackBuilder<>(flattener, unpacker);
 		}
 
@@ -153,9 +153,9 @@ public final class DeferredUtils {
 	@EqualsAndHashCode
 	public static final class FlatUnpackBuilder<T> implements UnpackingBuilder<List<T>> {
 		private final Flattener flattener;
-		private final Unpacker unpacker;
+		private final UnpackerEx unpacker;
 
-		public FlatUnpackBuilder(Flattener flattener, Unpacker unpacker) {
+		public FlatUnpackBuilder(Flattener flattener, UnpackerEx unpacker) {
 			this.flattener = flattener;
 			this.unpacker = unpacker;
 		}
@@ -181,10 +181,10 @@ public final class DeferredUtils {
 	@EqualsAndHashCode
 	public static final class FlatUnpackWhileExecutable<T> implements Executable<List<T>> {
 		private final Flattener flattener;
-		private final Unpacker unpacker;
+		private final UnpackerEx unpacker;
 		private final Predicate<Object> predicate;
 
-		public FlatUnpackWhileExecutable(Flattener flattener, Unpacker unpacker, Predicate<Object> predicate) {
+		public FlatUnpackWhileExecutable(Flattener flattener, UnpackerEx unpacker, Predicate<Object> predicate) {
 			this.flattener = flattener;
 			this.unpacker = unpacker;
 			this.predicate = predicate;
@@ -198,7 +198,7 @@ public final class DeferredUtils {
 		}
 	}
 
-	private static List<Object> flatUnpackWhile(@Nullable Object deferred, Flattener flattener, Unpacker unpacker, Predicate<Object> predicate) {
+	private static List<Object> flatUnpackWhile(@Nullable Object deferred, Flattener flattener, UnpackerEx unpacker, Predicate<Object> predicate) {
 		if (deferred == null) {
 			return ImmutableList.of();
 		}

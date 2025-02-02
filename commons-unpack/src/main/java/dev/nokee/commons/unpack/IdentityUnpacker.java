@@ -17,7 +17,7 @@ package dev.nokee.commons.unpack;
 
 import javax.annotation.Nullable;
 
-public final class IdentityUnpacker implements Unpacker {
+public final class IdentityUnpacker implements UnpackerEx {
 	@Nullable
 	@Override
 	public Object unpack(@Nullable Object target) {

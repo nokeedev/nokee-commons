@@ -9,7 +9,7 @@ import java.util.Objects;
  * <p>A packed object is implementation specific and doesn't represent any specific types.
  * For example, a packer may target Java {@code Callable}, Gradle {@code Provider} or Kotlin {@code Function}.
  */
-public interface Unpacker {
+public interface UnpackerEx {
 	@Nullable
 	Object unpack(@Nullable Object target);
 
