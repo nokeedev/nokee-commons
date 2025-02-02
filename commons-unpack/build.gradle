@@ -1,0 +1,13 @@
+plugins {
+	id 'java-library'
+}
+
+def lombokVersion = '1.18.24'
+def guavaVersion = '31.0.1-jre'
+
+dependencies {
+	implementation gradleApi('6.2.1')
+	compileOnly "org.projectlombok:lombok:${lombokVersion}"
+	annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+	implementation "com.google.guava:guava:${guavaVersion}"
+}
