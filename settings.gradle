@@ -1,3 +1,7 @@
+pluginManagement {
+	includeBuild 'gradle/plugins/nokeebuild-plugins'
+}
+
 rootProject.name = 'nokee-commons'
 
 include 'commons-backports'
