@@ -184,6 +184,14 @@ public final class ProviderUtils {
 		return new ProviderOfCollectionTransformer<>(() -> containerFactory.transform((Class<ElementType>) Object.class));
 	}
 
+	/**
+	 * Adapts a map property to a JDK map.
+	 *
+	 * @param property  the map property to adapt
+	 * @return a JDK map backed by the map property
+	 * @param <K>  the map key type
+	 * @param <V>  the map value type
+	 */
 	public static <K, V> Map<K, V> asJdkMap(MapProperty<K, V> property) {
 		return new JdkMapToMapPropertyAdapter<>(property);
 	}

@@ -1,5 +1,7 @@
 # Changelog
 
+## [1.3] - in development
+
 ## [1.2] - 2025-01-30
 
 This minor version adds missing C++ names for assemble task.

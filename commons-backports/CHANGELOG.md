@@ -1,5 +1,7 @@
 # Changelog
 
+## [1.2] - in development
+
 ## [1.1] - 2025-01-25
 
 This minor version align the implementation of the `DependencyBucket` with its latest counterpart as well as fix some bugs.
