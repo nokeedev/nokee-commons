@@ -1,0 +1,36 @@
+plugins {
+	id 'java-library'
+	id 'maven-publish'
+	id 'java-gradle-plugin'
+	id 'nokeebuild.use-junit-platform-in-test-suites'
+	id 'nokeebuild.use-latest-java-lts-in-test-suites'
+}
+
+version = '1.0'
+
+dependencies {
+	compileOnlyApi gradleApi('7.6.4')
+	compileOnly(project(':commons-backports')) { because 'ProviderConvertible' }
+}
+
+tasks.named('javadoc', Javadoc) {
+	options {
+		windowTitle 'Nokee Commons: Gradle'
+	}
+}
+
+testing {
+	suites {
+		test {
+			dependencies {
+				implementation gradleTestKit()
+				implementation 'dev.gradleplugins:gradle-build-script'
+				implementation project(':commons-hamcrest')
+				implementation libs.mockito.core
+				implementation libs.apache.commons.io
+				implementation libs.mockito.junit
+				implementation libs.hamcrest.optional
+			}
+		}
+	}
+}
