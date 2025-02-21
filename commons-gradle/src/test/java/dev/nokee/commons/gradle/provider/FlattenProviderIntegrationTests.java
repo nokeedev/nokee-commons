@@ -1,11 +1,8 @@
 package dev.nokee.commons.gradle.provider;
 
-import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.provider.Provider;
-import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,7 +31,7 @@ class FlattenProviderIntegrationTests {
 		TaskProvider<Task> innerProvider = project.getTasks().register("inner");
 		Provider<TaskProvider<Task>> nestedProviders = project.provider(() -> innerProvider);
 
-//		assertThat(nestedProviders, buildDependencies(contains(named("outer"))));
+//		assertThat(nestedProviders, buildDependencies(emptyIterable()));
 		assertThat(flatten(nestedProviders), buildDependencies(contains(named("inner"))));
 	}
 }
