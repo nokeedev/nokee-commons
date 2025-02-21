@@ -6,8 +6,8 @@ rootProject.name = 'nokee-commons'
 
 include 'commons-backports'
 include 'commons-hamcrest'
-include 'commons-provider'
 include 'commons-names'
+include 'commons-gradle'
 
 includeBuild 'commons-build-script'
 
