@@ -6,7 +6,7 @@
 	url = git@github.com:nokeedev/nokee-commons-exemplar.git
 [submodule "commons-source-elements"]
 	path = commons-source-elements
-	url = https://github.com/gradle-plugins/source-elements
+	url = git@github.com:gradle-plugins/source-elements.git
 [submodule "nokeebuild-plugins"]
 	path = gradle/plugins/nokeebuild-plugins
 	url = git@github.com:nokeedev/nokeebuild-plugins.git
