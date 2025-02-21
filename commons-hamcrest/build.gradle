@@ -3,7 +3,12 @@ plugins {
 	id 'maven-publish'
 }
 
+version = '1.0-SNAPSHOT'
+description = 'Hamcrest matchers for common assertions.'
+
 dependencies {
 	api libs.hamcrest.core
+	implementation libs.apache.commons.io
+	implementation libs.apache.commons.lang3
 	compileOnlyApi gradleApi('6.2.1')
 }
