@@ -443,7 +443,7 @@ public abstract /*final*/ class Attributes {
 	 * Extension that you can register in your projects.
 	 *
 	 * <code>
-	 * ext.attributesOf = extensions.create("attributes", Attributes.Extension).&of
+	 * ext.attributesOf = extensions.create("attributes", Attributes.Extension).&amp;of
 	 *
 	 * dependencies {
 	 *     implementation(...) {
