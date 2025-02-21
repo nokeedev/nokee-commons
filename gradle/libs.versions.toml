@@ -1,5 +1,6 @@
 [libraries]
 mockito-core = { module = "org.mockito:mockito-core", version = "5.14.2" }
+mockito-junit = { module = "org.mockito:mockito-junit-jupiter", version = "5.14.2" }
 hamcrest-optional = { module = "com.spotify:hamcrest-optional", version = "1.3.2" }
 hamcrest-core = { module = "org.hamcrest:hamcrest", version = "2.2" }
 guava = { module = "com.google.guava:guava", version = "31.0.1-jre" }

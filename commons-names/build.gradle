@@ -1,8 +1,12 @@
 plugins {
 	id 'java-library'
+	id 'java-gradle-plugin'
 	id 'jvm-test-suite'
 	id 'maven-publish'
-	id 'java-gradle-plugin' // for gradle-testkit support, should not be required
+	id 'nokeebuild.use-junit-platform-in-test-suites'
+	id 'nokeebuild.use-latest-java-lts-in-test-suites'
+	id 'nokeebuild.publishing'
+	id 'nokeebuild.signing'
 }
 
 version = '1.3-SNAPSHOT'

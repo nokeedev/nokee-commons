@@ -1,15 +1,19 @@
 plugins {
 	id 'java-library'
-	id 'maven-publish'
 	id 'java-gradle-plugin'
+	id 'jvm-test-suite'
+	id 'maven-publish'
 	id 'nokeebuild.use-junit-platform-in-test-suites'
 	id 'nokeebuild.use-latest-java-lts-in-test-suites'
+	id 'nokeebuild.publishing'
+	id 'nokeebuild.signing'
 }
 
 version = '1.0'
+description = 'Gradle utilities for fast development'
 
 dependencies {
-	compileOnlyApi gradleApi('7.6.4')
+	compileOnlyApi gradleApi()
 	compileOnly(project(':commons-backports')) { because 'ProviderConvertible' }
 }
 

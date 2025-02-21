@@ -46,23 +46,6 @@ gradle.allprojects {
 			}
 		}
 	}
-	pluginManager.withPlugin('java-library') {
-		pluginManager.withPlugin('jvm-test-suite') {
-			testing {
-				suites {
-					test {
-						useJUnitJupiter('5.11.4')
-
-						targets.configureEach {
-							testTask.configure {
-								systemProperty 'junit.jupiter.tempdir.cleanup.mode.default', 'ON_SUCCESS'
-							}
-						}
-					}
-				}
-			}
-		}
-	}
 	pluginManager.withPlugin('maven-publish') {
 		publishing {
 			repositories {
@@ -76,42 +59,8 @@ gradle.allprojects {
 				pluginManager.withPlugin('java-library') {
 					java(MavenPublication) {
 						from(components.java)
-						pom {
-							name = "Nokee Commons Names";
-							description = project.provider { project.description }
-							url = 'https://nokee.dev'
-							licenses {
-								license {
-									name = 'The Apache License, Version 2.0'
-									url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
-								}
-							}
-							developers {
-								developer {
-									id = 'lacasseio'
-									name = 'Daniel Lacasse'
-									email = 'daniel@nokee.dev'
-								}
-							}
-							scm {
-								connection = 'scm:git:git://github.com/nokeedev/nokee-commons.git'
-								developerConnection = 'scm:git:ssh://github.com:nokeedev/nokee-commons.git'
-								url = 'https://github.com/nokeedev/nokee-commons/tree/master'
-							}
-						}
 					}
 				}
-			}
-		}
-
-		apply plugin: 'signing'
-		signing {
-			sign(publishing.publications.java)
-			if (!project.hasProperty('signing.secretKeyRingFile')) {
-				def signingKeyId = findProperty("signing.keyId").toString()
-				def signingKey = findProperty("signing.key").toString()
-				def signingPassword = findProperty("signing.password").toString()
-				useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
 			}
 		}
 	}
