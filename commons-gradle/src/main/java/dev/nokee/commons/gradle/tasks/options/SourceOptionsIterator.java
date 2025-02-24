@@ -56,5 +56,10 @@ public class SourceOptionsIterator<T> implements Iterator<SourceOptions<T>> {
 		<S> SourceOptions<S> withNarrowedType() {
 			return (SourceOptions<S>) this;
 		}
+
+		@Override
+		public String toString() {
+			return "source options of '" + getSourceFile().getAsFile().get() + "'";
+		}
 	}
 }

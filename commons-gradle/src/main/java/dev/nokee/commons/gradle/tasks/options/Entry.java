@@ -1,18 +1,22 @@
 package dev.nokee.commons.gradle.tasks.options;
 
+import dev.nokee.commons.gradle.tasks.TaskDependencyUtils;
 import org.gradle.api.Action;
+import org.gradle.api.Buildable;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.model.ObjectFactory;
+import org.gradle.api.tasks.TaskDependency;
 
 import javax.inject.Inject;
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Set;
 
 // Reprensent "source files" to action applied to "source options"
 public class Entry<T> implements Action<T>, SourceConfiguration {
-	private final Action<? super T> configureAction;
-	private FileCollection sourceCollection;
-	private Set<File> sourceFiles;
+	public final Action<? super T> configureAction;
+	private final FileCollection sourceCollection;
 
 	@Inject
 	public Entry(ObjectFactory objects, Object source, Action<? super T> configureAction) {
@@ -30,6 +34,20 @@ public class Entry<T> implements Action<T>, SourceConfiguration {
 		configureAction.execute(t);
 	}
 
+	@Override
+	public TaskDependency getBuildDependencies() {
+		if (configureAction instanceof Buildable) {
+			return ((Buildable) configureAction).getBuildDependencies();
+		} else {
+			try {
+				Method Buildable_getBuildDependencies = configureAction.getClass().getMethod("getBuildDependencies");
+				return (TaskDependency) Buildable_getBuildDependencies.invoke(configureAction);
+			} catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
+				return TaskDependencyUtils.empty();
+			}
+		}
+	}
+
 	public interface SourceDetails {
 		File getSourceFile();
 
@@ -37,12 +55,7 @@ public class Entry<T> implements Action<T>, SourceConfiguration {
 	}
 
 	public void execute(SourceDetails details) {
-		if (sourceFiles == null) {
-			sourceFiles = sourceCollection.getFiles();
-			sourceCollection = null;
-		}
-
-		if (sourceFiles.contains(details.getSourceFile())) {
+		if (sourceCollection.contains(details.getSourceFile())) {
 			details.thisEntryParticipateInTheConfiguration();
 		}
 	}
