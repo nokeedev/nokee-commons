@@ -493,7 +493,24 @@ public abstract /*final*/ class Attributes {
 				action.execute(objects.newInstance(Details.class, new MinimalAttributeContainer() {
 					@Override
 					public <T> void attribute(Attribute<T> key, T value) {
-						attributes.attribute(key, value);
+						try {
+							attributes.attribute(key, value);
+						} catch (IllegalArgumentException ex) {
+							if (ex.getMessage().startsWith("Cannot have two attributes with the same name but different types.")) {
+								for (Attribute<?> attribute : attributes.keySet()) {
+									if (attribute.getName().equals(key.getName()) && key.getType().equals(String.class)) {
+										if (Enum.class.isAssignableFrom(attribute.getType())) {
+											attribute((Attribute) attribute, Enum.valueOf((Class) attribute.getType(), (String) value));
+											return;
+										} else if (Named.class.isAssignableFrom(attribute.getType())) {
+											attribute((Attribute) attribute, objects.named((Class) attribute.getType(), (String) value));
+											return;
+										}
+									}
+								}
+							}
+							throw ex;
+						}
 					}
 
 					@Override

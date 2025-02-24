@@ -105,7 +105,7 @@ class AttributesFunctionalTests {
 		));
 
 		buildFile.append(verifyThat(
-			"subject.attributes.getAttribute(CppBinary.LINKAGE_ATTRIBUTE).name == Linkage.STATIC"
+			"subject.attributes.getAttribute(CppBinary.LINKAGE_ATTRIBUTE) == Linkage.STATIC"
 		));
 
 		runner.build();
