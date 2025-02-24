@@ -1,5 +1,7 @@
 # Changelog
 
+## [1.2] - in development
+
 ## [1.1] - 2025-02-24
 
 This minor version perform some bug fixes for the task options support.

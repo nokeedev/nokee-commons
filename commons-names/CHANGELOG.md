@@ -1,5 +1,7 @@
 # Changelog
 
+## [1.4] - in development
+
 ## [1.3] - 2025-02-24
 
 This minor version adds name for conventional clean task rule, i.e. `clean<TaskName>`.
