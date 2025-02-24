@@ -103,6 +103,20 @@ public final class TaskName extends NameSupport<TaskName> implements ElementName
 		return of(verb, object).toString();
 	}
 
+	/**
+	 * Returns the {@link TaskName} instance representing the clean task name based on the lifecycle Gradle rule for the specified task.
+	 *
+	 * @param taskName  the task name to clean
+	 * @return a qualifiable clean task name
+	 */
+	public static TaskName clean(TaskName taskName) {
+		if (taskName.verb == null) {
+			return taskName.withVerb("clean");
+		} else {
+			return taskName.withVerb("clean" + StringUtils.capitalize(taskName.verb));
+		}
+	}
+
 	@Override
 	public String toString() {
 		return scheme.format(this).using(NameBuilder::toStringCase);

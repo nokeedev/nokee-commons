@@ -2,6 +2,8 @@
 
 ## [1.3] - in development
 
+This minor version adds name for conventional clean task rule, i.e. `clean<TaskName>`.
+
 ## [1.2] - 2025-01-30
 
 This minor version adds missing C++ names for assemble task.
