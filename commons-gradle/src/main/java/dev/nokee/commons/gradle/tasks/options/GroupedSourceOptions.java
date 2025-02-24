@@ -26,7 +26,7 @@ public final class GroupedSourceOptions<T> implements SourceOptionsGrouped<T> {
 	}
 
 	@InputFiles
-	@PathSensitive(PathSensitivity.NONE)
+	@PathSensitive(PathSensitivity.NAME_ONLY)
 	public Collection<File> getSourceFiles() {
 		return sourceFiles;
 	}
