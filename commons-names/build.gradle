@@ -13,7 +13,7 @@ version = '1.3'
 description = 'Gradle domain object naming made easy.'
 
 dependencies {
-	compileOnlyApi gradleApi('6.2.1')
+	compileOnly gradleApi('6.2.1')
 }
 
 tasks.named('javadoc', Javadoc) {
