@@ -29,11 +29,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.*;
-import java.util.function.Function;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import static java.nio.file.Files.walkFileTree;
@@ -247,8 +248,16 @@ public final class FileSystemMatchers {
 		return allOf(anExistingDirectory(), aFile(new DescendantsFeature(containsInAnyOrder(descendantMatchers))));
 	}
 
+	public static Matcher<Object> hasDescendants(Matcher<Iterable<? super DescendantFile>> descendantMatchers) {
+		return allOf(anExistingDirectory(), aFile(new DescendantsFeature(descendantMatchers)));
+	}
+
 	public static Matcher<DescendantFile> withRelativePath(String path) {
-		return new FeatureMatcher<DescendantFile, String>(equalTo(path), "", "") {
+		return withRelativePath(equalTo(path));
+	}
+
+	public static Matcher<DescendantFile> withRelativePath(Matcher<? super String> pathMatcher) {
+		return new FeatureMatcher<DescendantFile, String>(pathMatcher, "", "") {
 			@Override
 			protected String featureValueOf(DescendantFile actual) {
 				return actual.getRelativePath();

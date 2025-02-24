@@ -45,7 +45,7 @@ public class With<T> extends BaseMatcher<T> {
 
 	/**
 	 * Decorates another Matcher, retaining its behaviour, but allowing tests to be slightly more expressive.
-	 * <p/>
+	 * <p>
 	 * For example:
 	 * <pre>assertThat(project, with(extension(named("test"))))</pre>
 	 * instead of:

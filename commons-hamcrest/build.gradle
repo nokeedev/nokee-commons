@@ -1,6 +1,11 @@
 plugins {
 	id 'java-library'
+	id 'jvm-test-suite'
 	id 'maven-publish'
+	id 'nokeebuild.use-junit-platform-in-test-suites'
+	id 'nokeebuild.use-latest-java-lts-in-test-suites'
+	id 'nokeebuild.publishing'
+	id 'nokeebuild.signing'
 }
 
 version = '1.0-SNAPSHOT'
