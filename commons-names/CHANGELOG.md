@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.4] - in development
+## [1.4] - 2025-02-25
 
 This minor version adds missing C++ names for symbols tasks, i.e. relocate main, extract and strip.
 
