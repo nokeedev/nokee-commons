@@ -79,6 +79,18 @@ public final class CppNames {
 			return INSTANCE.assembleTaskName().forBinary(binary);
 		}
 
+		public FullyQualifiedName relocateMainForBinaryTaskName() {
+			return INSTANCE.relocateMainForBinaryTaskName().forBinary(binary);
+		}
+
+		public FullyQualifiedName extractSymbolsTaskName() {
+			return INSTANCE.extractSymbolsTaskName().forBinary(binary);
+		}
+
+		public FullyQualifiedName stripSymbolsTaskName() {
+			return INSTANCE.stripSymbolsTaskName().forBinary(binary);
+		}
+
 		public FullyQualifiedName implementationConfigurationName() {
 			return INSTANCE.implementationConfigurationName().forBinary(binary);
 		}
@@ -291,6 +303,18 @@ public final class CppNames {
 
 	/*public*/ ForBinaryBuilder installTaskName() {
 		return binary -> ElementName.taskName("install").qualifiedBy(qualifyingName(binary));
+	}
+
+	/*public*/ ForBinaryBuilder relocateMainForBinaryTaskName() {
+		return binary -> ElementName.taskName("relocateMainFor").qualifiedBy(qualifyingName(binary));
+	}
+
+	/*public*/ ForBinaryBuilder extractSymbolsTaskName() {
+		return binary -> ElementName.taskName("extractSymbols").qualifiedBy(qualifyingName(binary));
+	}
+
+	/*public*/ ForBinaryBuilder stripSymbolsTaskName() {
+		return binary -> ElementName.taskName("stripSymbols").qualifiedBy(qualifyingName(binary));
 	}
 
 	/*public*/ interface AssembleTaskNameBuilder extends ForComponentBuilder, ForBinaryBuilder {}
@@ -551,6 +575,48 @@ public final class CppNames {
 	 */
 	public static String installTaskName(CppBinary binary) {
 		return of(binary).installTaskName().toString();
+	}
+
+	/**
+	 * Returns the <code>relocateMainFor<i>QualifyingName</i></code> task name.
+	 * For example:
+	 * <ul>
+	 *     <li>relocateMainFor<u>Test</u></li>
+	 * </ul>
+	 *
+	 * @param binary  the C++ test binary object that qualify the task name, must not be null
+	 * @return a task name
+	 */
+	public static String relocateMainForBinaryTaskName(CppTestExecutable binary) {
+		return of(binary).relocateMainForBinaryTaskName().toString();
+	}
+
+	/**
+	 * Returns the <code>extractSymbols<i>QualifyingName</i></code> task name.
+	 * For example:
+	 * <ul>
+	 *     <li>extractSymbols<u>Release</u></li>
+	 * </ul>
+	 *
+	 * @param binary  the C++ binary object that qualify the task name, must not be null
+	 * @return a task name
+	 */
+	public static String extractSymbolsTaskName(CppBinary binary) {
+		return of(binary).extractSymbolsTaskName().toString();
+	}
+
+	/**
+	 * Returns the <code>stripSymbols<i>QualifyingName</i></code> task name.
+	 * For example:
+	 * <ul>
+	 *     <li>stripSymbols<u>Release</u></li>
+	 * </ul>
+	 *
+	 * @param binary  the C++ binary object that qualify the task name, must not be null
+	 * @return a task name
+	 */
+	public static String stripSymbolsTaskName(CppBinary binary) {
+		return of(binary).stripSymbolsTaskName().toString();
 	}
 
 	/**

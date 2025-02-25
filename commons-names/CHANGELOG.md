@@ -2,6 +2,8 @@
 
 ## [1.4] - in development
 
+This minor version adds missing C++ names for symbols tasks, i.e. relocate main, extract and strip.
+
 ## [1.3] - 2025-02-24
 
 This minor version adds name for conventional clean task rule, i.e. `clean<TaskName>`.
