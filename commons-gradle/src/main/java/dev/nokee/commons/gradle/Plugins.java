@@ -1,12 +1,15 @@
 package dev.nokee.commons.gradle;
 
+import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.initialization.Settings;
 import org.gradle.api.plugins.PluginAware;
 
 import javax.inject.Inject;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Represents the plugins of a {@link PluginAware} object.
@@ -59,6 +62,50 @@ public abstract /*final*/ class Plugins<T extends PluginAware> {
 	 */
 	public void whenPluginApplied(String pluginId, Runnable callback) {
 		target.getPlugins().withId(pluginId, __ -> callback.run());
+	}
+
+	/**
+	 * Registers a callback when Gradle finish applying all specified plugin type or id.
+	 *
+	 * @param pluginTypesOrIds  the plugin type or id to watch
+	 * @param callback  the plugin listener to call back
+	 */
+	public void whenAllPluginsApplied(Iterable<?> pluginTypesOrIds, Runnable callback) {
+		final Set<Object> pluginsToApply = new HashSet<>();
+		pluginTypesOrIds.forEach(pluginsToApply::add);
+
+		for (Object pluginTypesOrId : pluginTypesOrIds) {
+			if (pluginTypesOrId instanceof String) {
+				target.getPlugins().withId((String) pluginTypesOrId, new AllPluginApplyGateway(pluginsToApply, pluginTypesOrId, callback));
+			} else if (pluginTypesOrId instanceof Class) {
+				@SuppressWarnings({"unchecked", "rawtypes"})
+				final Class<? extends Plugin> pluginType = (Class<? extends Plugin>) pluginTypesOrId;
+				target.getPlugins().withType(pluginType, new AllPluginApplyGateway(pluginsToApply, pluginTypesOrId, callback));
+			} else {
+				throw new IllegalArgumentException("Plugin notation " + pluginTypesOrId + " not supported. Only plugin id (String) or plugin type (Class) are supported.");
+			}
+		}
+	}
+
+	@SuppressWarnings("rawtypes")
+	private static final class AllPluginApplyGateway implements Action<Plugin> {
+		private final Set<Object> pluginsToApply;
+		private final Object pluginTypesOrId;
+		private final Runnable callback;
+
+		private AllPluginApplyGateway(Set<Object> pluginsToApply, Object pluginTypesOrId, Runnable callback) {
+			this.pluginsToApply = pluginsToApply; // must keep a reference
+			this.pluginTypesOrId = pluginTypesOrId;
+			this.callback = callback;
+		}
+
+		@Override
+		public void execute(Plugin tPlugin) {
+			pluginsToApply.remove(pluginTypesOrId);
+			if (pluginsToApply.isEmpty()) {
+				callback.run();
+			}
+		}
 	}
 
 	/**
