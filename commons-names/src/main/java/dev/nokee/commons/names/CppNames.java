@@ -91,6 +91,10 @@ public final class CppNames {
 			return INSTANCE.stripSymbolsTaskName().forBinary(binary);
 		}
 
+		public FullyQualifiedName runTaskName() {
+			return INSTANCE.runTaskName().forBinary(binary);
+		}
+
 		public FullyQualifiedName implementationConfigurationName() {
 			return INSTANCE.implementationConfigurationName().forBinary(binary);
 		}
@@ -315,6 +319,10 @@ public final class CppNames {
 
 	/*public*/ ForBinaryBuilder stripSymbolsTaskName() {
 		return binary -> ElementName.taskName("stripSymbols").qualifiedBy(qualifyingName(binary));
+	}
+
+	/*public*/ ForBinaryBuilder runTaskName() {
+		return binary -> ElementName.taskName("run").qualifiedBy(qualifyingName(binary));
 	}
 
 	/*public*/ interface AssembleTaskNameBuilder extends ForComponentBuilder, ForBinaryBuilder {}
@@ -617,6 +625,20 @@ public final class CppNames {
 	 */
 	public static String stripSymbolsTaskName(CppBinary binary) {
 		return INSTANCE.stripSymbolsTaskName().forBinary(binary).toString();
+	}
+
+	/**
+	 * Returns the <code>run<i>QualifyingName</i></code> task name.
+	 * For example:
+	 * <ul>
+	 *     <li>run<u>Test</u></li>
+	 * </ul>
+	 *
+	 * @param binary  the C++ binary object that qualify the task name, must not be null
+	 * @return a task name
+	 */
+	public static String runTaskName(CppTestExecutable binary) {
+		return INSTANCE.runTaskName().forBinary(binary).toString();
 	}
 
 	/**
