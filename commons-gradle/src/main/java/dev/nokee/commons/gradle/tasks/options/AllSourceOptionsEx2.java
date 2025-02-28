@@ -4,14 +4,13 @@ import dev.nokee.commons.gradle.Factory;
 import org.gradle.api.Action;
 import org.gradle.api.file.FileTree;
 import org.gradle.api.model.ObjectFactory;
-import org.gradle.api.provider.ListProperty;
-import org.gradle.api.provider.Property;
-import org.gradle.api.provider.Provider;
-import org.gradle.api.provider.ProviderConvertible;
+import org.gradle.api.provider.*;
 import org.gradle.api.reflect.TypeOf;
+import org.gradle.api.tasks.Internal;
 
 import javax.inject.Inject;
 import java.io.File;
+import java.util.Set;
 
 import static dev.nokee.commons.gradle.TransformerUtils.traverse;
 
@@ -21,6 +20,7 @@ public abstract class AllSourceOptionsEx2<T> implements ProviderConvertible<Iter
 	private final Property<OptionCache<T>> options;
 	private final ObjectFactory objects;
 	private final Property<CacheableEntries<T>> cEntries;
+	private final SetProperty<Object> depEntries;
 
 	@Inject
 	public AllSourceOptionsEx2(ObjectFactory objects, Factory<T> optionsFactory) {
@@ -43,6 +43,20 @@ public abstract class AllSourceOptionsEx2<T> implements ProviderConvertible<Iter
 		this.cEntries.set(entries.map(it -> new CacheableEntries<>(it, options.get())));
 		this.cEntries.finalizeValueOnRead();
 		this.cEntries.disallowChanges();
+
+		this.depEntries = objects.setProperty(Object.class);
+		this.depEntries.set(entriesProp.map(traverse(it -> {
+			T opt = optionsFactory.create();
+			it.execute(opt);
+			return opt;
+		})));
+		this.depEntries.finalizeValueOnRead();
+		this.depEntries.disallowChanges();
+	}
+
+	@Internal
+	public Provider<Set<Object>> getDepEntries() {
+		return depEntries;
 	}
 
 	public void configure(Object sourcePaths, Action<? super T> configureAction) {

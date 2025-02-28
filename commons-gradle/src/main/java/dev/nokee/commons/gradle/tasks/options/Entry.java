@@ -34,20 +34,6 @@ public class Entry<T> implements Action<T>, SourceConfiguration {
 		configureAction.execute(t);
 	}
 
-	@Override
-	public TaskDependency getBuildDependencies() {
-		if (configureAction instanceof Buildable) {
-			return ((Buildable) configureAction).getBuildDependencies();
-		} else {
-			try {
-				Method Buildable_getBuildDependencies = configureAction.getClass().getMethod("getBuildDependencies");
-				return (TaskDependency) Buildable_getBuildDependencies.invoke(configureAction);
-			} catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
-				return TaskDependencyUtils.empty();
-			}
-		}
-	}
-
 	public interface SourceDetails {
 		File getSourceFile();
 
