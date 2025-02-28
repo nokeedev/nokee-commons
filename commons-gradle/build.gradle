@@ -10,7 +10,7 @@ plugins {
 	id 'nokeebuild.signing'
 }
 
-version = '1.2-SNAPSHOT'
+version = '1.2'
 description = 'Gradle utilities for fast development'
 
 dependencies {
@@ -20,7 +20,7 @@ dependencies {
 	testFixturesCompileOnlyApi gradleApi()
 	testFixturesImplementation 'org.opentest4j:opentest4j:1.3.0'
 	testFixturesImplementation project(':commons-hamcrest')
-	testFixturesApi 'dev.nokee.commons:test-gradle-projects:latest.release'
+	testFixturesApi 'dev.nokee.commons:test-gradle-projects:latest.integration'
 	testFixturesApi 'dev.gradleplugins:gradle-runner-kit:latest.release'
 	testFixturesImplementation testFixtures('dev.gradleplugins:gradle-runner-kit:latest.release')
 	testFixturesApi 'org.junit.jupiter:junit-jupiter-api:5.12.0'
