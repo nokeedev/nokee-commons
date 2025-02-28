@@ -1,6 +1,11 @@
 # Changelog
 
-## [1.2] - in development
+## [1.2] - 2025-02-28
+
+This minor version perform some bug fixes for the task options support.
+It also adds `Plugins#whenAllPluginsApplied` to support waiting for multiple plugin availability.
+It adds backward support to the `SpecUtils#named` for `Task` and `Configuration`.
+It changes the `SourceFileVisitor` to reuse the same instance, users should create a copy of the `SourceFile` to use outside the visitor, if needed.
 
 ## [1.1] - 2025-02-24
 

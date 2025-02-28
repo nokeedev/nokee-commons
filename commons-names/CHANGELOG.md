@@ -1,6 +1,9 @@
 # Changelog
 
-## [1.5] - in development
+## [1.5] - 2025-02-28
+
+This minor version adds missing C++ names for run task.
+It also reduces object creation when building C++ names.
 
 ## [1.4] - 2025-02-25
 
