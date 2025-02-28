@@ -21,9 +21,10 @@ import org.gradle.api.tasks.TaskDependency;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.stream.StreamSupport;
 
-import static dev.nokee.commons.gradle.provider.ProviderUtils.asJdkOptional;
 import static dev.nokee.commons.gradle.TransformerUtils.toSet;
+import static dev.nokee.commons.gradle.provider.ProviderUtils.asJdkOptional;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
@@ -47,9 +48,9 @@ public final class TaskDependencyUtils {
 
 	/** @see #composite(TaskDependency...) */
 	private static final class CompositeTaskDependency implements TaskDependency {
-		private final Collection<TaskDependency> taskDependencies;
+		private final Iterable<TaskDependency> taskDependencies;
 
-		private CompositeTaskDependency(Collection<TaskDependency> taskDependencies) {
+		private CompositeTaskDependency(Iterable<TaskDependency> taskDependencies) {
 			this.taskDependencies = taskDependencies;
 		}
 
@@ -64,7 +65,7 @@ public final class TaskDependencyUtils {
 
 		@Override
 		public String toString() {
-			return "TaskDependencyUtils.composite(" + taskDependencies.stream().map(Object::toString).collect(joining(", ")) + ")";
+			return "TaskDependencyUtils.composite(" + StreamSupport.stream(taskDependencies.spliterator(), false).map(Object::toString).collect(joining(", ")) + ")";
 		}
 	}
 
