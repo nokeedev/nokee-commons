@@ -1,11 +1,9 @@
 package dev.nokee.commons.fixtures;
 
 import dev.nokee.commons.gradle.tasks.SourceTask;
-import dev.nokee.commons.gradle.tasks.options.SourceOptions;
 import dev.nokee.commons.gradle.tasks.options.SourceOptionsAware;
+import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.FileTree;
-import org.hamcrest.FeatureMatcher;
-import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.opentest4j.TestAbortedException;
@@ -13,9 +11,12 @@ import org.opentest4j.TestAbortedException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import static dev.nokee.commons.fixtures.ActionTestUtils.doSomething;
+import static dev.nokee.commons.fixtures.SourceOptionsMatchers.sourceFile;
 import static dev.nokee.commons.hamcrest.With.with;
 import static dev.nokee.commons.hamcrest.gradle.provider.NoValueProviderMatcher.noValueProvider;
 import static dev.nokee.commons.hamcrest.gradle.provider.PresentProviderMatcher.presentProvider;
@@ -132,12 +133,41 @@ public abstract class SourceOptionsAwareIntegrationTester<T> {
 		assertThat(subject.getOptions().forSource(file2()), noValueProvider());
 	}
 
-	static Matcher<SourceOptions<?>> sourceFile(File file) {
-		return new FeatureMatcher<SourceOptions<?>, File>(equalTo(file), "", "") {
-			@Override
-			protected File featureValueOf(SourceOptions<?> actual) {
-				return actual.getSourceFile().get().getAsFile();
-			}
-		};
+	@Test
+	public void canIncludeFileTree(@Subject SourceOptionsAware<T> subject) throws IOException {
+		Path projectDirectory = subject.getProject().getProjectDir().toPath();
+		Path dir = Files.createDirectories(projectDirectory.resolve("dir"));
+		Path file1 = Files.createFile(dir.resolve("file1"));
+		Path file2 = Files.createFile(dir.resolve("file2"));
+
+		FileTree files = subject.getProject().fileTree(dir);
+		subject.source(files, doSomething());
+
+		assertThat(subject.getOptions().forAllSources(), providerOf(containsInAnyOrder(with(sourceFile(file1.toFile())), with(sourceFile(file2.toFile())))));
+	}
+
+	@Test
+	public void canIncludeFileCollection(@Subject SourceOptionsAware<T> subject) throws IOException {
+		Path projectDirectory = subject.getProject().getProjectDir().toPath();
+		Path dir = Files.createDirectories(projectDirectory.resolve("dir"));
+		Path file1 = Files.createFile(dir.resolve("file1"));
+		Path file2 = Files.createFile(dir.resolve("file2"));
+
+		FileCollection files = subject.getProject().files(file1, file2);
+		subject.source(files, doSomething());
+
+		assertThat(subject.getOptions().forAllSources(), providerOf(contains(with(sourceFile(file1.toFile())), with(sourceFile(file2.toFile())))));
+	}
+
+	@Test
+	public void canIncludeCallable(@Subject SourceOptionsAware<T> subject) throws IOException {
+		Path projectDirectory = subject.getProject().getProjectDir().toPath();
+		Path dir = Files.createDirectories(projectDirectory.resolve("dir"));
+		Path file1 = Files.createFile(dir.resolve("file1"));
+		Path file2 = Files.createFile(dir.resolve("file2"));
+
+		subject.source((Callable<?>) () -> List.of(file1, file2), doSomething());
+
+		assertThat(subject.getOptions().forAllSources(), providerOf(contains(with(sourceFile(file1.toFile())), with(sourceFile(file2.toFile())))));
 	}
 }

@@ -41,6 +41,30 @@ public interface SourceOptionsAwareFunctionalTester {
 	}
 
 	@Test
+	default void moveFileFromOneBucketToAnother(TaskUnderTest taskUnderTest, @TempDir Path testDirectory, @GradleProject("project-with-source-options") GradleBuildElement project) {
+		System.out.println("Test Directory: " + testDirectory);
+
+		GradleBuildElement build = project.writeToDirectory(testDirectory);
+		GradleRunner runner = GradleRunner.create(gradleTestKit()).inDirectory(build.getLocation()).forwardOutput().withPluginClasspath();
+		BuildResult result;
+
+		build.getBuildFile().append(groovyDsl("""
+			subject.configure {
+				source([providers.gradleProperty('bucket1').orElse([]), file3]) { /* do something */ }
+				source([providers.gradleProperty('bucket2').orElse([]), file4]) { /* do something */ }
+			}
+		""".stripIndent()));
+
+		result = runner.withArgument("-Pbucket1=src/main/cpp/join.cpp").withTasks(taskUnderTest.toString()).build();
+		result = runner.withArgument("-Pbucket1=src/main/cpp/join.cpp").withTasks(taskUnderTest.toString()).build();
+
+		assertThat(result.task(taskUnderTest.toString()).getOutcome(), equalTo(TaskOutcome.UP_TO_DATE));
+
+		result = runner.withArgument("-i").withArgument("-Pbucket2=src/main/cpp/join.cpp").withTasks(taskUnderTest.toString()).build();
+		assertThat(result, taskPerformsFullRebuild(taskUnderTest.toString()));
+	}
+
+	@Test
 	default void testAddingNoOpSourceOptionsDoesNotRenderOutOfDate(TaskUnderTest taskUnderTest, @TempDir Path testDirectory, @GradleProject("project-with-source-options") GradleBuildElement project) throws Exception {
 		System.out.println("Test Directory: " + testDirectory);
 
@@ -189,7 +213,6 @@ public interface SourceOptionsAwareFunctionalTester {
 		assertThat(result.task(taskUnderTest.toString()).getOutcome(), equalTo(TaskOutcome.UP_TO_DATE));
 	}
 
-	// TODO: Should we instead follow the Set<Object> getDependsOn() contract?
 	@Test
 	default void detectsTaskDependenciesFromSourceOptionsConfigurationViaBuildableContract(TaskUnderTest taskUnderTest, @TempDir Path testDirectory, @GradleProject("project-with-generated-source-options-on-generated-source") GradleBuildElement project) throws IOException {
 		System.out.println("Test Directory: " + testDirectory);
