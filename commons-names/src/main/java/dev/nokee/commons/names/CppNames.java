@@ -347,7 +347,7 @@ public final class CppNames {
 	 * @return a configuration name
 	 */
 	public static String cppApiElementsConfigurationName(CppComponent component) {
-		return of(component).cppApiElementsConfigurationName().toString();
+		return INSTANCE.cppApiElementsConfigurationName().forComponent(component).toString();
 	}
 
 	/**
@@ -363,7 +363,7 @@ public final class CppNames {
 	 * @see #implementationConfigurationName(CppBinary) for {@link CppBinary} variant of this configuration name
 	 */
 	public static String implementationConfigurationName(CppComponent component) {
-		return of(component).implementationConfigurationName().toString();
+		return INSTANCE.implementationConfigurationName().forComponent(component).toString();
 	}
 
 	/**
@@ -378,7 +378,7 @@ public final class CppNames {
 	 * @return a configuration name
 	 */
 	public static String apiConfigurationName(CppComponent component) {
-		return of(component).apiConfigurationName().toString();
+		return INSTANCE.apiConfigurationName().forComponent(component).toString();
 	}
 
 	/**
@@ -393,7 +393,7 @@ public final class CppNames {
 	 * @return a task name
 	 */
 	public static String assembleTaskName(CppComponent component) {
-		return of(component).assembleTaskName().toString();
+		return INSTANCE.assembleTaskName().forComponent(component).toString();
 	}
 	//endregion
 
@@ -412,7 +412,7 @@ public final class CppNames {
 	 * @return a configuration name
 	 */
 	public static String implementationConfigurationName(CppBinary binary) {
-		return of(binary).implementationConfigurationName().toString();
+		return INSTANCE.implementationConfigurationName().forBinary(binary).toString();
 	}
 
 	/**
@@ -428,7 +428,7 @@ public final class CppNames {
 	 * @return a configuration name
 	 */
 	public static String linkElementsConfigurationName(CppBinary binary) {
-		return of(binary).linkElementsConfigurationName().toString();
+		return INSTANCE.linkElementsConfigurationName().forBinary(binary).toString();
 	}
 
 	/**
@@ -444,7 +444,7 @@ public final class CppNames {
 	 * @return a configuration name
 	 */
 	public static String runtimeElementsConfigurationName(CppBinary binary) {
-		return of(binary).runtimeElementsConfigurationName().toString();
+		return INSTANCE.runtimeElementsConfigurationName().forBinary(binary).toString();
 	}
 
 	/**
@@ -460,7 +460,7 @@ public final class CppNames {
 	 * @return a configuration name
 	 */
 	public static String nativeLinkConfigurationName(CppBinary binary) {
-		return of(binary).nativeLinkConfigurationName().toString();
+		return INSTANCE.nativeLinkConfigurationName().forBinary(binary).toString();
 	}
 
 	/**
@@ -476,7 +476,7 @@ public final class CppNames {
 	 * @return a configuration name
 	 */
 	public static String nativeRuntimeConfigurationName(CppBinary binary) {
-		return of(binary).nativeRuntimeConfigurationName().toString();
+		return INSTANCE.nativeRuntimeConfigurationName().forBinary(binary).toString();
 	}
 
 	/**
@@ -492,7 +492,7 @@ public final class CppNames {
 	 * @return a task name
 	 */
 	public static String compileTaskName(CppBinary binary) {
-		return of(binary).compileTaskName().toString();
+		return INSTANCE.compileTaskName().forBinary(binary).toString();
 	}
 
 	/**
@@ -509,7 +509,7 @@ public final class CppNames {
 	 * @return a task name
 	 */
 	public static String compileTaskName(CppBinary binary, String language) {
-		return of(binary).compileTaskName(language).toString();
+		return INSTANCE.compileTaskName(language).forBinary(binary).toString();
 	}
 
 	/**
@@ -525,7 +525,7 @@ public final class CppNames {
 	 * @return a task name
 	 */
 	public static String linkTaskName(CppBinary binary) {
-		return of(binary).linkTaskName().toString();
+		return INSTANCE.linkTaskName().forBinary(binary).toString();
 	}
 
 	/**
@@ -541,7 +541,7 @@ public final class CppNames {
 	 * @return a task name
 	 */
 	public static String createTaskName(CppBinary binary) {
-		return of(binary).createTaskName().toString();
+		return INSTANCE.createTaskName().forBinary(binary).toString();
 	}
 
 	/**
@@ -557,7 +557,7 @@ public final class CppNames {
 	 * @return a task name
 	 */
 	public static String assembleTaskName(CppBinary binary) {
-		return of(binary).assembleTaskName().toString();
+		return INSTANCE.assembleTaskName().forBinary(binary).toString();
 	}
 
 
@@ -574,7 +574,7 @@ public final class CppNames {
 	 * @return a task name
 	 */
 	public static String installTaskName(CppBinary binary) {
-		return of(binary).installTaskName().toString();
+		return INSTANCE.installTaskName().forBinary(binary).toString();
 	}
 
 	/**
@@ -588,7 +588,7 @@ public final class CppNames {
 	 * @return a task name
 	 */
 	public static String relocateMainForBinaryTaskName(CppTestExecutable binary) {
-		return of(binary).relocateMainForBinaryTaskName().toString();
+		return INSTANCE.relocateMainForBinaryTaskName().forBinary(binary).toString();
 	}
 
 	/**
@@ -602,7 +602,7 @@ public final class CppNames {
 	 * @return a task name
 	 */
 	public static String extractSymbolsTaskName(CppBinary binary) {
-		return of(binary).extractSymbolsTaskName().toString();
+		return INSTANCE.extractSymbolsTaskName().forBinary(binary).toString();
 	}
 
 	/**
@@ -616,7 +616,7 @@ public final class CppNames {
 	 * @return a task name
 	 */
 	public static String stripSymbolsTaskName(CppBinary binary) {
-		return of(binary).stripSymbolsTaskName().toString();
+		return INSTANCE.stripSymbolsTaskName().forBinary(binary).toString();
 	}
 
 	/**
@@ -632,7 +632,7 @@ public final class CppNames {
 	 * @return a configuration name
 	 */
 	public static String cppCompileConfigurationName(CppBinary binary) {
-		return of(binary).cppCompileConfigurationName().toString();
+		return INSTANCE.cppCompileConfigurationName().forBinary(binary).toString();
 	}
 	//endregion
 }
