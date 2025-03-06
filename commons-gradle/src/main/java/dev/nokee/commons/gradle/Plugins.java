@@ -11,6 +11,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import static dev.nokee.commons.gradle.ActionUtils.ignored;
+import static dev.nokee.commons.gradle.RunOnce.once;
+
 /**
  * Represents the plugins of a {@link PluginAware} object.
  *
@@ -104,6 +107,27 @@ public abstract /*final*/ class Plugins<T extends PluginAware> {
 			pluginsToApply.remove(pluginTypesOrId);
 			if (pluginsToApply.isEmpty()) {
 				callback.run();
+			}
+		}
+	}
+
+	/**
+	 * Registers a callback when Gradle finish applying any of the specified plugin type or id.
+	 *
+	 * @param pluginTypesOrIds  the plugin type or id to watch
+	 * @param callback  the plugin listener to call back
+	 */
+	public void whenAnyPluginsApplied(Iterable<?> pluginTypesOrIds, Runnable callback) {
+		callback = once(callback); // override to ensure callback ran only once!
+		for (Object pluginTypesOrId : pluginTypesOrIds) {
+			if (pluginTypesOrId instanceof String) {
+				target.getPlugins().withId((String) pluginTypesOrId, ignored(callback));
+			} else if (pluginTypesOrId instanceof Class) {
+				@SuppressWarnings({"unchecked", "rawtypes"})
+				final Class<? extends Plugin> pluginType = (Class<? extends Plugin>) pluginTypesOrId;
+				target.getPlugins().withType(pluginType, ignored(callback));
+			} else {
+				throw new IllegalArgumentException("Plugin notation " + pluginTypesOrId + " not supported. Only plugin id (String) or plugin type (Class) are supported.");
 			}
 		}
 	}

@@ -2,6 +2,8 @@
 
 ## [1.3] - in development
 
+This minor version introduce `Plugins#whenAnyPluginsApplied` to support a single configuration that must happen after any single plugins are applied from the set.
+
 ## [1.2] - 2025-02-28
 
 This minor version perform some bug fixes for the task options support.

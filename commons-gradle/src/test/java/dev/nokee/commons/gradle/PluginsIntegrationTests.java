@@ -11,8 +11,7 @@ import org.mockito.Mockito;
 import java.nio.file.Path;
 import java.util.Arrays;
 
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 class PluginsIntegrationTests {
 	@TempDir Path testDirectory;
@@ -35,6 +34,21 @@ class PluginsIntegrationTests {
 
 		project.getPlugins().apply(PluginB.class);
 		verify(action, never()).run();
+
+		plugins.apply(PluginC.class);
+		verify(action).run();
+	}
+
+	@Test
+	void callsBackOnceWhenAnyPluginsApplied() {
+		Runnable action = Mockito.mock();
+		plugins.whenAnyPluginsApplied(Arrays.asList(PluginA.class, PluginB.class, PluginC.class), action);
+
+		project.getPluginManager().apply(PluginA.class);
+		verify(action).run();
+
+		project.getPlugins().apply(PluginB.class);
+		verify(action).run();
 
 		plugins.apply(PluginC.class);
 		verify(action).run();
