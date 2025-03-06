@@ -1,6 +1,8 @@
 # Changelog
 
-## [1.3] - in development
+## [1.4] - in development
+
+## [1.3] - 2025-03-06
 
 This minor version introduce `Plugins#whenAnyPluginsApplied` to support a single configuration that must happen after any single plugins are applied from the set.
 
