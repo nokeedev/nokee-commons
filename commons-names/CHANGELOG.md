@@ -2,6 +2,8 @@
 
 ## [1.6] - in development
 
+This minor version fixes implementation configuration name's horizontal translation for binaries using properties.
+
 ## [1.5] - 2025-02-28
 
 This minor version adds missing C++ names for run task.
