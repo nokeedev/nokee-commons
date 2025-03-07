@@ -5,10 +5,7 @@ import org.gradle.language.cpp.*;
 import org.gradle.nativeplatform.test.cpp.CppTestExecutable;
 import org.gradle.nativeplatform.test.cpp.CppTestSuite;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Supplier;
 
 import static dev.nokee.commons.names.StringUtils.uncapitalize;
@@ -255,7 +252,7 @@ public final class CppNames {
 		return new ImplementationConfigurationNameBuilder() {
 			@Override
 			public FullyQualifiedName forBinary(CppBinary binary) {
-				return ElementName.configurationName("implementation").qualifiedBy(builder -> builder.append(binary.getName()));
+				return ElementName.configurationName("implementation").qualifiedBy(new ImplementationQualifier(binary));
 			}
 
 			@Override
@@ -263,6 +260,46 @@ public final class CppNames {
 				return ElementName.configurationName("implementation").qualifiedBy(qualifyingName(component));
 			}
 		};
+	}
+
+	private static class ImplementationQualifier implements Qualifier, IHasProp, IParameterizedObject<ImplementationQualifier> {
+		private final String binaryName;
+		private final QualifyingName delegate;
+
+		public ImplementationQualifier(CppBinary binary) {
+			this(binary.getName(), qualifyingName(binary));
+		}
+
+		private ImplementationQualifier(String binaryName, QualifyingName delegate) {
+			this.binaryName = binaryName;
+			this.delegate = delegate;
+		}
+
+		@Override
+		public void appendTo(NameBuilder builder) {
+			if (binaryName.startsWith("main")) {
+				builder.append("main");
+			}
+			delegate.toString(builder);
+			if (binaryName.startsWith("test")) {
+				builder.append("executable");
+			}
+		}
+
+		@Override
+		public Set<String> propSet() {
+			return ((IHasProp) delegate).propSet();
+		}
+
+		@Override
+		public Object get(String propName) {
+			return ((IHasProp) delegate).get(propName);
+		}
+
+		@Override
+		public ImplementationQualifier with(String propName, Object value) {
+			return new ImplementationQualifier(binaryName, (QualifyingName) delegate.with(propName, value));
+		}
 	}
 
 	/*public*/ ForComponentBuilder apiConfigurationName() {
