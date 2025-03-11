@@ -1,6 +1,8 @@
 # Changelog
 
-## [1.6] - in development
+## [1.7] - in development
+
+## [1.6] - 2025-03-11
 
 This minor version fixes implementation configuration name's horizontal translation for binaries using properties.
 It also includes a public API for naming scheme mostly focused on directory names (i.e. `NamingScheme#dirNames()`).

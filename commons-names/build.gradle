@@ -9,7 +9,7 @@ plugins {
 	id 'nokeebuild.signing'
 }
 
-version = '1.6-SNAPSHOT'
+version = '1.6'
 description = 'Gradle domain object naming made easy.'
 
 dependencies {
