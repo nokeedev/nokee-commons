@@ -4,10 +4,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-final class NamingScheme {
+final class LegacyNamingScheme {
 	private final List<Segment> segments;
 
-	private NamingScheme(List<Segment> segments) {
+	private LegacyNamingScheme(List<Segment> segments) {
 		this.segments = segments;
 	}
 
@@ -40,8 +40,8 @@ final class NamingScheme {
 		T create();
 	}
 
-	public static NamingScheme of(Segment... segments) {
-		return new NamingScheme(Arrays.asList(segments));
+	public static LegacyNamingScheme of(Segment... segments) {
+		return new LegacyNamingScheme(Arrays.asList(segments));
 	}
 
 	public interface Segment {

@@ -3,7 +3,7 @@ package dev.nokee.commons.names;
 import java.util.*;
 import java.util.stream.Collectors;
 
-abstract class NameString implements IAppendTo, IParameterizedObject<NameString>, NamingScheme.Segment, IHasProp {
+abstract class NameString implements IAppendTo, IParameterizedObject<NameString>, LegacyNamingScheme.Segment, IHasProp {
 	interface MainName {
 		NameString delegate();
 	}

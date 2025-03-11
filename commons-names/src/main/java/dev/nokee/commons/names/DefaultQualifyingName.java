@@ -3,9 +3,9 @@ package dev.nokee.commons.names;
 final class DefaultQualifyingName extends NameSupport<FullyQualifiedName> implements QualifyingName {
 	private final Qualifier qualifier;
 	private final OtherName elementName;
-	private final NamingScheme scheme;
+	private final LegacyNamingScheme scheme;
 
-	public DefaultQualifyingName(Qualifier qualifier, OtherName elementName, NamingScheme scheme) {
+	public DefaultQualifyingName(Qualifier qualifier, OtherName elementName, LegacyNamingScheme scheme) {
 		this.qualifier = qualifier;
 		this.elementName = elementName;
 		this.scheme = scheme;

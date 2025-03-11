@@ -1,18 +1,18 @@
 package dev.nokee.commons.names;
 
-import static dev.nokee.commons.names.NamingScheme.qualifier;
-import static dev.nokee.commons.names.NamingScheme.string;
+import static dev.nokee.commons.names.LegacyNamingScheme.qualifier;
+import static dev.nokee.commons.names.LegacyNamingScheme.string;
 
 // TODO: We should make this an interface to allow "Configuration Name" implementation
 public final class ConfigurationName extends NameSupport<ConfigurationName> implements ElementName {
-	private final NamingScheme scheme;
+	private final LegacyNamingScheme scheme;
 
-	private ConfigurationName(NamingScheme scheme) {
+	private ConfigurationName(LegacyNamingScheme scheme) {
 		this.scheme = scheme;
 	}
 
 	static ConfigurationName of(String name) {
-		return new ConfigurationName(NamingScheme.of(qualifier(), string(name)));
+		return new ConfigurationName(LegacyNamingScheme.of(qualifier(), string(name)));
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public final class ConfigurationName extends NameSupport<ConfigurationName> impl
 		private Builder() {}
 
 		public ConfigurationName prefix(String name) {
-			return new ConfigurationName(NamingScheme.of(string(name), qualifier()));
+			return new ConfigurationName(LegacyNamingScheme.of(string(name), qualifier()));
 		}
 	}
 }

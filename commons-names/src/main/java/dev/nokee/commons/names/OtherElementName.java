@@ -1,6 +1,6 @@
 package dev.nokee.commons.names;
 
-import static dev.nokee.commons.names.NamingScheme.qualifier;
+import static dev.nokee.commons.names.LegacyNamingScheme.qualifier;
 
 final class OtherElementName extends NameSupport<OtherElementName> implements OtherName, IAppendTo {
 	private final NameString name;
@@ -16,7 +16,7 @@ final class OtherElementName extends NameSupport<OtherElementName> implements Ot
 
 	@Override
 	public QualifyingName qualifiedBy(Qualifier qualifier) {
-		return new DefaultQualifyingName(qualifier, this, NamingScheme.of(qualifier(), name));
+		return new DefaultQualifyingName(qualifier, this, LegacyNamingScheme.of(qualifier(), name));
 	}
 
 	@Override

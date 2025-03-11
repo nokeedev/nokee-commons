@@ -1,17 +1,17 @@
 package dev.nokee.commons.names;
 
-import static dev.nokee.commons.names.NamingScheme.qualifier;
-import static dev.nokee.commons.names.NamingScheme.string;
+import static dev.nokee.commons.names.LegacyNamingScheme.qualifier;
+import static dev.nokee.commons.names.LegacyNamingScheme.string;
 
 final class SoftwareComponentName extends NameSupport<SoftwareComponentName> implements ElementName {
-	private final NamingScheme scheme;
+	private final LegacyNamingScheme scheme;
 
-	private SoftwareComponentName(NamingScheme scheme) {
+	private SoftwareComponentName(LegacyNamingScheme scheme) {
 		this.scheme = scheme;
 	}
 
 	public static SoftwareComponentName of(String name) {
-		return new SoftwareComponentName(NamingScheme.of(string(name), qualifier()));
+		return new SoftwareComponentName(LegacyNamingScheme.of(string(name), qualifier()));
 	}
 
 	@Override

@@ -3,8 +3,8 @@ package dev.nokee.commons.names;
 import javax.annotation.Nullable;
 import java.util.Optional;
 
-import static dev.nokee.commons.names.NamingScheme.property;
-import static dev.nokee.commons.names.NamingScheme.qualifier;
+import static dev.nokee.commons.names.LegacyNamingScheme.property;
+import static dev.nokee.commons.names.LegacyNamingScheme.qualifier;
 import static dev.nokee.commons.names.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
@@ -19,7 +19,7 @@ import static java.util.Objects.requireNonNull;
  */
 // TODO: Convert into interface
 public final class TaskName extends NameSupport<TaskName> implements ElementName {
-	private final NamingScheme scheme = NamingScheme.of(property("verb"), qualifier(), property("object"));
+	private final LegacyNamingScheme scheme = LegacyNamingScheme.of(property("verb"), qualifier(), property("object"));
 	@Nullable
 	private final String verb;
 
