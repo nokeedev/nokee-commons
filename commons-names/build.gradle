@@ -31,6 +31,7 @@ testing {
 				implementation libs.hamcrest.optional
 				implementation libs.mockito.core
 				implementation 'dev.gradleplugins:gradle-build-script'
+				implementation testFixtures(project(':commons-gradle'))
 			}
 		}
 	}
