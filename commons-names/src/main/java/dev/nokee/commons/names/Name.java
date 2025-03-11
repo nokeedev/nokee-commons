@@ -69,4 +69,7 @@ public interface Name extends Comparable<Name> {
 	default String toString(NameBuilder builder) {
 		throw new UnsupportedOperationException();
 	}
+	default String toString(NamingScheme scheme) {
+		return scheme.format(this);
+	}
 }

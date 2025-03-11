@@ -17,6 +17,24 @@ final class DefaultQualifyingName extends NameSupport<FullyQualifiedName> implem
 			.with("elementName", this::withElementName, this::getElementName);
 	}
 
+	public Object get(String propertyName) {
+		if (propertyName.equals("qualifyingName")) {
+			return getQualifyingName();
+		} else {
+			return super.get(propertyName);
+		}
+	}
+
+	public String getQualifyingName() {
+		NameBuilder builder = NameBuilder.toStringCase();
+		qualifier.appendTo(builder);
+		String result = builder.toString();
+		if (result.isEmpty()) {
+			return null;
+		}
+		return result;
+	}
+
 	public DefaultQualifyingName withQualifier(Qualifier qualifier) {
 		return new DefaultQualifyingName(qualifier, elementName, scheme);
 	}

@@ -33,6 +33,24 @@ final class DefaultFullyQualifiedName extends NameSupport<FullyQualifiedName> im
 		return elementName;
 	}
 
+	public Object get(String propertyName) {
+		if (propertyName.equals("qualifyingName")) {
+			return getQualifyingName();
+		} else {
+			return super.get(propertyName);
+		}
+	}
+
+	public String getQualifyingName() {
+		NameBuilder builder = NameBuilder.toStringCase();
+		qualifier.appendTo(builder);
+		String result = builder.toString();
+		if (result.isEmpty()) {
+			return null;
+		}
+		return result;
+	}
+
 	@Override
 	public String toString() {
 		return scheme.format(this).using(NameBuilder::toStringCase);
