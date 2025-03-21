@@ -302,4 +302,52 @@ public interface SourceOptionsAwareFunctionalTester {
 //
 //		// TODO: Assert failure message
 //	}
+
+	@Test
+	default void reorderedSourceStayUpToDate(TaskUnderTest taskUnderTest, @TempDir Path testDirectory, @GradleProject("project-with-source-options") GradleBuildElement project) throws Exception {
+		System.out.println("Test Directory: " + testDirectory);
+
+		GradleBuildElement build = project.writeToDirectory(testDirectory);
+		GradleRunner runner = GradleRunner.create(gradleTestKit()).inDirectory(build.getLocation()).forwardOutput().withPluginClasspath().withArgument("-i");
+		BuildResult result;
+
+		build.getBuildFile().append(groovyDsl("""
+			compileTask.source(file1) { compilerArgs.add('-DMY_MACRO1') }
+			compileTask.source(file2) { compilerArgs.add('-DMY_MACRO2') }
+			compileTask.source(file3) { compilerArgs.add('-DMY_MACRO3') }
+			compileTask.source(file4) { compilerArgs.add('-DMY_MACRO4') }
+
+			def sourceFiles = new ArrayList<>((file('src/main/cpp').listFiles() as List).sort())
+			compileTask.source.setFrom(sourceFiles)
+		"""));
+
+		result = runner.withTasks(taskUnderTest.toString()).build();
+		result = runner.withTasks(taskUnderTest.toString()).build();
+
+		assertThat(result.task(taskUnderTest.toString()).getOutcome(), equalTo(TaskOutcome.UP_TO_DATE));
+
+		build.getBuildFile().append(groovyDsl("""
+			static List rotate(List arr) {
+				// i and j pointing to first and last
+				// element respectively
+				List result = new ArrayList(arr)
+
+				int i = 0, j = arr.size() - 1
+				while (i != j) {
+					Object temp = result[i]
+					result[i] = result[j]
+					result[j] = temp
+					i++
+				}
+				return result
+			}
+
+			subject.configure {
+				compileTask.source.setFrom(rotate(sourceFiles))
+			}
+		"""));
+
+		result = runner.withTasks(taskUnderTest.toString()).build();
+		assertThat(result.task(taskUnderTest.toString()).getOutcome(), equalTo(TaskOutcome.UP_TO_DATE));
+	}
 }

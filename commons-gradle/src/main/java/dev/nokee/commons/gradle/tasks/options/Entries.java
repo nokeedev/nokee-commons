@@ -5,10 +5,7 @@ import dev.nokee.commons.gradle.ActionUtils;
 import org.gradle.api.Action;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 // Responsible to calculate the configuration "key" for a specific file
 //   Also responsible to "resolve" the key into a configure action
@@ -87,6 +84,27 @@ public class Entries<T> implements IConfigureActionLookup<T>, ISourceKey.Lookup 
 		@Override
 		public Iterator<Integer> iterator() {
 			return Arrays.stream(indices).iterator();
+		}
+
+		@Override
+		public int compareTo(ISourceKey o) {
+			if (o == DEFAULT_KEY) {
+				return 1;
+			}
+			assert o instanceof Key;
+			Key other = (Key) o;
+
+			// Compare corresponding elements up to the shorter length
+			int minLength = Math.min(indices.length, other.indices.length);
+			for (int i = 0; i < minLength; i++) {
+				if (this.indices[i] < other.indices[i]) {
+					return -1;
+				} else if (this.indices[i] > other.indices[i]) {
+					return 1;
+				}
+			}
+			// If all elements so far are equal, compare lengths
+			return this.indices.length - other.indices.length;
 		}
 	}
 }
