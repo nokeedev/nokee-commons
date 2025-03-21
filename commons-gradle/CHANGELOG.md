@@ -1,6 +1,8 @@
 # Changelog
 
-## [1.4] - in development
+## [1.4] - 2025-03-21
+
+This minor version allow sorting of source options key to fix a bug in native-companion plugin.
 
 ## [1.3] - 2025-03-06
 
