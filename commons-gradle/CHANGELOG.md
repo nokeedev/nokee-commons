@@ -2,7 +2,7 @@
 
 ## [1.5] - in development
 
-## [1.4] - 2025-03-21
+## [1.4] - 2025-03-24
 
 This minor version allow sorting of source options key to fix a bug in native-companion plugin.
 
