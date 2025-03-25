@@ -15,22 +15,22 @@ public class TaskRegistry extends PolymorphicDomainObjectRegistry<Task> {
 	}
 
 	@Override
-	public <S extends Task> TaskProvider<S> register(String name, Class<S> type) {
+	public <S extends Task> TaskProvider<S> register(Object name, Class<S> type) {
 		return (TaskProvider<S>) super.register(name, type);
 	}
 
 	@Override
-	public <S extends Task> TaskProvider<S> registerIfAbsent(String name, Class<S> type) {
+	public <S extends Task> TaskProvider<S> registerIfAbsent(Object name, Class<S> type) {
 		return (TaskProvider<S>) super.registerIfAbsent(name, type);
 	}
 
 	@Override
-	public TaskProvider<Task> register(String name) {
+	public TaskProvider<Task> register(Object name) {
 		return (TaskProvider<Task>) super.register(name);
 	}
 
 	@Override
-	public TaskProvider<Task> registerIfAbsent(String name) {
+	public TaskProvider<Task> registerIfAbsent(Object name) {
 		return (TaskProvider<Task>) super.registerIfAbsent(name);
 	}
 }

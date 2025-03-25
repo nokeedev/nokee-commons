@@ -9,14 +9,14 @@ public class NamedDomainObjectRegistry<T> {
 		this.delegate = delegate;
 	}
 
-	public NamedDomainObjectProvider<T> register(String name) {
-		return delegate.register(name);
+	public NamedDomainObjectProvider<T> register(Object name) {
+		return delegate.register(name.toString());
 	}
 
-	public NamedDomainObjectProvider<T> registerIfAbsent(String name) {
-		if (delegate.getNames().contains(name)) {
-			return delegate.register(name);
+	public NamedDomainObjectProvider<T> registerIfAbsent(Object name) {
+		if (delegate.getNames().contains(name.toString())) {
+			return delegate.named(name.toString());
 		}
-		return delegate.named(name);
+		return delegate.register(name.toString());
 	}
 }
