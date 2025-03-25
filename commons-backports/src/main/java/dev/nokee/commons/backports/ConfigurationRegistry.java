@@ -48,8 +48,8 @@ public abstract /*final*/ class ConfigurationRegistry {
 	 * @return a domain object provider to the registered {@link Configuration}, never null
 	 * @param <T> {@literal ConsumableConfiguration} on Gradle 8.4+ or {@literal Configuration} otherwise
 	 */
-	public <T extends Configuration> NamedDomainObjectProvider<T> consumable(String name) {
-		return realizeOnOlderGradleThen7_6(Registries.ConsumableConfiguration.register(configurations, name));
+	public <T extends Configuration> NamedDomainObjectProvider<T> consumable(Object name) {
+		return realizeOnOlderGradleThen7_6(Registries.ConsumableConfiguration.register(configurations, name.toString()));
 	}
 
 	// See https://github.com/gradle/gradle/commit/415842f849a9d5c3c7e4375cb5e86e06e8b9e6d9
@@ -78,8 +78,8 @@ public abstract /*final*/ class ConfigurationRegistry {
 	 * @return a domain object provider to the registered {@link Configuration}, never null
 	 * @param <T> {@literal DependencyScopeConfiguration} on Gradle 8.4+ or {@literal Configuration} otherwise
 	 */
-	public <T extends Configuration> NamedDomainObjectProvider<T> dependencyScope(String name) {
-		return Registries.DependencyScopeConfiguration.register(configurations, name);
+	public <T extends Configuration> NamedDomainObjectProvider<T> dependencyScope(Object name) {
+		return Registries.DependencyScopeConfiguration.register(configurations, name.toString());
 	}
 
 	/**
@@ -95,8 +95,8 @@ public abstract /*final*/ class ConfigurationRegistry {
 	 * @return a domain object provider to the registered {@link Configuration}, never null
 	 * @param <T> {@literal ResolvableConfiguration} on Gradle 8.4+ or {@literal Configuration} otherwise
 	 */
-	public <T extends Configuration> NamedDomainObjectProvider<T> resolvable(String name) {
-		return Registries.ResolvableConfiguration.register(configurations, name);
+	public <T extends Configuration> NamedDomainObjectProvider<T> resolvable(Object name) {
+		return Registries.ResolvableConfiguration.register(configurations, name.toString());
 	}
 
 	private enum Registries implements Registry, Action<Configuration> {
