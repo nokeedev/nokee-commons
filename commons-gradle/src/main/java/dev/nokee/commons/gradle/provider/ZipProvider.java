@@ -38,7 +38,7 @@ public abstract class ZipProvider {
 		}
 
 		public <T, U, R> Provider<R> zip(Provider<T> firstProvider, Provider<U> secondProvider, BiFunction<? super T, ? super U, ? extends /*@Nullable*/ R> combiner) {
-			final ListProperty<Object> accumulator = objects.listProperty(Object.class);
+			final ListProperty<Object> accumulator = objects.newInstance(ZipPropertyProvider.class).getZipProvider();
 			accumulator.add(firstProvider);
 			accumulator.add(secondProvider);
 			return accumulator.map(it -> {
@@ -162,7 +162,7 @@ public abstract class ZipProvider {
 
 		@Override
 		public <R> Provider<R> zip(Combiner<R> combiner) {
-			final ListProperty<Object> accumulator = objects.listProperty(Object.class);
+			final ListProperty<Object> accumulator = objects.newInstance(ZipPropertyProvider.class).getZipProvider();
 			accumulator.add(firstValue);
 			accumulator.add(secondValue);
 			return accumulator.map(it -> combiner.combine(new ValuesToZip(it)));
@@ -190,9 +190,13 @@ public abstract class ZipProvider {
 		@Override
 		public <R> Provider<R> zip(Combiner<R> combiner) {
 			// We isolate the values so adding more values to this builder doesn't affect previous zip on that same builder
-			final ListProperty<Object> accumulator = objects.listProperty(Object.class);
+			final ListProperty<Object> accumulator = objects.newInstance(ZipPropertyProvider.class).getZipProvider();
 			values.forEach(accumulator::add);
 			return accumulator.map(it -> combiner.combine(new ValuesToZip(it)));
 		}
+	}
+
+	/*private*/ interface ZipPropertyProvider {
+		ListProperty<Object> getZipProvider();
 	}
 }
