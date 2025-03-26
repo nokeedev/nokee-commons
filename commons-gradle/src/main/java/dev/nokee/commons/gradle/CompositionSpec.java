@@ -3,7 +3,7 @@ package dev.nokee.commons.gradle;
 import org.gradle.api.Transformer;
 import org.gradle.api.specs.Spec;
 
-class CompositionSpec<A, B> implements Spec<A> {
+final class CompositionSpec<A, B> implements Spec<A> {
 	private final Spec<B> s;
 	private final Transformer<? extends B, A> f;
 

@@ -1,6 +1,10 @@
 # Changelog
 
-## [1.5] - in development
+## [1.5] - 2025-03-26
+
+This minor version force a display name on the ZipProvider underlying Gradle property.
+It improves traceability of a no-value provider resolution.
+It also adds Nokee's Commons Names contract support to `*Registry` objects element naming (essentially using `Object#toString` to create a `String` name).
 
 ## [1.4] - 2025-03-24
 
