@@ -1,6 +1,9 @@
 # Changelog
 
-## [1.2] - in development
+## [1.2] - 2025-03-26
+
+This minor version adds Nokee's Commons Names contract support to `ConfigurationRegistry` element naming (essentially using `Object#toString` to create a `String` name).
+We also include an `SoftwareComponentRegistry` to work around the Gradle 8.1 core change to the `SoftwareComponentContainer` hierarchy change.
 
 ## [1.1] - 2025-01-25
 
