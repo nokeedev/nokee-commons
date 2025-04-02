@@ -1,5 +1,7 @@
 # Changelog
 
+## [1.6] - in development
+
 ## [1.5] - 2025-03-26
 
 This minor version force a display name on the ZipProvider underlying Gradle property.

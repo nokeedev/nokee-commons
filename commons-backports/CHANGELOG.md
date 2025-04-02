@@ -1,5 +1,7 @@
 # Changelog
 
+## [1.3] - in development
+
 ## [1.2] - 2025-03-26
 
 This minor version adds Nokee's Commons Names contract support to `ConfigurationRegistry` element naming (essentially using `Object#toString` to create a `String` name).
