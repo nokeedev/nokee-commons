@@ -9,14 +9,14 @@ import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.concurrent.TimeUnit;
 
 import static dev.gradleplugins.buildscript.syntax.Syntax.groovyDsl;
 import static dev.gradleplugins.runnerkit.GradleExecutor.gradleTestKit;
 import static dev.nokee.commons.fixtures.BuildResultExMatchers.taskPerformsFullRebuild;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.*;
 
 public interface SourceOptionsAwareFunctionalTester {
 	@Test
@@ -349,5 +349,28 @@ public interface SourceOptionsAwareFunctionalTester {
 
 		result = runner.withTasks(taskUnderTest.toString()).build();
 		assertThat(result.task(taskUnderTest.toString()).getOutcome(), equalTo(TaskOutcome.UP_TO_DATE));
+	}
+
+	@Test
+	default void canBuildMultipleSourceOptionsBucketEfficiently(TaskUnderTest taskUnderTest, @TempDir Path testDirectory, @GradleProject("project-with-many-source-options-buckets") GradleBuildElement project) throws Exception {
+		System.out.println("Test Directory: " + testDirectory);
+
+		GradleBuildElement build = project.writeToDirectory(testDirectory);
+		GradleRunner runner = GradleRunner.create(gradleTestKit()).forwardOutput().withPluginClasspath()
+			.withTasks(taskUnderTest.cleanIt(), taskUnderTest.toString()).inDirectory(build.getLocation());
+
+		for (int i = 0; i < 4; ++i) {
+			runner.build();
+		}
+
+		long average = 0;
+		for (int i = 0; i < 10; ++i) {
+			long start = System.nanoTime();
+			runner.build();
+			average += (System.nanoTime() - start);
+		}
+
+		average /= 10;
+		assertThat(TimeUnit.NANOSECONDS.toMillis(average), lessThan(2500L));
 	}
 }
