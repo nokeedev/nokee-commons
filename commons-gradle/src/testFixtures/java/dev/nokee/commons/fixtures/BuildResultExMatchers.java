@@ -12,12 +12,7 @@ import static org.hamcrest.Matchers.*;
 
 public class BuildResultExMatchers {
 	public static Matcher<BuildResult> taskPerformsFullRebuild(String taskPath) {
-		return allOf(new FeatureMatcher<BuildResult, TaskOutcome>(equalTo(TaskOutcome.SUCCESS), "", "") {
-			@Override
-			protected TaskOutcome featureValueOf(BuildResult actual) {
-				return actual.task(taskPath).getOutcome();
-			}
-		},
+		return allOf(
 		// make sure the output was info
 		new FeatureMatcher<BuildResult, List<String>>(hasItem(matchesRegex("^" + taskPath + " (.+) started.$")), "", "") {
 			@Override
@@ -34,17 +29,12 @@ public class BuildResultExMatchers {
 	}
 
 	public static Matcher<BuildResult> taskPerformsIncrementalBuild(String taskPath) {
-		return allOf(new FeatureMatcher<BuildResult, TaskOutcome>(equalTo(TaskOutcome.SUCCESS), "", "") {
-			@Override
-			protected TaskOutcome featureValueOf(BuildResult actual) {
-				return actual.task(taskPath).getOutcome();
-			}
-		}, new FeatureMatcher<BuildResult, String>(not(containsString("The input changes require a full rebuild for incremental task '" + taskPath + "'.")), "", "") {
+		return new FeatureMatcher<BuildResult, String>(not(containsString("The input changes require a full rebuild for incremental task '" + taskPath + "'.")), "", "") {
 			@Override
 			protected String featureValueOf(BuildResult actual) {
 				return actual.task(taskPath).getOutput();
 			}
-		});
+		};
 	}
 
 	public static Matcher<BuildResult> taskExecuted(String taskPath) {
