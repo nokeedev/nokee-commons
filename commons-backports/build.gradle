@@ -13,7 +13,7 @@ version = '1.2'
 description = 'Backports of important Gradle APIs.'
 
 dependencies {
-	compileOnlyApi gradleApi('6.2.1')
+	compileOnlyApi gradleApi('8.11')
 }
 
 tasks.named('javadoc', Javadoc) {
