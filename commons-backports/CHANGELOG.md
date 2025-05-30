@@ -1,6 +1,10 @@
 # Changelog
 
-## [1.3] - in development
+## [1.3] - 2025-05-30
+
+This minor version adds `DependencyCopier` to work around a [fundamental Gradle issue](https://github.com/gradle/gradle/issues/33673).
+We also include a backport of Gradle's `DependencyModifier` which rely on composition instead of inheritance.
+Finally, we worked on fixing a memory leak inside the `DependencyBucket` decorator.
 
 ## [1.2] - 2025-03-26
 

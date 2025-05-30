@@ -9,7 +9,7 @@ plugins {
 	id 'nokeebuild.signing'
 }
 
-version = '1.2'
+version = '1.3'
 description = 'Backports of important Gradle APIs.'
 
 dependencies {
