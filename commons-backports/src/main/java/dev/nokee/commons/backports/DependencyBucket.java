@@ -20,10 +20,7 @@ import org.gradle.api.provider.SetProperty;
 import org.gradle.util.GradleVersion;
 
 import javax.inject.Inject;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -446,6 +443,17 @@ public abstract /*final*/ class DependencyBucket {
 				}
 			}
 
+			private static HandleMetaClass metaClassOf(Object object) {
+				return Optional.ofNullable(((ExtensionAware) object).getExtensions().findByName("$__nk_metaClass"))
+					.map(HandleMetaClass.class::cast)
+					.orElseGet(() -> {
+						HandleMetaClass result = new HandleMetaClass(((GroovyObject) object).getMetaClass(), object);
+						((ExtensionAware) object).getExtensions().add("$__nk_metaClass", result);
+						((GroovyObject) object).setMetaClass(result);
+						return result;
+					});
+			}
+
 			/**
 			 * Registers bucket to specified object, necessary for Groovy DSL.
 			 *
@@ -460,7 +468,7 @@ public abstract /*final*/ class DependencyBucket {
 				if (object instanceof GroovyObject) {
 					assert object instanceof ExtensionAware;
 
-					HandleMetaClass metaClass = new HandleMetaClass(((GroovyObject) object).getMetaClass());
+					final HandleMetaClass metaClass = metaClassOf(object);
 					Stream.of(InvokerHelper.getMetaClass(DependencyBucket.class), InvokerHelper.getMetaClass(this))
 						.flatMap(it -> Stream.concat(
 							it.respondsTo(this, "addBundle").stream(),
@@ -469,7 +477,6 @@ public abstract /*final*/ class DependencyBucket {
 						.forEach(m -> {
 							metaClass.setProperty(bucketName, new MetaMethodClosure(bucketName, this, m));
 						});
-					((GroovyObject) object).setMetaClass(metaClass);
 				}
 				return this;
 			}
