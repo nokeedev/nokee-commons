@@ -5,10 +5,10 @@ pluginManagement {
 rootProject.name = 'nokee-commons'
 
 include 'commons-backports'
-include 'commons-hamcrest'
 include 'commons-names'
 include 'commons-gradle'
 
+includeBuild 'commons-hamcrest'
 includeBuild 'commons-build-script'
 
 dependencyResolutionManagement {

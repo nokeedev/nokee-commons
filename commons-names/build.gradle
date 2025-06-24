@@ -27,7 +27,7 @@ testing {
 		test {
 			dependencies {
 				implementation gradleTestKit()
-				implementation project(':commons-hamcrest')
+				implementation 'dev.nokee.commons:nokee-hamcrest'
 				implementation libs.hamcrest.optional
 				implementation libs.mockito.core
 				implementation 'dev.gradleplugins:gradle-build-script'
