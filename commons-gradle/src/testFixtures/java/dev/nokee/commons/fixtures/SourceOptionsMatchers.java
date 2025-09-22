@@ -1,6 +1,6 @@
 package dev.nokee.commons.fixtures;
 
-import dev.nokee.commons.gradle.tasks.options.SourceOptions;
+import dev.nokee.commons.gradle.tasks.options.SourceFileOptions;
 import org.hamcrest.FeatureMatcher;
 import org.hamcrest.Matcher;
 
@@ -9,20 +9,20 @@ import java.io.File;
 import static org.hamcrest.Matchers.equalTo;
 
 public class SourceOptionsMatchers {
-	public static Matcher<SourceOptions<?>> sourceFile(File file) {
-		return new FeatureMatcher<SourceOptions<?>, File>(equalTo(file), "", "") {
+	public static Matcher<SourceFileOptions<?>> sourceFile(File file) {
+		return new FeatureMatcher<SourceFileOptions<?>, File>(equalTo(file), "", "") {
 			@Override
-			protected File featureValueOf(SourceOptions<?> actual) {
-				return actual.getSourceFile().get().getAsFile();
+			protected File featureValueOf(SourceFileOptions<?> actual) {
+				return actual.getSourceFile();
 			}
 		};
 	}
 
-	public static Matcher<SourceOptions<?>> sourceFile(Matcher<? super File> matcher) {
-		return new FeatureMatcher<SourceOptions<?>, File>(matcher, "", "") {
+	public static Matcher<SourceFileOptions<?>> sourceFile(Matcher<? super File> matcher) {
+		return new FeatureMatcher<SourceFileOptions<?>, File>(matcher, "", "") {
 			@Override
-			protected File featureValueOf(SourceOptions<?> actual) {
-				return actual.getSourceFile().get().getAsFile();
+			protected File featureValueOf(SourceFileOptions<?> actual) {
+				return actual.getSourceFile();
 			}
 		};
 	}

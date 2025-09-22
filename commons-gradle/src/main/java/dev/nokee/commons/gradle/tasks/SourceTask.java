@@ -11,6 +11,7 @@ import org.gradle.language.nativeplatform.tasks.AbstractNativeCompileTask;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.concurrent.Callable;
 
 /**
  * Represents a task that performs some operation on source files.
@@ -24,7 +25,11 @@ public interface SourceTask extends Task {
 	 * @return this
 	 */
 	default SourceTask source(Object... sources) {
-		setSource(getSource().plus(getProject().files(sources)).getAsFileTree());
+		FileTree sourceFiles = getProject().files(sources).getAsFileTree();
+		if (getSource() != null) {
+			sourceFiles = getSource().plus(sourceFiles);
+		}
+		setSource(sourceFiles);
 		return this;
 	}
 
@@ -37,7 +42,7 @@ public interface SourceTask extends Task {
 	 * If your sources are less strict, please change it accordingly by overriding this method in your subclass.
 	 * </p>
 	 *
-	 * @return the source.
+	 * @return the source, will be null when no sources
 	 */
 	@InputFiles
 	@SkipWhenEmpty
@@ -56,28 +61,34 @@ public interface SourceTask extends Task {
 	 * Given the <i>source task</i> contract is not formally defined, we rely on the concept instead.
 	 *
 	 * @param task  the source task
-	 * @return a FileTree of the sources
+	 * @return a FileTree of the sources, never null
 	 */
 	static FileTree sourceOf(Task task) {
-		if (task instanceof SourceTask) {
-			return ((SourceTask) task).getSource();
-		} else if (task instanceof AbstractNativeCompileTask) {
+		if (task instanceof AbstractNativeCompileTask) {
+			// For this type of tasks, we know the method returns the final value
 			return ((AbstractNativeCompileTask) task).getSource().getAsFileTree();
-		} else {
-			// Required because getSource() contract is not clearly defined
-			try {
-				final Method SourceTaskContract_getSourceMethod = task.getClass().getMethod("getSource");
-				final Object result = SourceTaskContract_getSourceMethod.invoke(task);
-
-				if (result instanceof FileCollection) {
-					return ((FileCollection) result).getAsFileTree();
-				} else {
-					throw new UnsupportedOperationException();
-				}
-			} catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-				throw new RuntimeException(e);
-			}
 		}
+		// For these other type of tasks, the returned value may or may not be the final value.
+		//   So we defer the value to ensure the returned FileTree honors the imposed contract.
+		return task.getProject().files((Callable<?>) () -> {
+			if (task instanceof SourceTask) {
+				return ((SourceTask) task).getSource();
+			} else {
+				// Required because getSource() contract is not clearly defined
+				try {
+					final Method SourceTaskContract_getSourceMethod = task.getClass().getMethod("getSource");
+					final Object result = SourceTaskContract_getSourceMethod.invoke(task);
+
+					if (result instanceof FileCollection) {
+						return ((FileCollection) result).getAsFileTree();
+					} else {
+						throw new UnsupportedOperationException();
+					}
+				} catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+					throw new NotSourceTaskException("No methods with the following contracts:\n\t> FileCollection getSource()", e);
+				}
+			}
+		}).getAsFileTree();
 	}
 
 	/**
@@ -100,7 +111,7 @@ public interface SourceTask extends Task {
 			try {
 				final Method SourceTaskContract_sourceMethod = task.getClass().getMethod("source", Object[].class);
 				SourceTaskContract_sourceMethod.setAccessible(true);
-				SourceTaskContract_sourceMethod.invoke(task, new Object[] { sourcePath, sourcePaths });
+				SourceTaskContract_sourceMethod.invoke(task, new Object[] { new Object[] { sourcePath, sourcePaths } });
 			} catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
 				// Required because source(Object) contract is not clearly defined
 				try {
@@ -109,7 +120,7 @@ public interface SourceTask extends Task {
 					SourceTaskContract_sourceMethod.invoke(task, sourcePath);
 					SourceTaskContract_sourceMethod.invoke(task, new Object[] { sourcePaths });
 				} catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException ex) {
-					throw new UnsupportedOperationException();
+					throw new NotSourceTaskException("No methods with the following contracts:\n\t> Any source(Object...)\n\t> Any source(Object)", ex);
 				}
 			}
 		}

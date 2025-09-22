@@ -8,7 +8,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.concurrent.TimeUnit;
 
 import static dev.gradleplugins.buildscript.syntax.Syntax.groovyDsl;
@@ -41,6 +44,31 @@ public interface SourceOptionsAwareFunctionalTester {
 	}
 
 	@Test
+	default void canUseConfigurationCacheWithSourceOptions(TaskUnderTest taskUnderTest, @TempDir Path testDirectory, @GradleProject("project-with-source-options-ex") GradleBuildElement project) throws Exception {
+		System.out.println("Test Directory: " + testDirectory);
+
+		GradleBuildElement build = project.writeToDirectory(testDirectory);
+		GradleRunner runner = GradleRunner.create(gradleTestKit()).forwardOutput().withPluginClasspath()
+			.inDirectory(build.getLocation())
+			.withArgument("--configuration-cache")
+			.withArgument("-i")
+			.withTasks(taskUnderTest.cleanIt(), taskUnderTest.toString())
+			.withBuildCacheEnabled().withGradleUserHomeDirectory(testDirectory.resolve("user-home").toFile());
+		BuildResult result;
+
+		result = runner.build();
+		assertThat(result.task(taskUnderTest.toString()).getOutcome(), equalTo(TaskOutcome.SUCCESS));
+
+		Files.write(build.file("src/main/cpp/message.cpp"), "//foo".getBytes(StandardCharsets.UTF_8), StandardOpenOption.APPEND);
+
+		result = runner.build();
+		assertThat(result.task(taskUnderTest.toString()).getOutcome(), equalTo(TaskOutcome.SUCCESS));
+
+		result = runner/*.withTasks(taskUnderTest.cleanIt(), taskUnderTest.toString())*/.build();
+		assertThat("restore from cache", result.task(taskUnderTest.toString()).getOutcome(), equalTo(TaskOutcome.FROM_CACHE));
+	}
+
+	@Test
 	default void moveFileFromOneBucketToAnother(TaskUnderTest taskUnderTest, @TempDir Path testDirectory, @GradleProject("project-with-source-options") GradleBuildElement project) {
 		System.out.println("Test Directory: " + testDirectory);
 
@@ -50,8 +78,8 @@ public interface SourceOptionsAwareFunctionalTester {
 
 		build.getBuildFile().append(groovyDsl("""
 			subject.configure {
-				source([providers.gradleProperty('bucket1').orElse([]), file3]) { /* do something */ }
-				source([providers.gradleProperty('bucket2').orElse([]), file4]) { /* do something */ }
+				source([providers.gradleProperty('bucket1').orElse([]), file3]) { compilerArgs.add('-DBUCKET1') }
+				source([providers.gradleProperty('bucket2').orElse([]), file4]) { compilerArgs.add('-DBUCKET2') }
 			}
 		""".stripIndent()));
 
@@ -108,7 +136,7 @@ public interface SourceOptionsAwareFunctionalTester {
 
 		build.getBuildFile().append(groovyDsl("""
 			subject.configure {
-				sourceOptions.configure(file1) { /* do something */ }
+				sourceOptions.forFile(file1) { /* do something */ }
 			}
 		"""));
 
@@ -218,7 +246,7 @@ public interface SourceOptionsAwareFunctionalTester {
 		System.out.println("Test Directory: " + testDirectory);
 
 		GradleBuildElement build = project.writeToDirectory(testDirectory);
-		GradleRunner runner = GradleRunner.create(gradleTestKit()).inDirectory(build.getLocation()).forwardOutput().withPluginClasspath();
+		GradleRunner runner = GradleRunner.create(gradleTestKit()).inDirectory(build.getLocation()).forwardOutput().withPluginClasspath().withArgument("-i");
 		BuildResult result;
 
 		// We execute the build twice

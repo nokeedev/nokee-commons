@@ -1,6 +1,10 @@
 # Changelog
 
-## [1.6] - in development
+## [1.7] - in development
+
+## [1.6] - 2025-09-26
+
+This minor version simplified the `SourceOptionsAware` task contract and improved the `SourceTask` contract support.
 
 ## [1.5] - 2025-03-26
 

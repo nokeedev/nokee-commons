@@ -1,31 +1,59 @@
 package dev.nokee.commons.gradle.tasks.options;
 
-import org.gradle.api.Action;
-import org.gradle.api.NonExtensible;
-import org.gradle.api.file.RegularFile;
-import org.gradle.api.provider.Provider;
+import org.gradle.api.file.FileTree;
+
+import java.io.File;
+import java.util.Collection;
 
 /**
- * Represent the options of a specific source file.
+ * Represents the source options for each source files.
  *
- * @param <T>  the source specific options
+ * @param <OptionsType>  the type of the source options
  */
-@NonExtensible
-public interface SourceOptions<T> {
+public interface SourceOptions<OptionsType> extends Iterable<SourceFileOptions<OptionsType>> {
 	/**
-	 * {@return the source file the specified options applies}
+	 * @param sourceFile  the source file to query
+	 * {@return a source file options for the specified source file, {@link SourceFileOptions#getOptions()} will be null when source file has no source options}
 	 */
-	Provider<RegularFile> getSourceFile();
+	SourceFileOptions<OptionsType> forFile(File sourceFile);
 
 	/**
-	 * {@return the options for this source}
+	 * @param sourceFiles
+	 * {@return the source options for the specified source files}
 	 */
-	T getOptions();
+	SourceOptions<OptionsType> forFiles(FileTree sourceFiles);
 
 	/**
-	 * Configures the options for this source.
+	 * Groups the source files by options.
 	 *
-	 * @param configureAction  the configure action to execute on the options
+	 * @return a list of grouped options
 	 */
-	void options(Action<? super T> configureAction);
+	Iterable<Group<OptionsType>> groupedByOptions();
+
+	/**
+	 * Represents the source files grouped by options.
+	 *
+	 * @param <OptionsType>  the type of the source options
+	 */
+	interface Group<OptionsType> extends Iterable<SourceFileOptions<OptionsType>> {
+		/**
+		 * {@return the source options for this group}
+		 */
+		OptionsType getOptions(); // option aware
+
+		/**
+		 * {@return the source files for this source options}
+		 */
+		Collection<File> getSourceFiles();
+
+		/**
+		 * {@return a {@link String} identifier which will be unique to this source options group}
+		 *
+		 * Use this unique id to differentiate the source options groups between each other.
+		 * The unique id is an opaque string that is safe to use in a file path.
+		 * It's safe to assume the unique id is stable between build invocation for the same machine and configuration.
+		 * Do not assume anything about the unique id, format included.
+		 */
+		String getUniqueId();
+	}
 }
