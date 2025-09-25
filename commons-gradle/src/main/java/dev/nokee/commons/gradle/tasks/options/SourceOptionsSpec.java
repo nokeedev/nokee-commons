@@ -451,7 +451,11 @@ abstract /*final*/ class SourceOptionsSpec<T> implements ConfigurableSourceOptio
 
 		@Override
 		public T getOptions() {
-			return iterator().next().getOptions();
+			Iterator<SourceFileOptions<T>> iter = iterator();
+			if (!iter.hasNext()) {
+				return null;
+			}
+			return iter.next().getOptions();
 		}
 		//endregion
 	}

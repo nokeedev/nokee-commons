@@ -118,7 +118,7 @@ public abstract class SourceOptionsAwareIntegrationTester<T> {
 		subject.source(file1(), doSomething());
 
 		// NO additional options
-		assertThat(subject.getSourceOptions(), contains(sourceFile(file1()))); // TODO: file1 and file2
+		assertThat(subject.getSourceOptions(), contains(sourceFile(file2()), sourceFile(file1())));
 	}
 
 	@Test
