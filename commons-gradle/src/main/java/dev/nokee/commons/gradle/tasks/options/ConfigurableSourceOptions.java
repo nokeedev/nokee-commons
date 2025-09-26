@@ -3,6 +3,7 @@ package dev.nokee.commons.gradle.tasks.options;
 import org.gradle.api.Action;
 import org.gradle.api.file.FileTree;
 import org.gradle.api.provider.Provider;
+import org.gradle.api.specs.Spec;
 
 import java.io.File;
 
@@ -26,6 +27,7 @@ public interface ConfigurableSourceOptions<T> extends SourceOptions<T> {
 	 * {@inheritDoc}
 	 */
 	ConfigurableSourceOptions<T> forFiles(FileTree sourceFiles);
+	void forFilesMatching(Spec<? super File> sourceFilesSpec, Action<? super T> configureAction);
 
 	ConfigurableSourceOptions<T> with(SourceOptions<T> sourceOptions);
 	ConfigurableSourceOptions<T> with(Provider<? extends SourceOptions<T>> sourceOptionsProvider);

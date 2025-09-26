@@ -12,6 +12,7 @@ import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
+import org.gradle.api.specs.Spec;
 import org.gradle.api.tasks.*;
 import org.gradle.internal.UncheckedException;
 import org.jetbrains.annotations.NotNull;
@@ -307,6 +308,33 @@ abstract /*final*/ class SourceOptionsSpec<T> implements ConfigurableSourceOptio
 		return new DefaultOptionsProvider(sources);
 	}
 
+	@Override
+	public void forFilesMatching(Spec<? super File> sourceFilesSpec, Action<? super T> configureAction) {
+		getAllBuckets().add(new SourceOptionBucket<T>() {
+			@Override
+			public void visitDependencies(DependenciesContext<T> ctx) {
+				configureAction.execute(ctx.getOptions());
+			}
+
+			@Override
+			public void visit(FileContext<T> ctx) {
+				if (sourceFilesSpec.isSatisfiedBy(ctx.getSourceFile())) {
+					ctx.mark();
+				}
+			}
+
+			@Override
+			public void execute(FileContext<T> ctx) {
+				configureAction.execute(ctx.getOptions());
+			}
+
+			@Override
+			public FileCollection getFiles() {
+				return objects.fileCollection();
+			}
+		});
+	}
+
 	private class DefaultOptionsProvider extends AbstractMap<String, T> implements ConfigurableSourceOptions<T>, BucketAware<T>, ConfigurableSourceOptionsInternal, ConfigurableSourceFileOptions<T> {
 		private final FileTree sources;
 
@@ -327,6 +355,11 @@ abstract /*final*/ class SourceOptionsSpec<T> implements ConfigurableSourceOptio
 		@Override
 		public ConfigurableSourceOptions<T> forFiles(FileTree sourceFiles) {
 			return SourceOptionsSpec.this.forFiles(sourceFiles);
+		}
+
+		@Override
+		public void forFilesMatching(Spec<? super File> sourceFilesSpec, Action<? super T> configureAction) {
+			SourceOptionsSpec.this.forFilesMatching(sourceFilesSpec, configureAction);
 		}
 
 		@Override

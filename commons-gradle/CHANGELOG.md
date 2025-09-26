@@ -1,6 +1,10 @@
 # Changelog
 
-## [1.7] - in development
+## [1.8] - in development
+
+## [1.7] - 2025-09-26
+
+This minor version allow specifying spec-based source options bucket.
 
 ## [1.6.1] - 2025-09-25
 
