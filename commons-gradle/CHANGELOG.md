@@ -2,11 +2,11 @@
 
 ## [1.7] - in development
 
-## [1.6.1] - 2025-09-26
+## [1.6.1] - 2025-09-25
 
 This patch version fix a bug in the `SourceFileOptions` implementation for `SourceOptionsAware` contract.
 
-## [1.6] - 2025-09-26
+## [1.6] - 2025-09-25
 
 This minor version simplified the `SourceOptionsAware` task contract and improved the `SourceTask` contract support.
 
