@@ -1,6 +1,9 @@
 # Changelog
 
-## [1.8] - in development
+## [1.8] - 2026-07-22
+
+This minor version fix a bug where configuration cache would realize the source too early.
+It also introduces `GradleTypes` to help deal with Gradle type decoration.
 
 ## [1.7] - 2025-09-26
 
