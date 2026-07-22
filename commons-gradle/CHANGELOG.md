@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.8.1] - 2026-07-22
+
+This patch version revert uncommited rewrite around domain object registry.
+
 ## [1.8] - 2026-07-22
 
 This minor version fix a bug where configuration cache would realize the source too early.
