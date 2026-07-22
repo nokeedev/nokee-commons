@@ -73,7 +73,7 @@ public interface SourceOptionsAwareFunctionalTester {
 		System.out.println("Test Directory: " + testDirectory);
 
 		GradleBuildElement build = project.writeToDirectory(testDirectory);
-		GradleRunner runner = GradleRunner.create(gradleTestKit()).inDirectory(build.getLocation()).forwardOutput().withPluginClasspath();
+		GradleRunner runner = GradleRunner.create(gradleTestKit()).inDirectory(build.getLocation()).forwardOutput().withPluginClasspath().withArgument("--configuration-cache");
 		BuildResult result;
 
 		build.getBuildFile().append(groovyDsl("""
@@ -90,6 +90,36 @@ public interface SourceOptionsAwareFunctionalTester {
 
 		result = runner.withArgument("-i").withArgument("-Pbucket2=src/main/cpp/join.cpp").withTasks(taskUnderTest.toString()).build();
 		assertThat(result, taskPerformsFullRebuild(taskUnderTest.toString()));
+//		assertThat(result.getOutput(), containsString("Reuse"));
+	}
+
+	@Test
+	default void testDoesNotResolveSourceEarly(TaskUnderTest taskUnderTest, @TempDir Path testDirectory, @GradleProject("project-with-source-options") GradleBuildElement project) {
+		System.out.println("Test Directory: " + testDirectory);
+
+		GradleBuildElement build = project.writeToDirectory(testDirectory);
+		GradleRunner runner = GradleRunner.create(gradleTestKit()).inDirectory(build.getLocation()).forwardOutput().withPluginClasspath();
+		BuildResult result;
+
+		build.getBuildFile().append(groovyDsl("""
+			subject.configure {
+				source(file1) { /* do something */ }
+			}
+		"""));
+
+		result = runner.withTasks(taskUnderTest.toString()).build();
+		result = runner.withTasks(taskUnderTest.toString()).build();
+
+		assertThat(result.task(taskUnderTest.toString()).getOutcome(), equalTo(TaskOutcome.UP_TO_DATE));
+
+		build.getBuildFile().append(groovyDsl("""
+			subject.configure {
+				source(file1) { /* do nothing */ }
+			}
+		"""));
+
+		result = runner.withTasks(taskUnderTest.toString()).build();
+		assertThat(result.task(taskUnderTest.toString()).getOutcome(), equalTo(TaskOutcome.UP_TO_DATE));
 	}
 
 	@Test
@@ -400,5 +430,30 @@ public interface SourceOptionsAwareFunctionalTester {
 
 		average /= 10;
 		assertThat(TimeUnit.NANOSECONDS.toMillis(average), lessThan(2500L));
+	}
+
+	@Test
+	default void realizeTaskSourceOnlyDuringExecutionPhase(TaskUnderTest taskUnderTest, @TempDir Path testDirectory, @GradleProject("project-with-source-options") GradleBuildElement project) throws Exception {
+		System.out.println("Test Directory: " + testDirectory);
+
+		GradleBuildElement build = project.writeToDirectory(testDirectory);
+		GradleRunner runner = GradleRunner.create(gradleTestKit()).inDirectory(build.getLocation()).forwardOutput().withPluginClasspath().withArgument("--configuration-cache");
+		BuildResult result;
+
+		build.getBuildFile().append(groovyDsl("""
+			subject.configure {
+				source(providers.gradleProperty('additional-source').map {
+					println('resolving sources: ' + it)
+					return it
+				}) { /* ... */ }
+			}
+		"""));
+		runner = runner.withArgument("-Padditional-source=foo.cpp").withArgument("--rerun-tasks");
+		Files.writeString(testDirectory.resolve("foo.cpp"), "int foobar() { return 42; }");
+
+		result = runner.withTasks(taskUnderTest.toString()).build();
+		result = runner.withTasks(taskUnderTest.toString()).build();
+
+		assertThat(result.task(taskUnderTest.toString()).getOutput(), containsString("resolving sources: foo.cpp"));
 	}
 }

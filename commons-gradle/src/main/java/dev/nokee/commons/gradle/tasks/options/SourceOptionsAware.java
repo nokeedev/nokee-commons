@@ -86,6 +86,8 @@ public interface SourceOptionsAware<OptionsType> extends Task {
 			allSourceOptions = getProject().getObjects().newInstance(propertyType, factory)
 				.forFiles(sourceOf(this)); // We restrict the source options to this task's source (see SourceTask contract).
 
+			dependsOn(((SourceOptionsSpec<OptionsType>) ((ConfigurableSourceOptionsInternal) allSourceOptions).getRootSpec()).getTaskDependencies());
+
 			// Saves the source options restricted to this task's source
 			getAllSourceOptions().set(allSourceOptions);
 		}

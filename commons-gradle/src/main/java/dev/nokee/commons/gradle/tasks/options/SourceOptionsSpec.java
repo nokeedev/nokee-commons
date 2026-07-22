@@ -1,19 +1,19 @@
 package dev.nokee.commons.gradle.tasks.options;
 
 import dev.nokee.commons.gradle.Factory;
+import dev.nokee.commons.gradle.GradleTypes;
 import org.gradle.api.Action;
 import org.gradle.api.NonExtensible;
 import org.gradle.api.Task;
-import org.gradle.api.file.ConfigurableFileCollection;
-import org.gradle.api.file.FileCollection;
-import org.gradle.api.file.FileTree;
-import org.gradle.api.file.ProjectLayout;
+import org.gradle.api.file.*;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.ListProperty;
+import org.gradle.api.provider.MapProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.specs.Spec;
 import org.gradle.api.tasks.*;
+import org.gradle.api.tasks.Optional;
 import org.gradle.internal.UncheckedException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -258,6 +258,41 @@ abstract /*final*/ class SourceOptionsSpec<T> implements ConfigurableSourceOptio
 			this.key = key;
 			this.options = options;
 		}
+
+		public Map<String, Object> asMap() {
+			return forObject(options);
+		}
+
+		private Map<String, Object> forObject(Object obj) {
+			Map<String, Object> result = new LinkedHashMap<>();
+
+			for (Method method : GradleTypes.toUndecoratedType(obj.getClass()).getDeclaredMethods()) {
+				if (Modifier.isPublic(method.getModifiers()) && method.getParameterCount() == 0) {
+					if (method.getAnnotation(Input.class) != null) {
+						if (Provider.class.isAssignableFrom(method.getReturnType())) {
+							try {
+								result.put(method.getName(), method.invoke(options));
+							} catch (IllegalAccessException | InvocationTargetException e) {
+								throw new RuntimeException(e);
+							}
+						} else {
+							throw new RuntimeException();
+						}
+					} else if (method.getAnnotation(Nested.class) != null) {
+						if (Provider.class.isAssignableFrom(method.getReturnType())) {
+							try {
+								result.put(method.getName(), forObject(((Provider<?>) method.invoke(options)).get()));
+							} catch (IllegalAccessException | InvocationTargetException e) {
+								throw new RuntimeException(e);
+							}
+						} else {
+							throw new RuntimeException();
+						}
+					}
+				} // not a getter like method
+			}
+			return result;
+		}
 	}
 
 	private transient OptionsResolver resolver;
@@ -335,11 +370,25 @@ abstract /*final*/ class SourceOptionsSpec<T> implements ConfigurableSourceOptio
 		});
 	}
 
-	private class DefaultOptionsProvider extends AbstractMap<String, T> implements ConfigurableSourceOptions<T>, BucketAware<T>, ConfigurableSourceOptionsInternal, ConfigurableSourceFileOptions<T> {
+	private class DefaultOptionsProvider implements ConfigurableSourceOptions<T>, BucketAware<T>, ConfigurableSourceOptionsInternal, ConfigurableSourceFileOptions<T> {
 		private final FileTree sources;
+		private final MapProperty<String, Object> values;
 
 		private DefaultOptionsProvider(FileTree sources) {
 			this.sources = sources;
+			this.values = getObjects_do_not_use_in_child_classes().mapProperty(String.class, Object.class);
+			this.values.set(sources.getElements().zip(getAllBuckets(), (sourceFiles, buckets) -> {
+				Map<String, Object> result = new TreeMap<>();
+				for (FileSystemLocation sourceFile : sourceFiles) {
+					Opt<T> opt = resolver().resolve(sourceFile.getAsFile());
+					if (opt != null) {
+						result.put(quote(relativePath(sourceFile.getAsFile())), opt.asMap());
+					}
+				}
+				return result;
+			}));
+			this.values.finalizeValueOnRead();
+			this.values.disallowChanges();
 		}
 
 		@Override
@@ -381,7 +430,7 @@ abstract /*final*/ class SourceOptionsSpec<T> implements ConfigurableSourceOptio
 		}
 
 		@Override
-		public @NotNull Iterator<SourceFileOptions<T>> iterator() {
+		public Iterator<SourceFileOptions<T>> iterator() {
 			assert !getCleanedUp().get();
 			if (getAllBuckets().get().isEmpty()) {
 				return Collections.emptyIterator();
@@ -414,40 +463,14 @@ abstract /*final*/ class SourceOptionsSpec<T> implements ConfigurableSourceOptio
 		}
 
 		//region Map<String, T> for @Nested snapshotting
-		@Override
-		public @NotNull Set<Entry<String, T>> entrySet() {
-			assert !getCleanedUp().get();
-			if (getAllBuckets().get().isEmpty()) {
-				return Collections.emptySet();
-			}
-
-			Map<String, T> result = new HashMap<>();
-			result.put("<default>", (T) new Object() {
-				/**
-				 * {@return the implicit task dependencies of the source options}
-				 */
-				@InputFiles
-				@PathSensitive(PathSensitivity.NONE)
-				protected FileCollection getTaskDependencies() {
-					return SourceOptionsSpec.this.getTaskDependencies();
-				}
-			});
-			sources.visit(details -> {
-				Opt<T> options = resolver().resolve(details.getFile());
-				if (options != null) {
-					result.put(quote(relativePath(details.getFile())), options.options);
-				}
-			});
-			return result.entrySet();
+		@Input
+		@Optional
+		protected MapProperty<String, Object> getValues() {
+			return values;
 		}
 
 		private String relativePath(File sourceFile) {
 			return getLayout().getProjectDirectory().getAsFile().toPath().relativize(sourceFile.toPath()).toString();
-		}
-
-		@Override
-		public int size() {
-			return Integer.MAX_VALUE; // See Spliterator#estimateSize()
 		}
 
 		@Internal
@@ -472,16 +495,19 @@ abstract /*final*/ class SourceOptionsSpec<T> implements ConfigurableSourceOptio
 			});
 		}
 
+		@Internal
 		@Override
 		public ConfigurableSourceOptions<?> getRootSpec() {
 			return SourceOptionsSpec.this;
 		}
 
+		@Internal
 		@Override
 		public File getSourceFile() {
 			return sources.getSingleFile();
 		}
 
+		@Internal
 		@Override
 		public T getOptions() {
 			Iterator<SourceFileOptions<T>> iter = iterator();
@@ -660,7 +686,7 @@ abstract /*final*/ class SourceOptionsSpec<T> implements ConfigurableSourceOptio
 		public <T> Iterable<SourceOptionBucket<T>> restrict(List<? extends SourceOptionBucket<T>> buckets) {
 			return new Iterable<SourceOptionBucket<T>>() {
 				@Override
-				public @NotNull Iterator<SourceOptionBucket<T>> iterator() {
+				public Iterator<SourceOptionBucket<T>> iterator() {
 					return new Iterator<SourceOptionBucket<T>>() {
 						private int i = 0;
 						@Override
