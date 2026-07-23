@@ -12,14 +12,14 @@ import java.util.Collection;
  */
 public interface SourceOptions<OptionsType> extends Iterable<SourceFileOptions<OptionsType>> {
 	/**
-	 * @param sourceFile  the source file to query
 	 * {@return a source file options for the specified source file, {@link SourceFileOptions#getOptions()} will be null when source file has no source options}
+	 * @param sourceFile  the source file to query
 	 */
 	SourceFileOptions<OptionsType> forFile(File sourceFile);
 
 	/**
-	 * @param sourceFiles
 	 * {@return the source options for the specified source files}
+	 * @param sourceFiles
 	 */
 	SourceOptions<OptionsType> forFiles(FileTree sourceFiles);
 
