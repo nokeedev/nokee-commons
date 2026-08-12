@@ -179,19 +179,26 @@ abstract /*final*/ class SourceOptionsSpec<T> implements ConfigurableSourceOptio
 	//endregion
 
 	//region
-	private class OptionsResolver {
+	private static class OptionsResolver<T> {
 		private final Set<File> knownFiles = new HashSet<>();
 		private final Map<File, ISourceKey> sourceFileToKeys = new HashMap<>();
 		private final Map<ISourceKey, T> keyToOptions = new HashMap<>();
 		private final MyContext ctx = new MyContext();
+		private final List<SourceOptionBucket<T>> allBuckets;
+		private final Factory<T> optionsFactory;
+
+		private OptionsResolver(List<SourceOptionBucket<T>> allBuckets, Factory<T> optionsFactory) {
+			this.allBuckets = allBuckets;
+			this.optionsFactory = optionsFactory;
+		}
 
 		public ISourceKey resolveKey(File sourceFile) {
 			if (knownFiles.add(sourceFile)) {
 				ctx.reset(sourceFile);
 
-				for (int i = 0; i < getAllBuckets().get().size(); i++) {
+				for (int i = 0; i < allBuckets.size(); i++) {
 					ctx.current = i;
-					getAllBuckets().get().get(i).visit(ctx);
+					allBuckets.get(i).visit(ctx);
 				}
 				if (ctx.indices != null) {
 					sourceFileToKeys.put(sourceFile, new Key(ctx.indices.stream().mapToInt(Integer::intValue).toArray()));
@@ -241,7 +248,7 @@ abstract /*final*/ class SourceOptionsSpec<T> implements ConfigurableSourceOptio
 			if (key != null) {
 				T options = keyToOptions.computeIfAbsent(key, __ -> {
 					ctx.reset(sourceFile);
-					key.restrict(getAllBuckets().get()).forEach(it -> it.execute(ctx));
+					key.restrict(allBuckets).forEach(it -> it.execute(ctx));
 					return ctx.options;
 				});
 				return new Opt<>(key, options);
@@ -299,7 +306,7 @@ abstract /*final*/ class SourceOptionsSpec<T> implements ConfigurableSourceOptio
 
 	private OptionsResolver resolver() {
 		if (resolver == null) {
-			resolver = new OptionsResolver();
+			resolver = new OptionsResolver(getAllBuckets().get(), optionsFactory);
 		}
 		return resolver;
 	}
@@ -376,11 +383,12 @@ abstract /*final*/ class SourceOptionsSpec<T> implements ConfigurableSourceOptio
 
 		private DefaultOptionsProvider(FileTree sources) {
 			this.sources = sources;
+			Factory<T> optFactory = optionsFactory;
 			this.values = getObjects_do_not_use_in_child_classes().mapProperty(String.class, Object.class);
 			this.values.set(sources.getElements().zip(getAllBuckets(), (sourceFiles, buckets) -> {
 				Map<String, Object> result = new TreeMap<>();
 				for (FileSystemLocation sourceFile : sourceFiles) {
-					Opt<T> opt = resolver().resolve(sourceFile.getAsFile());
+					Opt<T> opt = new OptionsResolver<>(buckets, optFactory).resolve(sourceFile.getAsFile());
 					if (opt != null) {
 						result.put(quote(relativePath(sourceFile.getAsFile())), opt.asMap());
 					}
