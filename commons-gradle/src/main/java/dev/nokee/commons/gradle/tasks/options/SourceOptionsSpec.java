@@ -271,7 +271,7 @@ abstract /*final*/ class SourceOptionsSpec<T> implements ConfigurableSourceOptio
 					if (method.getAnnotation(Input.class) != null) {
 						if (Provider.class.isAssignableFrom(method.getReturnType())) {
 							try {
-								result.put(method.getName(), method.invoke(options));
+								result.put(method.getName(), ((Provider<?>) method.invoke(options)).getOrNull());
 							} catch (IllegalAccessException | InvocationTargetException e) {
 								throw new RuntimeException(e);
 							}
