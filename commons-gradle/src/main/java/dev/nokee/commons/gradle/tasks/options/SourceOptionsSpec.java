@@ -264,7 +264,7 @@ abstract /*final*/ class SourceOptionsSpec<T> implements ConfigurableSourceOptio
 		}
 
 		private Map<String, Object> forObject(Object obj) {
-			Map<String, Object> result = new LinkedHashMap<>();
+			Map<String, Object> result = new TreeMap<>();
 
 			for (Method method : GradleTypes.toUndecoratedType(obj.getClass()).getDeclaredMethods()) {
 				if (Modifier.isPublic(method.getModifiers()) && method.getParameterCount() == 0) {
