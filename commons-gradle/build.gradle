@@ -10,7 +10,7 @@ plugins {
 	id 'nokeebuild.signing'
 }
 
-version = '1.8.1'
+version = '1.9'
 description = 'Gradle utilities for fast development'
 
 dependencies {

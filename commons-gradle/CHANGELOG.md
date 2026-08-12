@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.9] - 2026-08-12
+
+This minor version fix an intermittent issue with source options task up-to-dateness.
+
 ## [1.8.1] - 2026-07-22
 
 This patch version revert uncommited rewrite around domain object registry.
