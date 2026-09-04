@@ -45,13 +45,6 @@ gradle.allprojects {
 	}
 	pluginManager.withPlugin('maven-publish') {
 		publishing {
-			repositories {
-				maven {
-					name = 'ossrhRelease'
-					url = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
-					credentials(PasswordCredentials)
-				}
-			}
 			publications {
 				pluginManager.withPlugin('java-library') {
 					java(MavenPublication) {
