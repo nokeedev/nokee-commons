@@ -28,8 +28,8 @@ dependencies {
 	testFixturesImplementation 'com.google.guava:guava:33.4.0-jre'
 }
 
-components.java.withVariantsFromConfiguration(configurations.testFixturesApiElements) { skip() }
-components.java.withVariantsFromConfiguration(configurations.testFixturesRuntimeElements) {	skip() }
+//components.java.withVariantsFromConfiguration(configurations.testFixturesApiElements) { skip() }
+//components.java.withVariantsFromConfiguration(configurations.testFixturesRuntimeElements) {	skip() }
 
 tasks.named('javadoc', Javadoc) {
 	options {
