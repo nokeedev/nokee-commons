@@ -2,21 +2,18 @@ pluginManagement {
 	apply from: 'https://raw.githubusercontent.com/nokeedev/nokeebuild-plugins/refs/heads/main/init.gradle'
 }
 
+plugins {
+	id 'nokeebuild.nexus-publishing'
+	id 'nokeebuild.develocity'
+	id 'nokeebuild.repositories'
+}
+
 rootProject.name = 'nokee-commons'
 
 include 'commons-backports'
 include 'commons-names'
 include 'commons-gradle'
 
-includeBuild 'commons-hamcrest'
-includeBuild 'commons-build-script'
-
-dependencyResolutionManagement {
-	repositoriesMode = RepositoriesMode.PREFER_SETTINGS
-	repositories {
-		mavenCentral()
-	}
-}
 
 gradle.allprojects {
 	group = 'dev.nokee.commons'
