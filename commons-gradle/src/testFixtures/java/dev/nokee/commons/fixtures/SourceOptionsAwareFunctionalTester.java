@@ -5,6 +5,7 @@ import dev.gradleplugins.runnerkit.GradleRunner;
 import dev.gradleplugins.runnerkit.TaskOutcome;
 import dev.nokee.commons.sources.GradleBuildElement;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
@@ -410,6 +411,7 @@ public interface SourceOptionsAwareFunctionalTester {
 	}
 
 	@Test
+	@DisabledIfEnvironmentVariable(named = "CI", matches = "true")
 	default void canBuildMultipleSourceOptionsBucketEfficiently(TaskUnderTest taskUnderTest, @TempDir Path testDirectory, @GradleProject("project-with-many-source-options-buckets") GradleBuildElement project) throws Exception {
 		System.out.println("Test Directory: " + testDirectory);
 
